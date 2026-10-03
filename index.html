@@ -34,6 +34,14 @@
   <link rel="stylesheet" href="css/screens.css">
   <link rel="stylesheet" href="css/frame.css">
   <script>
+    // On a computer, the main link opens the app and NOCTIS side by side
+    // (showcase.html). Phones, the installed app, ?frame=… and ?embed=… stay here.
+    (function () {
+      var q = new URLSearchParams(location.search);
+      var standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+      var desktop = matchMedia('(hover: hover) and (pointer: fine)').matches && innerWidth >= 600;
+      if (desktop && !standalone && !q.has('frame') && !q.has('embed') && window.top === window) location.replace('showcase.html');
+    })();
     // Set theme and scheme before first paint so there is no flash.
     try {
       var s = JSON.parse(localStorage.getItem('offhours:state') || '{}').display || {};

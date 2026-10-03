@@ -107,6 +107,8 @@
     .noctis iframe { width: 600px; height: 930px; border: 0; display: block; background: transparent; }
 
     footer { padding: 0 32px 22px; text-align: center; font-size: 12.5px; color: var(--taupe); }
+    footer a { color: var(--stone); margin-left: 10px; text-underline-offset: 3px; }
+    footer a:hover { color: var(--white); }
     @media (max-width: 700px) {
       header { padding: 16px 18px 0; }
       .line { display: none; }
@@ -145,7 +147,7 @@
     </div>
   </main>
 
-  <footer>Two prototypes side by side. They run separately on sample data. NOCTIS is not a medical device.</footer>
+  <footer>Two prototypes side by side. They run separately on sample data. NOCTIS is not a medical device. <a href="./?frame=1">Open the app on its own</a></footer>
 
   <script>
     (() => {
@@ -166,6 +168,15 @@
       }
       addEventListener('resize', fit);
       fit();
+      // NOCTIS: let the frame be as tall as the device and its controls.
+      const os = document.getElementById('os');
+      const sizeOs = () => {
+        try {
+          const h = os.contentDocument.querySelector('.stage').scrollHeight;
+          if (h > 300) { os.style.height = `${h}px`; fit(); }
+        } catch (e) { /* not reachable: keep the default height */ }
+      };
+      os.addEventListener('load', () => { sizeOs(); setTimeout(sizeOs, 600); });
       document.getElementById('skip').addEventListener('click', () => { app.src = './?embed=1&setup=skip'; });
       document.getElementById('restart').addEventListener('click', () => { app.src = `./?embed=1&r=${Date.now()}`; });
     })();

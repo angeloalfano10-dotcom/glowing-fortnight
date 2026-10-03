@@ -30,11 +30,12 @@ After a redeploy, the first open still shows the cached version and the next ope
 
 ## The app and NOCTIS side by side
 
-Open **`showcase.html`** (for example `https://<your-site>/showcase.html`). It shows the app on an iPhone next to NOCTIS on the bedside table. They are the two prototypes in frames and run separately on sample data; they don't talk to each other yet.
+On a computer, the main link opens **`showcase.html`** by itself. It shows the app on an iPhone next to NOCTIS on the bedside table. They are the two prototypes in frames and run separately on sample data; they don't talk to each other yet.
 
 - Under the phone: **Skip setup** pairs the simulated NOCTIS with sample settings and goes straight to the tabs. **Restart** reloads the app.
 - Under NOCTIS: theme, resting face (Eyes or Clock), jump to a time of day (including Wind-down and Wake-up), and Ask NOCTIS questions. On the device itself: tap, swipe, swipe up, press and hold.
-- On a phone the two stack, app first.
+- On a phone the main link opens just the app. `?frame=1` opens the app alone in a phone frame on a computer (there is also a link in the footer).
+- On a narrow window the two stack, app first.
 
 ## NOCTIS OS prototype 0.5
 
