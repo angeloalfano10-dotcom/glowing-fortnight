@@ -15,6 +15,8 @@ const ICONS = {
   pulse: S('<rect x="8" y="4" width="8" height="16" rx="2.5"/><path d="M4 9v6M20 9v6"/>', 2.2),
   calendar: S('<rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'),
   house: S('<path d="M3.5 11 12 4l8.5 7M6 9.5V20h12V9.5"/>'),
+  person: S('<circle cx="12" cy="8.2" r="3.7"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/>', 2.1),
+  lockon: S('<rect x="5" y="10.5" width="14" height="10" rx="2.6"/><path d="M8.3 10.5V8a3.7 3.7 0 0 1 7.4 0v2.5"/>', 2.1),
   wifi1: S('<path d="M12 18.5h.01" stroke-width="3.2"/><path d="M9.2 15.6a4 4 0 0 1 5.6 0" opacity=".9"/><path d="M6.3 12.7a8 8 0 0 1 11.4 0" opacity=".25"/><path d="M3.4 9.7a12 12 0 0 1 17.2 0" opacity=".25"/>'),
   wifi2: S('<path d="M12 18.5h.01" stroke-width="3.2"/><path d="M9.2 15.6a4 4 0 0 1 5.6 0"/><path d="M6.3 12.7a8 8 0 0 1 11.4 0"/><path d="M3.4 9.7a12 12 0 0 1 17.2 0" opacity=".25"/>'),
   wifi3: S('<path d="M12 18.5h.01" stroke-width="3.2"/><path d="M9.2 15.6a4 4 0 0 1 5.6 0"/><path d="M6.3 12.7a8 8 0 0 1 11.4 0"/><path d="M3.4 9.7a12 12 0 0 1 17.2 0"/>'),

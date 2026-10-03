@@ -24,6 +24,7 @@ export function newAlarm(over = {}) {
 export const DEFAULTS = () => ({
   v: VERSION,
   setup: { done: false },
+  profile: { name: '' },
   device: { id: null, name: 'Bedroom', finish: 'maple', wifi: null, firmware: null },
   alarms: [newAlarm({ id: 'a1' })],
   bedtime: { remind: true, lead: 30 },

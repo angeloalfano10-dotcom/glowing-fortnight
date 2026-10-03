@@ -154,18 +154,24 @@ export function openFinishSheet() {
 }
 
 /* ---------- Name ---------- */
-export function openNameSheet() {
+/** Rename NOCTIS (default) or set your own first name (which: 'profile'). */
+export function openNameSheet(which = 'device') {
   const { store } = ctx;
+  const mine = which === 'profile';
+  const value = mine ? store.state.profile.name : store.state.device.name;
   const body = el(`<form class="sheet-pad" autocomplete="off">
-      <input class="field" name="n" maxlength="24" value="${esc(store.state.device.name)}" aria-label="Name" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done">
+      <input class="field" name="n" maxlength="24" value="${esc(value)}" placeholder="${mine ? 'First name' : 'Name'}" aria-label="${mine ? 'Your first name' : 'Name'}" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done">
+      ${mine ? '<div class="caption" style="margin:12px 4px 0">Used for your greeting. It stays on this phone.</div>' : ''}
     </form>`);
   const cancel = textButton('Cancel');
   const save = textButton('Save', { strong: true });
-  const sheet = openSheet({ content: body, head: sheetHead({ title: 'Name', left: cancel, right: save }), size: 'auto', label: 'Name' });
+  const title = mine ? 'Your name' : 'Name';
+  const sheet = openSheet({ content: body, head: sheetHead({ title, left: cancel, right: save }), size: 'auto', label: title });
   const commit = (e) => {
     e?.preventDefault();
     const v = body.n.value.trim();
-    if (v) store.patch('device', { name: v });
+    if (mine) store.patch('profile', { name: v });
+    else if (v) store.patch('device', { name: v });
     sheet.close();
   };
   cancel.addEventListener('click', () => sheet.close());
@@ -180,7 +186,7 @@ export function openAboutSheet() {
   const body = el(`<div class="sheet-pad about">
       <div class="about-head">
         <div class="wordmark">offhours</div>
-        <div class="caption">App 0.1 · NOCTIS OS ${esc(st.firmware || '–')}</div>
+        <div class="caption">App 0.3 · NOCTIS OS ${esc(st.firmware || '–')}</div>
       </div>
       ${group({
         head: 'Privacy',

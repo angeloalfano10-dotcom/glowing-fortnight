@@ -64,10 +64,20 @@
 
 /* ---------- White · dark (true black, closest to iPhone) ---------- */
 :root[data-theme="white"][data-scheme="dark"] {
+  --glass: rgba(44, 44, 48, .6);
+  --glass-lens: rgba(255, 255, 255, .13);
+  --glass-lift: rgba(255, 255, 255, .08);
+  --glass-hi: rgba(255, 255, 255, .26);
+  --glass-lo: rgba(255, 255, 255, .06);
+  --glass-edge: rgba(255, 255, 255, .09);
+  --glass-rim: rgba(255, 255, 255, .55);
+  --glass-shadow: 0 18px 40px -14px rgba(0, 0, 0, .75);
   --chart: #FFFFFF;
   --chart-soft: #48484A;
   --chart-ink: rgba(235, 235, 245, .62);
   --chart-wash: rgba(255, 255, 255, .1);
+  --card-shadow: none;
+  --tint: rgba(118, 118, 128, .2);
 
   color-scheme: dark;
   --bg: #000000;
@@ -96,10 +106,20 @@
 
 /* ---------- White · light ---------- */
 :root[data-theme="white"][data-scheme="light"] {
+  --glass: rgba(255, 255, 255, .66);
+  --glass-lens: rgba(118, 118, 128, .14);
+  --glass-lift: rgba(255, 255, 255, .5);
+  --glass-hi: rgba(255, 255, 255, .95);
+  --glass-lo: rgba(255, 255, 255, .45);
+  --glass-edge: rgba(0, 0, 0, .07);
+  --glass-rim: rgba(255, 255, 255, 1);
+  --glass-shadow: 0 14px 34px -16px rgba(0, 0, 0, .3);
   --chart: #000000;
   --chart-soft: #D1D1D6;
   --chart-ink: rgba(60, 60, 67, .64);
   --chart-wash: rgba(0, 0, 0, .07);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 8px 24px -16px rgba(0, 0, 0, .12);
+  --tint: #F2F2F7;
 
   color-scheme: light;
   --bg: #FFFFFF;
@@ -128,10 +148,20 @@
 
 /* ---------- Warm · dark (offhours palette, Low Amber accent) ---------- */
 :root[data-theme="warm"][data-scheme="dark"] {
+  --glass: rgba(40, 39, 35, .62);
+  --glass-lens: rgba(250, 248, 244, .12);
+  --glass-lift: rgba(250, 248, 244, .07);
+  --glass-hi: rgba(255, 244, 226, .24);
+  --glass-lo: rgba(255, 244, 226, .05);
+  --glass-edge: rgba(250, 248, 244, .08);
+  --glass-rim: rgba(255, 238, 212, .5);
+  --glass-shadow: 0 18px 40px -14px rgba(0, 0, 0, .75);
   --chart: #C89C68;
   --chart-soft: #45423C;
   --chart-ink: var(--warm-white);
   --chart-wash: rgba(200, 156, 104, .12);
+  --card-shadow: none;
+  --tint: rgba(200, 156, 104, .1);
 
   color-scheme: dark;
   --bg: #121311;
@@ -160,10 +190,20 @@
 
 /* ---------- Warm · light ---------- */
 :root[data-theme="warm"][data-scheme="light"] {
+  --glass: rgba(250, 248, 244, .66);
+  --glass-lens: rgba(136, 123, 106, .15);
+  --glass-lift: rgba(255, 255, 255, .45);
+  --glass-hi: rgba(255, 255, 255, .95);
+  --glass-lo: rgba(255, 255, 255, .4);
+  --glass-edge: rgba(32, 33, 31, .08);
+  --glass-rim: rgba(255, 255, 255, 1);
+  --glass-shadow: 0 14px 34px -16px rgba(32, 33, 31, .32);
   --chart: #A9783F;       /* Low Amber deepened for 3:1 on Warm White */
   --chart-soft: #DED5C8;
   --chart-ink: var(--offhours-ink);
   --chart-wash: rgba(169, 120, 63, .1);
+  --card-shadow: 0 1px 2px rgba(32, 33, 31, .04), 0 10px 26px -18px rgba(32, 33, 31, .16);
+  --tint: #F1E6D7;
 
   color-scheme: light;
   --bg: var(--warm-paper);

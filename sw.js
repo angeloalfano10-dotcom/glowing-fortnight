@@ -2,7 +2,7 @@
 // the cache and refreshed in the background, so a new deploy shows on the next
 // open. Weather requests go straight to the network.
 
-const VERSION = 'offhours-v4';
+const VERSION = 'offhours-v5';
 const SHELL = [
   './',
   './index.html',
@@ -26,13 +26,15 @@ const SHELL = [
   './js/screens/alarms.js',
   './js/screens/common.js',
   './js/screens/demo.js',
-  './js/screens/home.js',
   './js/screens/noctis.js',
   './js/screens/onboarding.js',
+  './js/screens/profile.js',
   './js/screens/sheets.js',
+  './js/screens/shell.js',
   './js/screens/sleep.js',
   './js/screens/splash.js',
   './js/screens/stagehelp.js',
+  './js/screens/today.js',
   './js/screens/update.js',
   './js/services/briefing.js',
   './js/services/calendar.mock.js',
@@ -48,6 +50,7 @@ const SHELL = [
   './js/ui/eyes.js',
   './js/ui/icons.js',
   './js/ui/island.js',
+  './js/ui/motion.js',
   './js/ui/sheet.js',
   './js/ui/stack.js',
   './js/ui/wheel.js',

@@ -35,26 +35,18 @@ export function openDemo() {
   sec('Screens', chips([
     ['splash', 'Splash'], ['welcome', 'Welcome'], ['pair', 'Pair'], ['wifi', 'Wi-Fi'], ['finish', 'Finish'],
     ['name', 'Name'], ['calendars', 'Calendars'], ['alarm-ob', 'Wake time'], ['ready', 'Ready'],
-    ['p0', 'Last night'], ['p1', 'Tonight'], ['sleep', 'Sleep'], ['week', 'Sleep · week'], ['alarms', 'Alarms'],
-    ['alarm', 'Alarm editor'], ['noctis', 'NOCTIS'], ['update', 'Update'],
+    ['today', 'Today'], ['sleep', 'Sleep'], ['week', 'Sleep · week'], ['alarms', 'Alarms'], ['noctis', 'NOCTIS'],
+    ['profile', 'Profile'], ['alarm', 'Alarm editor'], ['update', 'Update'],
   ], (k) => {
     close();
     setTimeout(() => {
       if (k === 'splash') ctx.go.splash();
       else if (k === 'alarm-ob') ctx.go.onboarding('alarm');
       else if (['welcome', 'pair', 'wifi', 'finish', 'name', 'calendars', 'ready'].includes(k)) ctx.go.onboarding(k);
-      else if (k[0] === 'p') ctx.go.home({ page: Number(k[1]) });
-      else {
-        ctx.ensureHome();
-        setTimeout(() => {
-          if (k === 'sleep') ctx.go.sleep();
-          else if (k === 'week') ctx.go.sleep({ view: 'week' });
-          else if (k === 'alarms') ctx.go.alarms();
-          else if (k === 'alarm') { ctx.go.alarms(); setTimeout(() => ctx.go.alarm(store.state.alarms[0]?.id), 550); }
-          else if (k === 'noctis') ctx.go.noctis();
-          else if (k === 'update') { ctx.go.noctis(); setTimeout(() => ctx.go.update(), 650); }
-        }, 300);
-      }
+      else if (['today', 'sleep', 'alarms', 'noctis', 'profile'].includes(k)) ctx.go.home({ tab: k });
+      else if (k === 'week') { ctx.go.home({ tab: 'sleep' }); setTimeout(() => ctx.shell?.panel('sleep')?.showWeek(), 60); }
+      else if (k === 'alarm') { ctx.go.home({ tab: 'alarms' }); setTimeout(() => ctx.go.alarm(store.state.alarms[0]?.id), 300); }
+      else if (k === 'update') { ctx.go.home({ tab: 'noctis' }); setTimeout(() => ctx.go.update(), 400); }
     }, 320);
   }));
 

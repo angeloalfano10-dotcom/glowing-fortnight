@@ -13,10 +13,7 @@ import { measureColon } from './ui/device-view.js';
 import { mountStack, setRoot, push, top } from './ui/stack.js';
 import { mountSheets, closeAllSheets } from './ui/sheet.js';
 import { mountIsland, island } from './ui/island.js';
-import { createHome } from './screens/home.js';
-import { createSleep } from './screens/sleep.js';
-import { createAlarms } from './screens/alarms.js';
-import { createNoctis } from './screens/noctis.js';
+import { createShell } from './screens/shell.js';
 import { createOnboarding } from './screens/onboarding.js';
 import { createUpdate } from './screens/update.js';
 import { openAlarmSheet } from './screens/alarm.js';
@@ -83,14 +80,17 @@ ctx.deviceSource = () => {
 };
 
 /* ---------- navigation ---------- */
-const pushOnce = (kind, make) => { if (top()?.kind !== kind) push(make()); };
+function shellTo(tab) {
+  if (top()?.kind === 'shell') { closeAllSheets(); top().select(tab); return; }
+  closeAllSheets();
+  setRoot(createShell({ tab }));
+}
 ctx.go = {
-  home: ({ page } = {}) => { store.patch('setup', { done: true }); closeAllSheets(); setRoot(createHome({ page })); },
-  sleep: (opts) => pushOnce('sleep', () => createSleep(opts)),
-  alarms: () => pushOnce('alarms', createAlarms),
+  home: ({ tab = 'today' } = {}) => { store.patch('setup', { done: true }); shellTo(tab); },
+  tab: (tab) => shellTo(tab),
   noctis: () => {
     if (!services.device.status().paired) { island('Pair NOCTIS first', 'info'); return; }
-    pushOnce('noctis', createNoctis);
+    shellTo('noctis');
   },
   update: () => push(createUpdate()),
   onboarding: (start = 'welcome') => { closeAllSheets(); setRoot(createOnboarding({ start })); },
@@ -98,12 +98,7 @@ ctx.go = {
   demo: () => openDemo(),
   splash: () => start({ replay: true }),
 };
-/** Back to home (keeping it if it is already the root), for demo jumps. */
-ctx.ensureHome = () => {
-  store.patch('setup', { done: true });
-  closeAllSheets();
-  if (top()?.kind !== 'home') setRoot(createHome());
-};
+ctx.ensureHome = () => ctx.go.home({ tab: top()?.kind === 'shell' ? top().current : 'today' });
 
 /* ---------- settings → NOCTIS ---------- */
 let syncT = 0;
@@ -223,7 +218,7 @@ async function start({ replay = false } = {}) {
   const sp = await playSplash(app, ctx.stage, { short: !first && !replay });
   if (first && !replay) setRoot(createOnboarding({ start: 'welcome' }), { fade: false });
   else if (replay && top()) { top().leave?.(); top().enter?.(); }
-  else setRoot(createHome(), { fade: false });
+  else setRoot(createShell({ tab: 'today' }), { fade: false });
   sp.finish();
 }
 

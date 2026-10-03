@@ -70,7 +70,7 @@ export function nightChart(n, { compact = false, clock24 = true } = {}) {
   const sr = `${runs.map((r) => `${r.s} ${t(r.start)} to ${t(r.end)}`).join('. ')}.${n.spells.length ? ` Snoring ${n.spells.map((s) => `${t(s.start)} to ${t(s.end)}`).join(', ')}.` : ''}`;
   const fig = el(`<figure class="viz vnight${compact ? ' compact' : ''}">
       <div class="vplot" ${compact ? '' : 'tabindex="0"'} role="img" aria-label="${esc(`Night estimate from ${t(n.asleep)} to ${t(n.wake)}`)}">
-        <div class="nbars">${b.map((x) => `<i class="${x.restless ? 'r' : 's'}"></i>`).join('')}</div>
+        <div class="nbars">${b.map((x, i) => `<i class="${x.restless ? 'r' : 's'}" style="--i:${i}"></i>`).join('')}</div>
         <div class="nsnore">${n.spells.map((s) => `<i style="left:${pct(s.start, n.asleep, end)}%;width:${Math.max(1.4, pct(s.end, n.asleep, end) - pct(s.start, n.asleep, end))}%"></i>`).join('')}</div>
         <div class="vtip" aria-hidden="true"></div>
       </div>
@@ -157,7 +157,7 @@ export function weekChart(nights, { selected, onSelect, clock24 = true } = {}) {
       <div class="vplot" role="group" aria-label="Estimated sleep, last ${list.length} nights">
         <div class="wtarget" style="bottom:${H(TARGET)}%" aria-hidden="true"></div>
         <div class="wcols">
-          ${list.map((n) => `<button class="wcol" type="button" style="--h:${H(n.sleepMin)}%" data-date="${n.date}" aria-label="${esc(`${nightName(n)} night, an estimated ${sleepDur(n.sleepMin)}, asleep around ${fmtNight(n.asleep, clock24)}`)}"><i></i><b class="wlab">${esc(sleepDur(n.sleepMin))}</b></button>`).join('')}
+          ${list.map((n, i) => `<button class="wcol" type="button" style="--h:${H(n.sleepMin)}%;--i:${i}" data-date="${n.date}" aria-label="${esc(`${nightName(n)} night, an estimated ${sleepDur(n.sleepMin)}, asleep around ${fmtNight(n.asleep, clock24)}`)}"><i></i><b class="wlab">${esc(sleepDur(n.sleepMin))}</b></button>`).join('')}
         </div>
       </div>
       <div class="wdays" aria-hidden="true">${list.map((n) => `<span>${DAY_LETTER[eveningDay(n)]}</span>`).join('')}</div>
@@ -191,7 +191,7 @@ export function bedtimeChart(nights, { clock24 = true } = {}) {
   const fig = el(`<figure class="viz vbed">
       <div class="vplot" role="img" aria-label="${esc(`When you fell asleep, last ${list.length} nights${bedBy != null ? `, against bed-by ${t(bedBy)}` : ''}`)}">
         ${bedBy != null ? `<div class="bline" style="top:${Y(bedBy)}%"><span>Bed-by ${esc(t(bedBy))}</span></div>` : ''}
-        ${list.map((n, i) => `<span class="bdot${n.alarm == null ? ' free' : ''}" style="left:${((i + 0.5) / list.length) * 100}%;top:${Y(n.asleep)}%"></span>`).join('')}
+        ${list.map((n, i) => `<span class="bdot${n.alarm == null ? ' free' : ''}" style="--i:${i};left:${((i + 0.5) / list.length) * 100}%;top:${Y(n.asleep)}%"></span>`).join('')}
         <span class="vlab late" style="left:${((list.indexOf(latest) + 0.5) / list.length) * 100}%;top:${Y(latest.asleep)}%">${esc(t(latest.asleep))}</span>
       </div>
       <div class="wdays" aria-hidden="true">${list.map((n) => `<span>${DAY_LETTER[eveningDay(n)]}</span>`).join('')}</div>

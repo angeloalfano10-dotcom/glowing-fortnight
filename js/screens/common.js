@@ -50,6 +50,60 @@ export function navbar(title = '') {
   return n;
 }
 
+/**
+ * A tab panel: quiet label, large title, and a compact header that fades in once
+ * the title scrolls away (iOS large-title behaviour).
+ */
+export function panel({ cls = '', label = '', title = '', action = null, top = null }) {
+  const p = el(`<section class="panel ${cls}">
+      <header class="phead glass-bar" aria-hidden="true"><div class="phead-t"></div></header>
+      <div class="scroll pscroll">
+        <div class="ptop"></div>
+        <div class="ptitle">
+          <div class="ptitle-t"><div class="plabel"></div><h1 class="pbig"></h1></div>
+          <div class="ptitle-a"></div>
+        </div>
+        <div class="pbody"></div>
+        <div class="tabpad"></div>
+      </div>
+    </section>`);
+  const head = p.querySelector('.phead');
+  const scroll = p.querySelector('.pscroll');
+  const titleEl = p.querySelector('.ptitle');
+  // The glass header fades in as the large title scrolls under it, tied to the
+  // scroll position rather than a switch, like iOS.
+  const from = top ? 72 : 30;
+  const upd = () => {
+    const y = scroll.scrollTop;
+    const k = Math.max(0, Math.min(1, (y - from) / 34));
+    head.style.opacity = String(k);
+    head.classList.toggle('on', k > 0.5);
+    titleEl.style.opacity = String(1 - Math.max(0, Math.min(1, (y - from) / 46)) * 0.85);
+  };
+  scroll.addEventListener('scroll', upd, { passive: true });
+  if (top) p.querySelector('.ptop').append(top); else p.querySelector('.ptop').remove();
+  if (action) p.querySelector('.ptitle-a').append(action);
+  const api = {
+    el: p,
+    scroll,
+    body: p.querySelector('.pbody'),
+    setTitle(t, short = t) {
+      p.querySelector('.pbig').textContent = t;
+      p.querySelector('.phead-t').textContent = short;
+    },
+    setLabel(l) { p.querySelector('.plabel').textContent = l; },
+    toTop() { scroll.scrollTo({ top: 0, behavior: 'smooth' }); },
+  };
+  api.setTitle(title);
+  api.setLabel(label);
+  return api;
+}
+
+/** A card that is one big button, with optional extra content after it. */
+export function card(cls = '') {
+  return el(`<article class="card ${cls}"><button class="cmain" type="button"></button></article>`);
+}
+
 /** Make a nav bar solid once `scroller` passes `threshold` px. */
 export function bindNavbar(nav, scroller, threshold = 120) {
   const upd = () => nav.classList.toggle('solid', scroller.scrollTop > threshold);
