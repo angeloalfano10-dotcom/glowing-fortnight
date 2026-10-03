@@ -1,0 +1,11 @@
+{
+  "name": "offhours-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "offhours: companion app for NOCTIS. Static PWA, no build step.",
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes serve -l 8080 .",
+    "icons": "node tools/make-icons.cjs"
+  }
+}

@@ -1,0 +1,143 @@
+/* Base: reset, app shell, typography, native-feel defaults */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--bg);
+}
+body {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+button, input { font: inherit; color: inherit; }
+button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
+input { -webkit-user-select: text; user-select: text; }
+svg { display: block; }
+[hidden] { display: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-radius: 12px; }
+
+/* ---------- app shell ---------- */
+.frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--behind);
+}
+.app {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--behind);
+  contain: layout paint;
+}
+.stack {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  transform-origin: 50% 0;
+  transition: transform .5s var(--ease-out), border-radius .5s var(--ease-out), filter .5s var(--ease-out);
+  overflow: hidden;
+}
+.stack.behind {
+  transform: translateY(calc(var(--sat) + 10px)) scale(.92);
+  border-radius: 14px;
+}
+
+/* screens in the navigation stack */
+.screen {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+.screen.grouped { background: var(--bg-grouped); }
+.screen::after {           /* shade used while a screen is pushed over this one */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .5s var(--ease-out);
+}
+.screen.under::after { opacity: .18; }
+.screen.inert { visibility: hidden; }
+
+.scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* ---------- typography ---------- */
+.numeral {
+  font-size: var(--fs-numeral);
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -.035em;
+  font-variant-numeric: tabular-nums;
+}
+.numeral .ampm { font-size: .3em; font-weight: 500; letter-spacing: 0; margin-left: .18em; color: var(--fg2); }
+.clockface {
+  font-size: var(--fs-clock);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+.title {
+  font-size: var(--fs-title);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+.t1 { font-size: var(--fs-t1); font-weight: 600; letter-spacing: -.012em; line-height: 1.25; }
+.t2 { font-size: var(--fs-body); font-weight: 500; color: var(--fg2); line-height: 1.4; text-wrap: balance; }
+.label {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--fg2);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.label svg { width: 16px; height: 16px; }
+.caption { font-size: var(--fs-caption); font-weight: 500; color: var(--fg3); line-height: 1.45; text-wrap: balance; }
+.wordmark {
+  font-weight: 700;
+  font-size: 21px;
+  letter-spacing: -.02em;
+  line-height: 1;
+}
+.noctis-mark { font-weight: 600; letter-spacing: .22em; text-transform: uppercase; }
+
+/* Reduced motion: movement becomes a short fade. Components opt in below and in JS
+   (prefersReducedMotion()). Opacity fades stay, transforms go. */
+@media (prefers-reduced-motion: reduce) {
+  .stack, .stack.behind { transform: none !important; transition: border-radius .2s, filter .2s !important; }
+}

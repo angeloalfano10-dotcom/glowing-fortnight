@@ -1,0 +1,171 @@
+/* offhours design tokens.
+   Theme (white | warm) and scheme (light | dark) are data on <html>, so the final
+   theme decision stays a data change (CLAUDE.md §4). Values follow
+   noctis-os-prototype.html and the brand palette (§5). */
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url(../assets/fonts/manrope-latin-wght-normal.woff2) format('woff2-variations'),
+       url(../assets/fonts/manrope-latin-wght-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url(../assets/fonts/manrope-latin-ext-wght-normal.woff2) format('woff2-variations'),
+       url(../assets/fonts/manrope-latin-ext-wght-normal.woff2) format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+:root {
+  /* brand palette (working values) */
+  --night-ink: #171816;
+  --offhours-ink: #20211F;
+  --warm-paper: #F2EEE7;
+  --linen: #E6DED2;
+  --soft-stone: #BEB3A4;
+  --quiet-taupe: #887B6A;
+  --low-amber: #C89C68;
+  --warm-white: #FAF8F4;
+
+  --font: 'Manrope', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+
+  /* motion: soft springs, short fades (from the prototype) */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --ease-out: cubic-bezier(.2, .9, .2, 1);
+  --ease-pop: cubic-bezier(.3, 1.4, .5, 1);
+  --ease-island: cubic-bezier(.3, 1.45, .45, 1);
+  --t-fade: .25s;
+  --t-move: .55s;
+
+  /* layout */
+  --gutter: 20px;
+  --r-tile: 28px;
+  --r-group: 16px;
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+
+  /* type scale */
+  --fs-numeral: 96px;   /* big light numerals */
+  --fs-clock: 44px;     /* bold clock style */
+  --fs-title: 30px;
+  --fs-t1: 20px;
+  --fs-body: 17px;
+  --fs-label: 15px;     /* quiet small labels */
+  --fs-caption: 13px;
+}
+
+/* ---------- White · dark (true black, closest to iPhone) ---------- */
+:root[data-theme="white"][data-scheme="dark"] {
+  color-scheme: dark;
+  --bg: #000000;
+  --bg-grouped: #000000;
+  --row: #1C1C1E;
+  --surface: rgba(118, 118, 128, .24);
+  --surface-press: rgba(118, 118, 128, .4);
+  --surface-solid: #1C1C1E;
+  --fg: #FFFFFF;
+  --fg2: rgba(235, 235, 245, .62);
+  --fg3: rgba(235, 235, 245, .32);
+  --line: rgba(84, 84, 88, .6);
+  --acc: #FFFFFF;
+  --acc-ink: #000000;
+  --acc-text: #FFFFFF;
+  --track: rgba(120, 120, 128, .36);
+  --knob: #FFFFFF;
+  --danger: #FF6B61;
+  --eye: #FFFFFF;
+  --eye-glow: rgba(255, 255, 255, .32);
+  --scrim: rgba(0, 0, 0, .5);
+  --behind: #000;
+  --splash: #000000;
+  --splash-eye: #FFFFFF;
+}
+
+/* ---------- White · light ---------- */
+:root[data-theme="white"][data-scheme="light"] {
+  color-scheme: light;
+  --bg: #FFFFFF;
+  --bg-grouped: #F2F2F7;
+  --row: #FFFFFF;
+  --surface: rgba(118, 118, 128, .12);
+  --surface-press: rgba(118, 118, 128, .22);
+  --surface-solid: #F2F2F7;
+  --fg: #000000;
+  --fg2: rgba(60, 60, 67, .64);
+  --fg3: rgba(60, 60, 67, .3);
+  --line: rgba(60, 60, 67, .2);
+  --acc: #000000;
+  --acc-ink: #FFFFFF;
+  --acc-text: #000000;
+  --track: rgba(120, 120, 128, .18);
+  --knob: #FFFFFF;
+  --danger: #D23B30;
+  --eye: #000000;
+  --eye-glow: transparent;
+  --scrim: rgba(0, 0, 0, .28);
+  --behind: #000;
+  --splash: #000000;
+  --splash-eye: #FFFFFF;
+}
+
+/* ---------- Warm · dark (offhours palette, Low Amber accent) ---------- */
+:root[data-theme="warm"][data-scheme="dark"] {
+  color-scheme: dark;
+  --bg: #121311;
+  --bg-grouped: #121311;
+  --row: #1E1F1C;
+  --surface: rgba(190, 179, 164, .12);
+  --surface-press: rgba(190, 179, 164, .2);
+  --surface-solid: #20211F;
+  --fg: var(--warm-white);
+  --fg2: var(--soft-stone);
+  --fg3: #6F665A;
+  --line: #2E2F2C;
+  --acc: var(--low-amber);
+  --acc-ink: var(--night-ink);
+  --acc-text: var(--low-amber);
+  --track: rgba(190, 179, 164, .2);
+  --knob: var(--night-ink);
+  --danger: #E08A7A;
+  --eye: var(--warm-paper);
+  --eye-glow: rgba(250, 248, 244, .28);
+  --scrim: rgba(0, 0, 0, .55);
+  --behind: #0A0A09;
+  --splash: #121311;
+  --splash-eye: var(--warm-paper);
+}
+
+/* ---------- Warm · light ---------- */
+:root[data-theme="warm"][data-scheme="light"] {
+  color-scheme: light;
+  --bg: var(--warm-paper);
+  --bg-grouped: var(--warm-paper);
+  --row: var(--warm-white);
+  --surface: var(--linen);
+  --surface-press: #DCD2C4;
+  --surface-solid: var(--linen);
+  --fg: var(--offhours-ink);
+  --fg2: #756959;          /* Quiet Taupe, deepened slightly for 4.5:1 on paper */
+  --fg3: var(--soft-stone);
+  --line: #E2D9CC;
+  --acc: var(--low-amber);
+  --acc-ink: var(--warm-white);
+  --acc-text: #8A6A43;
+  --track: #DDD3C5;
+  --knob: var(--warm-white);
+  --danger: #B04A3C;
+  --eye: var(--offhours-ink);
+  --eye-glow: transparent;
+  --scrim: rgba(32, 33, 31, .24);
+  --behind: #0A0A09;
+  --splash: #121311;
+  --splash-eye: var(--warm-paper);
+}

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-theme="warm" data-scheme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>offhours</title>
+  <meta name="description" content="Set up and run NOCTIS, your bedside companion.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#121311">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="offhours">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="referrer" content="no-referrer">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <!-- iOS launch screens: a dark screen with two closed eyes, so the splash continues from it -->
+  <link rel="apple-touch-startup-image" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3)" href="assets/splash/splash-1320x2868.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3)" href="assets/splash/splash-1206x2622.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="assets/splash/splash-1290x2796.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="assets/splash/splash-1179x2556.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" href="assets/splash/splash-1284x2778.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="assets/splash/splash-1170x2532.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="assets/splash/splash-1125x2436.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="assets/splash/splash-828x1792.png">
+  <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="assets/splash/splash-750x1334.png">
+  <link rel="preload" href="assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/device.css">
+  <link rel="stylesheet" href="css/screens.css">
+  <link rel="stylesheet" href="css/frame.css">
+  <script>
+    // Set theme and scheme before first paint so there is no flash.
+    try {
+      var s = JSON.parse(localStorage.getItem('offhours:state') || '{}').display || {};
+      var a = s.appearance || 'auto';
+      document.documentElement.dataset.theme = s.theme || 'warm';
+      document.documentElement.dataset.scheme = a === 'auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : a;
+    } catch (e) {}
+  </script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <div class="desk" aria-hidden="true">
+    <div class="desk-note">
+      <div class="wordmark">offhours</div>
+      <p>Companion app for NOCTIS. Prototype with a simulated device.</p>
+      <p>Press and hold the logo for the demo panel.</p>
+    </div>
+  </div>
+  <div class="frame" id="frame">
+    <div class="app" id="app">
+      <main class="stack" id="stack"></main>
+      <div class="sim-status" aria-hidden="true">
+        <span class="sim-time" data-sim-time>9:41</span>
+        <span class="sim-icons">
+          <svg viewBox="0 0 18 12" width="18" height="12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+          <svg viewBox="0 0 16 12" width="16" height="12"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.3A10.4 10.4 0 0 0 8 .4 10.4 10.4 0 0 0 .8 3.3L2 4.6a8.6 8.6 0 0 1 6-2.4zm0 3.7c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 0 0 8 4.1 6.6 6.6 0 0 0 3.3 5.9l1.3 1.3c.9-.8 2.1-1.3 3.4-1.3zm0 3.6c-.4 0-.8.2-1.1.4L8 11.1l1.1-1.2c-.3-.2-.7-.4-1.1-.4z"/></svg>
+          <svg viewBox="0 0 27 13" width="27" height="13"><rect x=".5" y=".5" width="23" height="12" rx="3.6" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="9" rx="2.2"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" opacity=".4"/></svg>
+        </span>
+      </div>
+      <div class="sim-island" aria-hidden="true"></div>
+      <div class="sim-home" aria-hidden="true"></div>
+    </div>
+  </div>
+  <noscript><p style="padding:24px;font-family:sans-serif">offhours needs JavaScript.</p></noscript>
+</body>
+</html>
