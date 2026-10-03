@@ -26,8 +26,13 @@ const frame = $('#frame');
 const stack = $('#stack');
 
 /* ---------- phone frame on desktop ---------- */
+const params = new URLSearchParams(location.search);
+// embed=1: drawn inside another page's phone bezel (showcase.html), so no frame of its own.
+const embedded = params.get('embed') === '1';
+html.classList.toggle('embed', embedded);
 function decideFrame() {
-  const q = new URLSearchParams(location.search).get('frame');
+  if (embedded) return true;
+  const q = params.get('frame');
   if (q === '0') return false;
   if (q === '1') return true;
   if (matchMedia('(display-mode: standalone)').matches || navigator.standalone) return false;
@@ -36,7 +41,7 @@ function decideFrame() {
 const framed = decideFrame();
 html.classList.toggle('framed', framed);
 function fitFrame() {
-  if (!framed) { frame.style.transform = ''; return; }
+  if (!framed || embedded) { frame.style.transform = ''; return; }
   const k = Math.min(1, (innerHeight - 48) / 868, (innerWidth - 32) / 414);
   frame.style.transform = `translate(-50%, -50%) scale(${k})`;
 }
@@ -212,10 +217,25 @@ ctx.startOver = () => {
 };
 
 /* ---------- start ---------- */
+/** setup=skip: pair the simulated NOCTIS with sample settings, for demos (showcase.html). */
+async function quickSetup() {
+  const d = services.device;
+  await d.pair('NOCTIS-4F2A');
+  store.patch('device', { id: 'NOCTIS-4F2A' });
+  await Promise.all([
+    d.joinWifi('Home', 'sample-password').then(() => store.patch('device', { wifi: 'Home' })),
+    services.calendar.accounts().google ? null : services.calendar.connect('google'),
+  ]);
+  store.patch('setup', { done: true });
+}
+
 async function start({ replay = false } = {}) {
   closeAllSheets();
-  const first = !store.state.setup.done || !services.device.status().paired;
+  const skip = !replay && params.get('setup') === 'skip' && (!store.state.setup.done || !services.device.status().paired);
+  const setup = skip ? quickSetup() : null;
+  const first = !skip && (!store.state.setup.done || !services.device.status().paired);
   const sp = await playSplash(app, ctx.stage, { short: !first && !replay });
+  if (setup) { await setup; ctx.rebuildBriefing(); }
   if (first && !replay) setRoot(createOnboarding({ start: 'welcome' }), { fade: false });
   else if (replay && top()) { top().leave?.(); top().enter?.(); }
   else setRoot(createShell({ tab: 'today' }), { fade: false });

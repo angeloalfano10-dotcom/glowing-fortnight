@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>offhours · NOCTIS</title>
+  <meta name="description" content="The offhours app and NOCTIS, side by side.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#121311">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <style>
+    /* The app on a phone and NOCTIS on the bedside table, side by side.
+       Both are their own prototypes in iframes; they run separately on sample data. */
+    @font-face {
+      font-family: 'Manrope';
+      font-style: normal;
+      font-display: swap;
+      font-weight: 200 800;
+      src: url(assets/fonts/manrope-latin-wght-normal.woff2) format('woff2');
+    }
+    :root {
+      color-scheme: dark;
+      --night: #121311;
+      --ink: #20211F;
+      --white: #FAF8F4;
+      --stone: #BEB3A4;
+      --taupe: #887B6A;
+      --amber: #C89C68;
+      --line: #2E2F2C;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      background: radial-gradient(1200px 800px at 50% 40%, #22211D 0%, var(--night) 72%) fixed, var(--night);
+      color: var(--white);
+      font-family: 'Manrope', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+    header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 32px 0;
+    }
+    .word { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+    .line { font-size: 13px; font-weight: 600; color: var(--stone); letter-spacing: .22em; text-transform: uppercase; }
+    main { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .holder { position: relative; }
+    .stage {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-origin: 0 0;
+      display: flex;
+      align-items: center;
+      gap: 104px;
+    }
+    .stage.stacked { flex-direction: column; gap: 56px; }
+    figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+    figcaption { text-align: center; }
+    figcaption b { display: block; font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+    figcaption span { display: block; margin-top: 4px; font-size: 14px; font-weight: 500; color: var(--taupe); }
+    .links { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+    .links button {
+      height: 34px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 17px;
+      background: rgba(190, 179, 164, .1);
+      box-shadow: inset 0 1px 0 rgba(255, 240, 218, .1);
+      color: var(--stone);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .3s cubic-bezier(.3, 1.4, .5, 1), color .2s;
+    }
+    .links button:hover { color: var(--white); }
+    .links button:active { transform: scale(.94); }
+    button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+    /* the phone: an iPhone-sized bezel around the app */
+    .phone {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      margin: 13px;
+      border-radius: 58px;
+      clip-path: inset(0 round 58px);
+      background: #000;
+    }
+    .phone-wrap { position: relative; filter: drop-shadow(0 50px 70px rgba(0, 0, 0, .55)); }
+    .phone-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 70px;
+      background: #0A0A09;
+      box-shadow: inset 0 0 0 1.5px #3A3934;
+    }
+    .phone iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+    .noctis iframe { width: 600px; height: 930px; border: 0; display: block; background: transparent; }
+
+    footer { padding: 0 32px 22px; text-align: center; font-size: 12.5px; color: var(--taupe); }
+    @media (max-width: 700px) {
+      header { padding: 16px 18px 0; }
+      .line { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="word">offhours</div>
+    <div class="line">Less phone at night. A smarter morning.</div>
+  </header>
+
+  <main>
+    <div class="holder" id="holder">
+      <div class="stage" id="stage">
+        <figure>
+          <div class="phone-wrap">
+            <div class="phone">
+              <iframe id="app" title="offhours app" src="./?embed=1" allow="autoplay"></iframe>
+            </div>
+          </div>
+          <figcaption>
+            <b>The offhours app</b>
+            <span>Setup, alarms, sleep estimates, settings</span>
+            <div class="links">
+              <button type="button" id="skip">Skip setup</button>
+              <button type="button" id="restart">Restart</button>
+            </div>
+          </figcaption>
+        </figure>
+
+        <figure class="noctis">
+          <iframe id="os" title="NOCTIS" src="noctis-os-prototype.html?embed=1&amp;theme=warm" allow="autoplay"></iframe>
+        </figure>
+      </div>
+    </div>
+  </main>
+
+  <footer>Two prototypes side by side. They run separately on sample data. NOCTIS is not a medical device.</footer>
+
+  <script>
+    (() => {
+      const stage = document.getElementById('stage');
+      const holder = document.getElementById('holder');
+      const app = document.getElementById('app');
+      function fit() {
+        const side = innerWidth >= 900 && innerWidth >= innerHeight * 0.9;
+        stage.classList.toggle('stacked', !side);
+        stage.style.transform = 'none';
+        const W = stage.offsetWidth;
+        const H = stage.offsetHeight;
+        const availH = innerHeight - 130;
+        const s = side ? Math.min(1, (innerWidth - 64) / W, availH / H) : Math.min(1, (innerWidth - 24) / W);
+        stage.style.transform = `scale(${s})`;
+        holder.style.width = `${W * s}px`;
+        holder.style.height = `${H * s}px`;
+      }
+      addEventListener('resize', fit);
+      fit();
+      document.getElementById('skip').addEventListener('click', () => { app.src = './?embed=1&setup=skip'; });
+      document.getElementById('restart').addEventListener('click', () => { app.src = `./?embed=1&r=${Date.now()}`; });
+    })();
+  </script>
+</body>
+</html>

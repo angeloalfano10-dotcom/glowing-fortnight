@@ -95,3 +95,9 @@ html.framed .sim-home {
 /* the confirmation grows out of the island */
 html.framed .island { top: 11px; height: 36px; border-radius: 18px; box-shadow: none; }
 html.framed .app.island-on .sim-status { opacity: 0; }
+
+/* embed: another page draws the phone (showcase.html); fill the iframe exactly */
+html.embed, html.embed body { background: transparent; }
+html.embed .desk { display: none; }
+html.embed .frame { left: 0; top: 0; width: 100%; height: 100%; transform: none; border-radius: 0; box-shadow: none; }
+html.embed .app { border-radius: 0; }

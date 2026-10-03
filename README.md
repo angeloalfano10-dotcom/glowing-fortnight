@@ -28,6 +28,27 @@ The app uses relative paths throughout, so it works from a sub-folder like `/<re
 
 After a redeploy, the first open still shows the cached version and the next open shows the new one. When you ship a release, bump `VERSION` in `sw.js`.
 
+## The app and NOCTIS side by side
+
+Open **`showcase.html`** (for example `https://<your-site>/showcase.html`). It shows the app on an iPhone next to NOCTIS on the bedside table. They are the two prototypes in frames and run separately on sample data; they don't talk to each other yet.
+
+- Under the phone: **Skip setup** pairs the simulated NOCTIS with sample settings and goes straight to the tabs. **Restart** reloads the app.
+- Under NOCTIS: theme, resting face (Eyes or Clock), jump to a time of day (including Wind-down and Wake-up), and Ask NOCTIS questions. On the device itself: tap, swipe, swipe up, press and hold.
+- On a phone the two stack, app first.
+
+## NOCTIS OS prototype 0.5
+
+`noctis-os-prototype.html` is still the source of truth for the device. 0.5 brings it closer to the app's design language without changing how it works, and keeps to what an ESP32-S3 can draw (transform, opacity, solid colours; no blur):
+
+- **Clock digits roll:** when a minute changes, only the digits that changed slide up into place.
+- **Page dots:** the current dot is a small lens that follows your swipe and stretches between dots.
+- **Glass, the cheap way:** tiles, pills, the island and the picker band get a 1 px highlight rim instead of a blur.
+- **Control Centre** tiles rise in one after another; **switches** stretch under your finger.
+- **Briefing:** the temperature and the sleep estimate count up as their card appears.
+- **Wind-down:** 30 min before bed-by NOCTIS says "Wind down · bed by 23:15" once, and the eyes get drowsy. This matches the app's wind-down reminder.
+- **Resting face:** Eyes (default) or Clock, the same option as in the app. With Clock, a tap shows the eyes for a few seconds.
+- Manrope loads from this repo (Google Fonts only as a fallback), the file declares UTF-8, and `?embed=1` / `?theme=warm` are there for the showcase.
+
 ## Demo panel
 
 **Press and hold the "offhours" wordmark** (top left on Today, top centre in setup) to open the Demo panel:
@@ -79,6 +100,8 @@ Left out: **Smart wake** (it implies detecting light sleep, which NOCTIS can't v
 
 ```
 index.html                 app shell, iOS meta, launch images
+showcase.html              the app and NOCTIS side by side
+noctis-os-prototype.html   NOCTIS OS prototype (device source of truth)
 manifest.webmanifest       PWA manifest (standalone, icons)
 sw.js                      offline cache for the app shell
 css/
