@@ -2,7 +2,7 @@
 // the cache and refreshed in the background, so a new deploy shows on the next
 // open. Weather requests go straight to the network.
 
-const VERSION = 'offhours-v3';
+const VERSION = 'offhours-v4';
 const SHELL = [
   './',
   './index.html',

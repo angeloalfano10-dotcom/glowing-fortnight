@@ -3,7 +3,8 @@
 // Open-Meteo API (weather.openmeteo.js) and localStorage (storage.local.js).
 // A native app swaps the implementations in services/index.js and nothing else:
 //   DeviceService   → CoreBluetooth (BLE GATT) for pairing and Wi-Fi provisioning,
-//                     then BLE or Wi-Fi for config, briefing and night estimates.
+//                     then Wi-Fi for settings and night estimates. NOCTIS syncs its
+//                     own briefing over Wi-Fi; nothing is sent from the phone.
 //   CalendarService → EventKit (Apple Calendar) and Google OAuth through a small backend.
 //   WeatherService  → can stay on Open-Meteo.
 //   StorageService  → UserDefaults / Keychain.
@@ -53,7 +54,8 @@
  * @property {{on:boolean,volume:number,speak:boolean}} [sound]
  * @property {{roomSensing:boolean,recordings:boolean,voice:boolean}} [privacy]
  *
- * @typedef {Object} Briefing         Built on the phone, displayed and spoken by NOCTIS.
+ * @typedef {Object} Briefing         What NOCTIS shows and says in the morning. NOCTIS syncs it
+ *                                    itself over Wi-Fi; the app builds the same one to mirror it.
  * @property {string} forDate         YYYY-MM-DD of the morning.
  * @property {string} wakeAt          "07:00"
  * @property {string} greeting        "Good morning."
@@ -99,7 +101,6 @@
  * @property {() => Promise<Network[]>} wifiNetworks           Scanned by NOCTIS (2.4 GHz only).
  * @property {(ssid:string, password?:string) => Promise<void>} joinWifi   Rejects with code 'wrong-password'.
  * @property {(patch:DeviceConfig) => Promise<void>} configure
- * @property {(b:Briefing) => Promise<{at:number}>} sendBriefing
  * @property {(count:number, now:Date) => Promise<NightEstimate[]>} nights   Newest first.
  * @property {() => Promise<Room>} room
  * @property {() => Promise<void>} deleteSleepData        Removes every estimate and saved clip.

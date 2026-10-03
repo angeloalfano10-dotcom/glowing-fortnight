@@ -1,6 +1,6 @@
 // Home: two calm pages, swiped like iOS Weather.
 //   Last night (estimate) · Tonight (bed by, alarm)
-// Tomorrow's briefing lives on NOCTIS only; the app builds and sends it quietly.
+// Tomorrow's briefing lives on NOCTIS only. NOCTIS syncs it over Wi-Fi by itself.
 // The header button holds the app's eyes; tap it to open your NOCTIS.
 // Each page keeps to one idea, with one line that says what it means for you.
 

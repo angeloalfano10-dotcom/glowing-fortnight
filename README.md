@@ -30,10 +30,10 @@ After a redeploy, the first open still shows the cached version and the next ope
 
 ## Demo panel
 
-**Press and hold the "offhours" wordmark** (top left on Today, top centre in setup) to open the Demo panel:
+**Press and hold the "offhours" wordmark** (top left on home, top centre in setup) to open the Demo panel:
 
-- **Screens:** jump to any setup step, any tab, the week view, the briefing, the alarm editor or the update flow.
-- **Time of day:** Live, Morning, Afternoon, Evening, Night. These jump around the *next* alarm, so evening and night always have one. Today reorders its cards from this, and the evening briefing sends itself.
+- **Screens:** jump to any setup step, Last night, Tonight, Sleep (night or week), Alarms, the alarm editor, NOCTIS or the update flow.
+- **Time of day:** Live, Morning, Afternoon, Evening, Night. These jump around the *next* alarm, so evening and night always have one. Home opens on Last night in the morning and Tonight otherwise.
 - **NOCTIS:** play Rest, Time, Alarm (then Stop and the briefing), Briefing, Ask, Offline, Back online, Restart on the live device mirror.
 - **Sample data:** update available, calendar events, sleep estimates, live or sample weather.
 - **Look:** White or Warm theme, Auto, Light or Dark.
@@ -47,12 +47,14 @@ For the console, `window.offhours` exposes the app context.
 |---|---|
 | **Splash** | Dark screen, the eyes open, the wordmark arrives, then the eyes fly to where they're needed next. |
 | **Setup** | Welcome · Pair (eyes scan, think, then hop) · Wi-Fi (2.4 GHz, wrong password gets a head shake) · Finish (the eyes fly into the device render) · Name · Calendars · Wake time with live "Bed by" · Ready. |
-| **Today** | A greeting and four cards, reordered through the day: **Tonight** (bed-by, your alarm, a bedtime pattern from your own nights, wind-down reminder) · **Last night** (estimate, a mini night strip, how it compares with your usual) · **Briefing** (tomorrow at a glance, Play speaks it, tap for the full preview) · **Your NOCTIS** (live device thumbnail, the room now, and how that compares with your longer nights). Morning puts last night first; evening puts tonight first. |
+| **Home** | Two calm pages, swiped like iOS Weather. **Last night**: the estimate, a mini night strip and how it compares with your usual (tap for Sleep). **Tonight**: bed-by, the wind-down time, one line from your own nights, and the alarm as a Control Centre tile (tap for Alarms). The eyes button opens your NOCTIS. |
 | **Sleep** | **Night:** step back through two weeks of nights. Time asleep with a settled/restless strip and snoring marks (drag to read any moment), the room overnight (drag to read the temperature), snoring with the snore-clips switch right there. **Week:** nightly average against the 7 h 30 that bed-by plans for (tap a night, open it), when you fell asleep against bed-by, and two patterns from your own data. |
-| **Alarms** | One card per alarm: time, days, light start, tone, pulse. The next alarm shows its bed-by, plus a heads-up when the first event sits close to it. Tap to edit (wheels, days, wake style, light 10/20/30 min before, tone with preview, delete). Below: the wind-down reminder and how bed-by is worked out. |
+| **Alarms** | Every alarm in one list: big time, days, a switch. The next one is marked, with a heads-up when the first event sits close to it. Tap to edit (wheels, days, wake style, light 10/20/30 min before, tone with preview, delete). Below: the wind-down reminder and how bed-by is worked out. |
 | **NOCTIS** | A live render of your NOCTIS in its finish (tap it and the eyes become the colon of the time). Display (brightness, dim with the room, resting face eyes or clock, theme, appearance, 24 h), sound, connections, privacy (including delete my sleep data), automatic updates, Wi-Fi, finish, about, unpair. |
 
-The one pair of eyes travels too: from the splash into the device on Today, and from Today into the big device on the NOCTIS tab and back.
+Sleep, Alarms and NOCTIS slide in from home. The one pair of eyes travels too: from the splash to the home header, and from there into the big device on NOCTIS and back.
+
+**Tomorrow's briefing is NOCTIS only.** NOCTIS is on Wi-Fi and syncs its own briefing (calendar, weather, alarm). There is no send step and no briefing screen in the app.
 
 ## Insights, not just numbers
 
@@ -60,13 +62,13 @@ The one pair of eyes travels too: from the splash into the device on Today, and 
 
 - **One night:** how it compares with your usual, when you fell asleep against bed-by, when you were most restless and what the room was doing then, when the snoring happened.
 - **The week:** whether nights you were asleep near bed-by ran longer, whether cooler rooms went with longer nights (work nights only, so a lie-in doesn't skew it), how much later free mornings start, how consistent your bedtime was, whether snoring follows later nights, and the trend across the week. It ranks them and shows the strongest two.
-- **In context:** Today's Tonight card shows your bedtime pattern, and the NOCTIS card compares the room now with the temperature of your longer nights.
+- **In context:** Tonight shows one line from your own nights: the room now against your longer nights when it runs warm, otherwise your bedtime pattern.
 
 Every line that mentions sleep or snoring says "estimate", and an insight only appears when the difference is big enough to notice. There are no scores and no health claims.
 
 ## Taken from the team's reference app, and left out on purpose
 
-Kept: the floating tab bar, the card layout, Sleep's night/week split with a room chart and patterns, multiple alarms with wake-style details, the wind-down reminder, delete my sleep data, automatic updates, the resting face option, and the inline briefing play button.
+Kept: Sleep's night/week split with a room chart and patterns, multiple alarms with wake-style details, the wind-down reminder, delete my sleep data, automatic updates and the resting face option. The look stays offhours: no tab bar, no cards.
 
 Left out: **Smart wake** (it implies detecting light sleep, which NOCTIS can't verify from room sensing), the **smiling face** (the OS rule is no mouth), and **account / sign out** (there's no backend yet, so it would be fake).
 
@@ -82,10 +84,10 @@ css/
   components.css           pills, Control Centre tiles, switch, segmented, slider,
                            grouped lists, sheets, Dynamic Island, wheel picker
   device.css               NOCTIS render ported from noctis-os-prototype.html
-  screens.css              splash, setup, tabs, cards, charts, NOCTIS, update
+  screens.css              splash, setup, home, sleep, alarms, charts, NOCTIS, update
   frame.css                desktop phone frame
 js/
-  app.js                   boot, theme, navigation, device sync, evening briefing
+  app.js                   boot, theme, navigation, device sync, night data
   ctx.js                   shared app context
   lib/                     dom helpers, springs, time and bedtime maths, store, haptics, speech,
                            tones (alarm tones, synthesised for preview)
@@ -102,10 +104,10 @@ js/
     calendar.mock.js       simulated Apple and Google calendars
     weather.openmeteo.js   live weather and city search (Open-Meteo), sample fallback
     storage.local.js       localStorage
-    briefing.js            builds tomorrow's briefing (real logic, not a mock)
+    briefing.js            mirrors what NOCTIS will say tomorrow (for the device render)
     insights.js            insights from your own nights (real logic)
-  screens/                 splash, onboarding, shell (tabs), today, sleep, alarms, alarm (editor),
-                           noctis, briefing, update, sheets, demo
+  screens/                 splash, onboarding, home, sleep, alarms, alarm (editor),
+                           noctis, update, sheets, demo
 assets/                    Manrope (self-hosted, OFL), icons, iOS launch images
 tools/make-icons.cjs       regenerates icons and launch images (Playwright)
 ```
@@ -114,14 +116,14 @@ tools/make-icons.cjs       regenerates icons and launch images (Playwright)
 
 The app only talks to four services (`js/services/contracts.js`):
 
-- **DeviceService**: `scan`, `pair`, `wifiNetworks`, `joinWifi`, `configure`, `sendBriefing`, `nights`, `room`, `deleteSleepData`, `checkUpdate`, `installUpdate`, `unpair`, `status`, `on('status'|'mode')`. Native: CoreBluetooth for pairing and Wi-Fi provisioning, then BLE or Wi-Fi.
+- **DeviceService**: `scan`, `pair`, `wifiNetworks`, `joinWifi`, `configure`, `nights`, `room`, `deleteSleepData`, `checkUpdate`, `installUpdate`, `unpair`, `status`, `on('status'|'mode')`. Native: CoreBluetooth for pairing and Wi-Fi provisioning, then Wi-Fi.
 - **CalendarService**: `providers`, `accounts`, `connect`, `disconnect`, `setCalendar`, `firstEvent(date)`. Native: EventKit for Apple, and Google OAuth through a small backend (never on the ESP32).
 - **WeatherService**: `morning(place, date)`, `search`, `guess` (from the time zone, no permission needed), `locate`. Can stay on Open-Meteo.
 - **StorageService**: `get`, `set`, `remove`, `clear`. Native: UserDefaults or Keychain.
 
 To go native, write implementations with the same methods and change the imports in `js/services/index.js`. Nothing else changes. Demo-only hooks (`simulate`, `setOnline`, `setFlag`, `setEmpty`) are used only by the Demo panel.
 
-The phone builds the briefing (greeting, weather at wake time, first event and time to it, plus speech text) and pushes it to NOCTIS. NOCTIS only displays and speaks it, and adds its own sleep estimate in the morning.
+NOCTIS is on Wi-Fi and syncs its own briefing (greeting, weather at wake time, first event and time to it), so the phone never sends it. The app builds the same briefing locally only to mirror the device (the live render and Ask NOCTIS answers).
 
 ## Rules this app keeps (from CLAUDE.md)
 
@@ -138,12 +140,11 @@ The phone builds the briefing (greeting, weather at wake time, first event and t
 3. **Six finishes:** Pale maple, Ash, Oak, Cherry, Walnut, Black oak. Ash and Cherry are my picks to make up six. All are design studies.
 4. **Alarms** use 5-minute steps like the device picker. You can have several. Bed-by follows whichever rings next. Wake styles are Light, Sound and Pulse, all on by default (Pulse depends on open question 3). Tones are Dawn (the prototype's), Soft chime and Birdsong.
 5. **Location** is guessed from the phone's time zone (no permission prompt) and can be changed by search or GPS. If that fails it falls back to Limassol.
-6. **The briefing sends at the start of evening** (bedtime − 3 h) while the app is open, or with Send now. A real iPhone app needs a background task or a small backend push for this.
+6. **NOCTIS fetches its own briefing over Wi-Fi.** Calendar access still needs the phone's consent (EventKit) or a small backend for Google, which NOCTIS then reads from.
 7. **Calendar sign-in is simulated**, with an honest consent sheet that collects no credentials.
 
 ## What a browser can't do (and the native app will)
 
 - Bluetooth on iPhone: Safari has no Web Bluetooth. Pairing and Wi-Fi provisioning are simulated.
 - Calendar access: EventKit or OAuth needs the native app or a backend.
-- Background work: the evening send runs only while the app is open.
 - Haptics: on iPhone (Safari 18+) a system switch tick is used where it works. Elsewhere there are none.

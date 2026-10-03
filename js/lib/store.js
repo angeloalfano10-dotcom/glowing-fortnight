@@ -32,7 +32,6 @@ export const DEFAULTS = () => ({
   privacy: { roomSensing: true, recordings: false, voice: true },
   updates: { auto: true },
   location: null, // { name, lat, lon, auto }
-  briefing: { forDate: null, sentAt: null, wakeMin: null },
 });
 
 function merge(base, over) {

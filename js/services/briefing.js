@@ -1,6 +1,6 @@
-// Tomorrow's briefing. Built on the phone every evening and sent to NOCTIS, which
-// only displays and speaks it (CLAUDE.md §3). The sleep estimate is added by the
-// device itself in the morning, so it is not part of what the phone sends.
+// Tomorrow's briefing, as NOCTIS will show and speak it. NOCTIS syncs the real one
+// over Wi-Fi by itself; the app builds the same one only to mirror the device.
+// The sleep estimate is added by NOCTIS in the morning, so it is not part of this.
 
 import { planFor, fmtMin, longDate, dayKey, pad } from '../lib/time.js';
 

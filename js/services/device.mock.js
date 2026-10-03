@@ -211,14 +211,6 @@ export function createMockDevice() {
       emit('mode');
     },
 
-    async sendBriefing(briefing) {
-      ensure();
-      await jitter(500, 900);
-      mem.briefing = { ...briefing, receivedAt: Date.now() };
-      save();
-      return { at: Date.now() };
-    },
-
     async nights(count, now) {
       await jitter(120, 260);
       if (!mem.paired || !flags.nights) return [];

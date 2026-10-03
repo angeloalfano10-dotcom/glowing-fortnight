@@ -5,7 +5,7 @@
 import { $ } from './lib/dom.js';
 import { ctx } from './ctx.js';
 import { store } from './lib/store.js';
-import { clock, planFor, tonightAlarm, dayKey, fmtClock } from './lib/time.js';
+import { clock, tonightAlarm, fmtClock } from './lib/time.js';
 import { services } from './services/index.js';
 import { buildBriefing } from './services/briefing.js';
 import { StageEyes } from './ui/eyes.js';
@@ -152,7 +152,10 @@ store.on('privacy', (s, k) => ctx.refreshNights());
 clock.onChange(() => { ctx.refreshNights(); ctx.refreshRoom(); });
 setInterval(() => ctx.refreshRoom(), 5 * 60e3);
 
-/* ---------- tomorrow's briefing ---------- */
+/* ---------- tomorrow's briefing ----------
+   NOCTIS is on Wi-Fi and syncs its briefing by itself (calendar, weather, alarm).
+   The app keeps a local copy of the same briefing only to mirror what NOCTIS
+   shows and says (the device preview, Ask NOCTIS answers, the alarm heads-up). */
 let building = 0;
 ctx.rebuildBriefing = async () => {
   const mine = ++building;
@@ -160,41 +163,11 @@ ctx.rebuildBriefing = async () => {
   if (mine !== building) return;
   ctx.briefing = b;
   dispatchEvent(new Event('offhours:briefing'));
-  maybeAutoSend();
 };
-ctx.briefingSent = () => {
-  const s = store.state;
-  const p = planFor(s.alarms, clock.now());
-  return s.briefing.sentAt && s.briefing.forDate === dayKey(p.morning) && s.briefing.wakeMin === p.wakeMin;
-};
-ctx.sendBriefing = async ({ manual = false } = {}) => {
-  if (!ctx.briefing) await ctx.rebuildBriefing();
-  const b = ctx.briefing;
-  const p = planFor(store.state.alarms, clock.now());
-  try {
-    await services.device.sendBriefing(b);
-    store.set('briefing', { forDate: b.forDate, sentAt: clock.now().getTime(), wakeMin: p.wakeMin });
-    island(manual ? 'Briefing sent to NOCTIS' : 'Tomorrow’s briefing is on NOCTIS', 'send');
-  } catch {
-    if (manual) island('NOCTIS is offline', 'info');
-  }
-};
-let autoBusy = false;
-async function maybeAutoSend() {
-  const s = store.state;
-  if (autoBusy || !s.setup.done || !ctx.briefing || !services.device.status().connected) return;
-  const p = planFor(s.alarms, clock.now());
-  if (p.phase !== 'evening' && p.phase !== 'night') return;
-  if (ctx.briefingSent()) return;
-  autoBusy = true;
-  await ctx.sendBriefing();
-  autoBusy = false;
-}
 let rbT = 0;
 const rebuildSoon = () => { clearTimeout(rbT); rbT = setTimeout(() => ctx.rebuildBriefing(), 300); };
 store.on(['alarms', 'location', 'display'], rebuildSoon);
 clock.onChange(rebuildSoon);
-setInterval(maybeAutoSend, 30000);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) return;
   rebuildSoon();
@@ -215,7 +188,7 @@ services.device.on('mode', (st) => {
 services.device.on('status', (st) => {
   if (st.paired && lastPaired && st.connected !== lastOnline) {
     island(st.connected ? 'NOCTIS is back online' : 'NOCTIS is offline', st.connected ? 'check' : 'info');
-    if (st.connected) { pushConfig(); maybeAutoSend(); ctx.refreshRoom(); }
+    if (st.connected) { pushConfig(); ctx.refreshRoom(); }
   }
   if (st.paired && !lastPaired) { pushConfig(); setTimeout(() => { ctx.refreshNights(); ctx.refreshRoom(); }, 400); }
   lastOnline = st.connected;
