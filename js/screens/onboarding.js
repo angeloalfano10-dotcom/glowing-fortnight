@@ -12,6 +12,7 @@ import { haptic } from '../lib/haptics.js';
 import { prefersReducedMotion } from '../lib/spring.js';
 import { finishPicker, wifiRows, askWifi, calendarRows, group } from './common.js';
 import { alarmEditor } from './alarm.js';
+import { newAlarm } from '../lib/store.js';
 import { stageTo, stageInto, stageOutOf } from './stagehelp.js';
 
 export const STEPS = ['welcome', 'pair', 'wifi', 'finish', 'name', 'calendars', 'alarm', 'ready'];
@@ -359,17 +360,18 @@ const FACTORY = {
 
   alarm(api) {
     const s = ctx.store.state;
-    let draft = s.alarm;
+    const first = s.alarms[0] || newAlarm({ id: 'a1' });
+    let draft = first;
     const n = stepEl(`
       <div class="ob-copy left">
         <h1 class="title">When do you wake?</h1>
       </div>
       <div class="ob-alarm"></div>
       <div class="ob-foot"><button class="pill solid block" type="button">Continue</button></div>`, 'top');
-    const ed = alarmEditor({ alarm: s.alarm, clock24: s.display.clock24, wake: false, onChange: (a) => { draft = a; } });
+    const ed = alarmEditor({ alarm: first, clock24: s.display.clock24, full: false, onChange: (a) => { draft = a; } });
     n.querySelector('.ob-alarm').append(ed.el);
     n.querySelector('.pill').addEventListener('click', () => {
-      ctx.store.set('alarm', { ...draft, on: draft.days.length > 0 });
+      ctx.store.set('alarms', [{ ...draft, on: draft.days.length > 0 }, ...ctx.store.state.alarms.slice(1)]);
       haptic();
       api.next();
     });

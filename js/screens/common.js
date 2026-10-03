@@ -22,18 +22,19 @@ export function group({ head = '', foot = '', rows = [] }) {
   return wrap;
 }
 
-/** One row. If onClick is set it is a button with a chevron. */
-export function row({ ic = '', label, value = '', onClick, control = null, chevron = !!onClick, cls = '' }) {
+/** One row. If onClick is set it is a button with a chevron. desc adds a quiet second line. */
+export function row({ ic = '', label, desc = '', value = '', onClick, control = null, chevron = !!onClick, cls = '' }) {
   const tag = onClick ? 'button' : 'div';
-  const r = el(`<${tag} class="row ${ic ? 'has-ic' : ''} ${cls}" ${onClick ? 'type="button"' : ''}>
+  const r = el(`<${tag} class="row ${ic ? 'has-ic' : ''} ${desc ? 'has-desc' : ''} ${cls}" ${onClick ? 'type="button"' : ''}>
       ${ic ? `<span class="ric">${iconStr(ic)}</span>` : ''}
-      <span class="rl">${esc(label)}</span>
+      ${desc ? `<span class="rl"><span class="rt">${esc(label)}</span><span class="rd">${esc(desc)}</span></span>` : `<span class="rl">${esc(label)}</span>`}
       <span class="rv">${esc(value)}</span>
       ${chevron ? iconStr('chev') : ''}
     </${tag}>`);
   if (control) r.querySelector('.rv').replaceWith(control);
   if (onClick) r.addEventListener('click', onClick);
   r.setValue = (v) => { const n = r.querySelector('.rv'); if (n) n.textContent = v; };
+  r.setDesc = (v) => { const n = r.querySelector('.rd'); if (n) n.textContent = v; };
   return r;
 }
 
@@ -47,6 +48,50 @@ export function navbar(title = '') {
   n.querySelector('.back').addEventListener('click', () => goBack());
   n.setTitle = (t) => { n.querySelector('.navtitle').textContent = t; };
   return n;
+}
+
+/**
+ * A tab panel: quiet label, large title, and a compact header that fades in once
+ * the title scrolls away (iOS large-title behaviour).
+ */
+export function panel({ cls = '', label = '', title = '', action = null, top = null }) {
+  const p = el(`<section class="panel ${cls}">
+      <header class="phead" aria-hidden="true"><div class="phead-t"></div></header>
+      <div class="scroll pscroll">
+        <div class="ptop"></div>
+        <div class="ptitle">
+          <div class="ptitle-t"><div class="plabel"></div><h1 class="pbig"></h1></div>
+          <div class="ptitle-a"></div>
+        </div>
+        <div class="pbody"></div>
+        <div class="tabpad"></div>
+      </div>
+    </section>`);
+  const head = p.querySelector('.phead');
+  const scroll = p.querySelector('.pscroll');
+  const upd = () => head.classList.toggle('on', scroll.scrollTop > (top ? 96 : 56));
+  scroll.addEventListener('scroll', upd, { passive: true });
+  if (top) p.querySelector('.ptop').append(top); else p.querySelector('.ptop').remove();
+  if (action) p.querySelector('.ptitle-a').append(action);
+  const api = {
+    el: p,
+    scroll,
+    body: p.querySelector('.pbody'),
+    setTitle(t, short = t) {
+      p.querySelector('.pbig').textContent = t;
+      p.querySelector('.phead-t').textContent = short;
+    },
+    setLabel(l) { p.querySelector('.plabel').textContent = l; },
+    toTop() { scroll.scrollTo({ top: 0, behavior: 'smooth' }); },
+  };
+  api.setTitle(title);
+  api.setLabel(label);
+  return api;
+}
+
+/** A card that is one big button, with optional extra content after it. */
+export function card(cls = '') {
+  return el(`<article class="card ${cls}"><button class="cmain" type="button"></button></article>`);
 }
 
 /** Make a nav bar solid once `scroller` passes `threshold` px. */
@@ -70,7 +115,7 @@ export function finishPicker({ value, onChange, size = 220 }) {
     body: true,
     theme: s.display.theme,
     finish: value,
-    source: () => ({ alarm: ctx.store.state.alarm, clock24: ctx.store.state.display.clock24, brightness: ctx.store.state.display.brightness }),
+    source: ctx.deviceSource,
   });
   view.el.style.width = `${size}px`;
   view.el.style.height = `${size}px`;

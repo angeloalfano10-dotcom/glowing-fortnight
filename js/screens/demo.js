@@ -6,7 +6,7 @@ import { ctx } from '../ctx.js';
 import { openSheet, sheetHead, textButton } from '../ui/sheet.js';
 import { makeSwitch, makeSegmented } from '../ui/controls.js';
 import { island } from '../ui/island.js';
-import { clock, plan, fmtClock, nextAlarm, atMinute, SLEEP_WINDOW } from '../lib/time.js';
+import { clock, planFor, fmtClock, nextRing, atMinute, SLEEP_WINDOW } from '../lib/time.js';
 import { group, row } from './common.js';
 
 export function openDemo() {
@@ -35,17 +35,19 @@ export function openDemo() {
   sec('Screens', chips([
     ['splash', 'Splash'], ['welcome', 'Welcome'], ['pair', 'Pair'], ['wifi', 'Wi-Fi'], ['finish', 'Finish'],
     ['name', 'Name'], ['calendars', 'Calendars'], ['alarm-ob', 'Wake time'], ['ready', 'Ready'],
-    ['p0', 'Last night'], ['p1', 'Tonight'], ['p2', 'Tomorrow'], ['alarm', 'Alarm sheet'], ['noctis', 'NOCTIS'], ['update', 'Update'],
+    ['today', 'Today'], ['sleep', 'Sleep'], ['week', 'Sleep · week'], ['alarms', 'Alarms'], ['noctis', 'NOCTIS'],
+    ['brief', 'Briefing'], ['alarm', 'Alarm editor'], ['update', 'Update'],
   ], (k) => {
     close();
     setTimeout(() => {
       if (k === 'splash') ctx.go.splash();
       else if (k === 'alarm-ob') ctx.go.onboarding('alarm');
       else if (['welcome', 'pair', 'wifi', 'finish', 'name', 'calendars', 'ready'].includes(k)) ctx.go.onboarding(k);
-      else if (k[0] === 'p') { store.patch('setup', { done: true }); ctx.go.home({ page: Number(k[1]) }); }
-      else if (k === 'alarm') { ctx.ensureHome(); setTimeout(() => ctx.go.alarm(), 300); }
-      else if (k === 'noctis') { ctx.ensureHome(); setTimeout(() => ctx.go.noctis(), 300); }
-      else if (k === 'update') { ctx.ensureHome(); setTimeout(() => { ctx.go.noctis(); setTimeout(() => ctx.go.update(), 650); }, 300); }
+      else if (['today', 'sleep', 'alarms', 'noctis'].includes(k)) ctx.go.home({ tab: k });
+      else if (k === 'week') { ctx.go.home({ tab: 'sleep' }); setTimeout(() => ctx.shell?.panel('sleep')?.showWeek(), 60); }
+      else if (k === 'brief') { ctx.go.home({ tab: 'today' }); setTimeout(() => ctx.go.briefing(), 300); }
+      else if (k === 'alarm') { ctx.go.home({ tab: 'alarms' }); setTimeout(() => ctx.go.alarm(store.state.alarms[0]?.id), 300); }
+      else if (k === 'update') { ctx.go.home({ tab: 'noctis' }); setTimeout(() => ctx.go.update(), 400); }
     }, 320);
   }));
 
@@ -56,8 +58,7 @@ export function openDemo() {
   const tsec = sec('Time of day', chips([['live', 'Live'], ['morning', 'Morning'], ['day', 'Afternoon'], ['evening', 'Evening'], ['night', 'Night']], (k, b, c) => {
     // Jump around the next real alarm, so evening and night always have one.
     clock.reset();
-    const a = store.state.alarm;
-    const wake = nextAlarm(a, clock.now()) || plan(a, clock.now()).morning;
+    const wake = nextRing(store.state.alarms, clock.now())?.at || planFor(store.state.alarms, clock.now()).morning;
     const at = (d) => clock.setOffset(d.getTime() - Date.now());
     const min = 60000;
     if (k === 'morning') at(new Date(wake.getTime() + 25 * min));
@@ -88,7 +89,7 @@ export function openDemo() {
     rows: [
       sw('Update available', services.device.flags.updateAvailable, (v) => services.device.setFlag('updateAvailable', v)),
       sw('Calendar events', !services.calendar.empty, (v) => { services.calendar.setEmpty(!v); ctx.rebuildBriefing(); }),
-      sw('Sleep estimates', services.device.flags.nights, (v) => { services.device.setFlag('nights', v); store.patch('privacy', {}); }),
+      sw('Sleep estimates', services.device.flags.nights, (v) => { services.device.setFlag('nights', v); ctx.refreshNights(); }),
       sw('Live weather', !services.weather.forceSample, (v) => { services.weather.setForceSample(!v); ctx.rebuildBriefing(); }),
     ],
   }));

@@ -2,7 +2,7 @@
 // only displays and speaks it (CLAUDE.md §3). The sleep estimate is added by the
 // device itself in the morning, so it is not part of what the phone sends.
 
-import { plan, fmtMin, longDate, dayKey, pad } from '../lib/time.js';
+import { planFor, fmtMin, longDate, dayKey, pad } from '../lib/time.js';
 
 const spokenClock = (min) => {
   const h = Math.floor(min / 60);
@@ -53,7 +53,7 @@ export function composeBriefing({ morning, wakeMin, weather, event, place, clock
 }
 
 export async function buildBriefing({ state, services, now }) {
-  const p = plan(state.alarm, now);
+  const p = planFor(state.alarms, now);
   const [weather, event] = await Promise.all([
     services.weather.morning(state.location, p.morning),
     services.calendar.firstEvent(p.morning),

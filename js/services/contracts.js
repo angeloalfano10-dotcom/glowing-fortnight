@@ -29,13 +29,27 @@
  * @property {boolean} secure
  * @property {1|2|3} signal
  *
+ * @typedef {Object} Alarm
+ * @property {string} id
+ * @property {number} h
+ * @property {number} m
+ * @property {boolean} on
+ * @property {number[]} days          0 = Sunday … 6 = Saturday
+ * @property {{light:boolean,sound:boolean,pulse:boolean}} wake
+ * @property {number} lead            Minutes the light starts rising before the alarm.
+ * @property {'dawn'|'chime'|'birdsong'} tone
+ *
  * @typedef {Object} DeviceConfig     Everything the phone pushes to NOCTIS.
  * @property {string} [name]
  * @property {string} [finish]
  * @property {'white'|'warm'} [theme]
- * @property {{h:number,m:number,on:boolean,days:number[],wake:{light:boolean,sound:boolean,pulse:boolean}}} [alarm]
+ * @property {'eyes'|'clock'} [face]  What NOCTIS shows at rest.
+ * @property {boolean} [dimWithRoom]
+ * @property {Alarm[]} [alarms]
+ * @property {{remind:boolean, lead:number}} [bedtime]   Wind-down reminder before bed-by.
  * @property {number} [brightness]    0–1
  * @property {boolean} [clock24]
+ * @property {boolean} [autoUpdate]   Overnight, never close to an alarm.
  * @property {{on:boolean,volume:number,speak:boolean}} [sound]
  * @property {{roomSensing:boolean,recordings:boolean,voice:boolean}} [privacy]
  *
@@ -50,11 +64,28 @@
  * @property {number} builtAt
  *
  * @typedef {Object} NightEstimate    Estimates from room sensing. Never a measurement.
+ *   Times are "night minutes": minutes since the evening's midnight (23:40 = 1420, 07:10 = 1870).
  * @property {string} date            YYYY-MM-DD of the morning.
+ * @property {number} dow             Weekday of the morning (0 = Sunday).
+ * @property {number|null} alarm      Alarm minute that morning, null for a free morning.
+ * @property {number} asleep          Estimated time of falling asleep.
+ * @property {number} wake            Estimated time of waking.
  * @property {number} sleepMin        Estimated time asleep.
+ * @property {number} restlessMin     Estimated restless minutes.
  * @property {number} snoringMin      Estimated snoring.
+ * @property {{start:number,end:number}[]} spells           Snoring spells.
+ * @property {{t:number,restless:boolean,snore:boolean}[]} buckets   10-minute steps through the night.
+ * @property {{t:number,v:number}[]} temps                   Room temperature every 15 min, °C.
  * @property {number} roomTemp        °C, average overnight.
+ * @property {number} tempMin
+ * @property {number} tempMax
  * @property {number} humidity        %, average overnight.
+ * @property {'Dark'|'Dim'|'Bright'} light
+ *
+ * @typedef {Object} Room             The bedroom right now.
+ * @property {number} temp
+ * @property {number} humidity
+ * @property {'Dark'|'Dim'|'Bright'} light
  *
  * @typedef {Object} UpdateInfo
  * @property {boolean} available
@@ -70,6 +101,8 @@
  * @property {(patch:DeviceConfig) => Promise<void>} configure
  * @property {(b:Briefing) => Promise<{at:number}>} sendBriefing
  * @property {(count:number, now:Date) => Promise<NightEstimate[]>} nights   Newest first.
+ * @property {() => Promise<Room>} room
+ * @property {() => Promise<void>} deleteSleepData        Removes every estimate and saved clip.
  * @property {() => Promise<UpdateInfo>} checkUpdate
  * @property {(onProgress:(p:number)=>void) => Promise<{version:string}>} installUpdate
  * @property {() => Promise<void>} unpair

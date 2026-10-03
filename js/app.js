@@ -1,11 +1,11 @@
 // offhours: companion app for NOCTIS.
-// Boot: theme, phone frame on desktop, navigation, device sync, the evening
-// briefing, splash, and the first screen.
+// Boot: theme, phone frame on desktop, navigation, device sync, night data,
+// the evening briefing, splash, and the first screen.
 
 import { $ } from './lib/dom.js';
 import { ctx } from './ctx.js';
 import { store } from './lib/store.js';
-import { clock, plan, dayKey, fmtClock } from './lib/time.js';
+import { clock, planFor, tonightAlarm, dayKey, fmtClock, fmtMin, minsOf } from './lib/time.js';
 import { services } from './services/index.js';
 import { buildBriefing } from './services/briefing.js';
 import { StageEyes } from './ui/eyes.js';
@@ -13,11 +13,11 @@ import { measureColon } from './ui/device-view.js';
 import { mountStack, setRoot, push, top } from './ui/stack.js';
 import { mountSheets, closeAllSheets } from './ui/sheet.js';
 import { mountIsland, island } from './ui/island.js';
-import { createHome } from './screens/home.js';
+import { createShell } from './screens/shell.js';
 import { createOnboarding } from './screens/onboarding.js';
-import { createNoctis } from './screens/noctis.js';
 import { createUpdate } from './screens/update.js';
 import { openAlarmSheet } from './screens/alarm.js';
+import { openBriefingSheet } from './screens/briefing.js';
 import { openDemo } from './screens/demo.js';
 import { playSplash } from './screens/splash.js';
 
@@ -74,24 +74,33 @@ ctx.framed = framed;
 ctx.stage = new StageEyes(app);
 document.addEventListener('touchstart', () => {}, { passive: true }); // :active on iOS
 
+/** What every device render needs to know. */
+ctx.deviceSource = () => {
+  const s = store.state;
+  return { alarm: tonightAlarm(s.alarms, clock.now()), clock24: s.display.clock24, brightness: s.display.brightness, face: s.display.face };
+};
+
 /* ---------- navigation ---------- */
+function shellTo(tab) {
+  if (top()?.kind === 'shell') { top().select(tab); return; }
+  closeAllSheets();
+  setRoot(createShell({ tab }));
+}
 ctx.go = {
-  home: ({ page } = {}) => { closeAllSheets(); const h = createHome({ page }); h.kind = 'home'; setRoot(h); },
+  home: ({ tab = 'today' } = {}) => { store.patch('setup', { done: true }); shellTo(tab); },
+  tab: (tab) => shellTo(tab),
   noctis: () => {
-    if (top()?.kind === 'noctis') return;
     if (!services.device.status().paired) { island('Pair NOCTIS first', 'info'); return; }
-    push(Object.assign(createNoctis(), { kind: 'noctis' }));
+    shellTo('noctis');
   },
   update: () => push(createUpdate()),
   onboarding: (start = 'welcome') => { closeAllSheets(); setRoot(createOnboarding({ start })); },
-  alarm: () => openAlarmSheet(),
+  alarm: (id) => openAlarmSheet(id),
+  briefing: () => openBriefingSheet(),
   demo: () => openDemo(),
   splash: () => start({ replay: true }),
 };
-ctx.ensureHome = () => {
-  store.patch('setup', { done: true });
-  if (top()?.kind !== 'home') { const h = createHome(); h.kind = 'home'; setRoot(h); }
-};
+ctx.ensureHome = () => ctx.go.home({ tab: top()?.kind === 'shell' ? top().current : 'today' });
 
 /* ---------- settings → NOCTIS ---------- */
 let syncT = 0;
@@ -104,16 +113,41 @@ function pushConfig() {
       name: s.device.name,
       finish: s.device.finish,
       theme: s.display.theme,
-      alarm: s.alarm,
+      face: s.display.face,
+      dimWithRoom: s.display.dimWithRoom,
+      alarms: s.alarms,
+      bedtime: s.bedtime,
       brightness: s.display.brightness,
       clock24: s.display.clock24,
       sound: s.sound,
       privacy: s.privacy,
+      autoUpdate: s.updates.auto,
     }).catch(() => { /* resent on reconnect */ });
   }, 200);
 }
-store.on(['device', 'display', 'alarm', 'sound', 'privacy'], pushConfig);
+store.on(['device', 'display', 'alarms', 'bedtime', 'sound', 'privacy', 'updates'], pushConfig);
 pushConfig();
+
+/* ---------- nights and the room ---------- */
+ctx.nights = null;
+ctx.room = null;
+let nightsBusy = 0;
+ctx.refreshNights = async () => {
+  const mine = ++nightsBusy;
+  const list = await services.device.nights(14, clock.now());
+  if (mine !== nightsBusy) return;
+  ctx.nights = list;
+  if (list.length) ctx.sleepCleared = false;
+  dispatchEvent(new Event('offhours:nights'));
+};
+ctx.refreshRoom = async () => {
+  if (!services.device.status().connected) return;
+  ctx.room = await services.device.room();
+  dispatchEvent(new Event('offhours:room'));
+};
+store.on('privacy', (s, k) => ctx.refreshNights());
+clock.onChange(() => { ctx.refreshNights(); ctx.refreshRoom(); });
+setInterval(() => ctx.refreshRoom(), 5 * 60e3);
 
 /* ---------- tomorrow's briefing ---------- */
 let building = 0;
@@ -125,10 +159,25 @@ ctx.rebuildBriefing = async () => {
   dispatchEvent(new Event('offhours:briefing'));
   maybeAutoSend();
 };
+ctx.briefingSent = () => {
+  const s = store.state;
+  const p = planFor(s.alarms, clock.now());
+  return s.briefing.sentAt && s.briefing.forDate === dayKey(p.morning) && s.briefing.wakeMin === p.wakeMin;
+};
+ctx.briefingStatus = () => {
+  const s = store.state;
+  const now = clock.now();
+  const p = planFor(s.alarms, now);
+  const at = (d) => fmtMin(minsOf(d), s.display.clock24);
+  if (!services.device.status().connected) return 'NOCTIS is offline. It sends when it’s back.';
+  if (ctx.briefingSent()) return `On NOCTIS since ${at(new Date(s.briefing.sentAt))}`;
+  if (now < p.eveningAt) return `Sends to NOCTIS at ${at(p.eveningAt)}`;
+  return 'Sending to NOCTIS';
+};
 ctx.sendBriefing = async ({ manual = false } = {}) => {
   if (!ctx.briefing) await ctx.rebuildBriefing();
   const b = ctx.briefing;
-  const p = plan(store.state.alarm, clock.now());
+  const p = planFor(store.state.alarms, clock.now());
   try {
     await services.device.sendBriefing(b);
     store.set('briefing', { forDate: b.forDate, sentAt: clock.now().getTime(), wakeMin: p.wakeMin });
@@ -141,19 +190,23 @@ let autoBusy = false;
 async function maybeAutoSend() {
   const s = store.state;
   if (autoBusy || !s.setup.done || !ctx.briefing || !services.device.status().connected) return;
-  const p = plan(s.alarm, clock.now());
+  const p = planFor(s.alarms, clock.now());
   if (p.phase !== 'evening' && p.phase !== 'night') return;
-  if (s.briefing.forDate === dayKey(p.morning) && s.briefing.wakeMin === p.wakeMin && s.briefing.sentAt) return;
+  if (ctx.briefingSent()) return;
   autoBusy = true;
   await ctx.sendBriefing();
   autoBusy = false;
 }
 let rbT = 0;
 const rebuildSoon = () => { clearTimeout(rbT); rbT = setTimeout(() => ctx.rebuildBriefing(), 300); };
-store.on(['alarm', 'location', 'display'], rebuildSoon);
+store.on(['alarms', 'location', 'display'], rebuildSoon);
 clock.onChange(rebuildSoon);
 setInterval(maybeAutoSend, 30000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) rebuildSoon(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  rebuildSoon();
+  ctx.refreshRoom();
+});
 
 /* ---------- NOCTIS events → quiet confirmations ---------- */
 let lastMode = services.device.status().mode;
@@ -169,8 +222,9 @@ services.device.on('mode', (st) => {
 services.device.on('status', (st) => {
   if (st.paired && lastPaired && st.connected !== lastOnline) {
     island(st.connected ? 'NOCTIS is back online' : 'NOCTIS is offline', st.connected ? 'check' : 'info');
-    if (st.connected) { pushConfig(); maybeAutoSend(); }
+    if (st.connected) { pushConfig(); maybeAutoSend(); ctx.refreshRoom(); }
   }
+  if (st.paired && !lastPaired) { pushConfig(); setTimeout(() => { ctx.refreshNights(); ctx.refreshRoom(); }, 400); }
   lastOnline = st.connected;
   lastPaired = st.paired;
 });
@@ -187,6 +241,7 @@ ctx.unpaired = () => {
   island('NOCTIS unpaired', 'info');
   resetKeepingLook();
   ctx.briefing = null;
+  ctx.nights = [];
   setTimeout(() => ctx.go.onboarding('welcome'), 700);
 };
 ctx.startOver = () => {
@@ -202,7 +257,7 @@ async function start({ replay = false } = {}) {
   const sp = await playSplash(app, ctx.stage, { short: !first && !replay });
   if (first && !replay) setRoot(createOnboarding({ start: 'welcome' }), { fade: false });
   else if (replay && top()) { top().leave?.(); top().enter?.(); }
-  else { const h = createHome(); h.kind = 'home'; setRoot(h, { fade: false }); }
+  else setRoot(createShell({ tab: 'today' }), { fade: false });
   sp.finish();
 }
 
@@ -212,6 +267,8 @@ async function start({ replay = false } = {}) {
     services.weather.guess().then((p) => { if (!store.state.location) store.set('location', p); });
   }
   ctx.rebuildBriefing();
+  ctx.refreshNights();
+  ctx.refreshRoom();
   await start();
 })();
 

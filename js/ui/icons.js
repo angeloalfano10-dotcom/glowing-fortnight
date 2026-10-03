@@ -37,6 +37,13 @@ const ICONS = {
   back: '<svg viewBox="0 0 13 22" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 2 2 11l9 9"/></svg>',
   close: S('<path d="M6 6l12 12M18 6 6 18"/>', 2.4),
   thermo: S('<path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z"/>'),
+  device: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3.8" y="3.8" width="16.4" height="16.4" rx="4.6"/><ellipse cx="9.4" cy="12" rx="1.45" ry="1.8" fill="currentColor" stroke="none"/><ellipse cx="14.6" cy="12" rx="1.45" ry="1.8" fill="currentColor" stroke="none"/></svg>',
+  plus: S('<path d="M12 5v14M5 12h14"/>', 2.2),
+  trash: S('<path d="M5 7h14M10 7V5h4v2M7 7l.8 12h8.4L17 7"/>'),
+  cloud: S('<path d="M7 18h10a4 4 0 0 0 .4-8A5.5 5.5 0 0 0 6.7 9.6 4.2 4.2 0 0 0 7 18z"/>'),
+  trend: S('<path d="M3.5 16.5 9 11l3.5 3.5L20.5 6.5M15 6.5h5.5V12"/>'),
+  chevl: '<svg viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 1.5 1.5 7l5 5.5"/></svg>',
+  dot3: S('<circle cx="6" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="18" cy="12" r="1" fill="currentColor"/>'),
 };
 
 export const icon = (name) => raw(ICONS[name] || '');

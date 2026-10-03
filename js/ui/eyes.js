@@ -383,12 +383,12 @@ export class StageEyes extends Eyes {
    * Move the eyes to an anchor.
    * @param {HTMLElement} anchor
    * @param {{fly?:boolean, from?:HTMLElement, eye?:string, glow?:string, k?:number, c?:number}} o
-   *   from: start from another anchor's position (e.g. leaving a device screen).
+   *   from: start from another anchor, or a frame measured earlier (e.g. leaving a device screen).
    *   eye/glow: colour override while on this anchor (e.g. light eyes on a dark screen).
    */
   attach(anchor, { fly = true, from = null, eye = null, glow = null, k = 120, c = 19 } = {}) {
     let prev = null;
-    if (from) prev = this.frameOf(from);
+    if (from) prev = from.cx != null ? from : this.frameOf(from);
     else if (this._last && this.alpha.v > 0.05) prev = this._last;
     this.anchor = anchor;
     this._lastAnchor = null;

@@ -45,16 +45,17 @@ export function fmtMin(min, h24 = true) {
 }
 export const fmtClock = (d, h24 = true) => fmtMin(minsOf(d), h24);
 
+const NB = '\u00a0'; // keeps "7 h 24" on one line
 /** "in 1 h 58 min" style durations. */
 export function dur(m) {
   const t = Math.max(0, Math.round(m));
-  if (t < 60) return `${t} min`;
+  if (t < 60) return `${t}${NB}min`;
   const h = Math.floor(t / 60);
   const r = t % 60;
-  return r ? `${h} h ${r} min` : `${h} h`;
+  return r ? `${h}${NB}h${NB}${r}${NB}min` : `${h}${NB}h`;
 }
 /** Sleep estimates read like the device: "7 h 24". */
-export const sleepDur = (m) => `${Math.floor(m / 60)} h ${pad(Math.round(m) % 60)}`;
+export const sleepDur = (m) => `${Math.floor(m / 60)}${NB}h${NB}${pad(Math.round(m) % 60)}`;
 
 export const DAY_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 export const DAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -124,6 +125,36 @@ export function plan(alarm, now) {
     minsToWake: (morning.getTime() - t) / 60000,
   };
 }
+
+/** The next ring across all alarms: { at, alarm } or null. */
+export function nextRing(alarms, now) {
+  let best = null;
+  for (const a of alarms) {
+    const at = nextAlarm(a, now);
+    if (at && (!best || at < best.at)) best = { at, alarm: a };
+  }
+  return best;
+}
+
+/**
+ * The alarm that governs tonight: the next one to ring within 24 h. When nothing
+ * rings by tomorrow, phases still follow the usual wake time, marked as not set.
+ * Returns a plain { h, m, on, days, source } that plan() understands.
+ */
+export function tonightAlarm(alarms, now) {
+  const next = nextRing(alarms, now);
+  if (next && next.at - now <= 24 * 3600e3) {
+    return { h: next.alarm.h, m: next.alarm.m, on: true, days: [next.at.getDay()], source: next.alarm };
+  }
+  const usual = alarms.find((a) => a.on) || alarms[0] || { h: 7, m: 0 };
+  return { h: usual.h, m: usual.m, on: false, days: [], source: null };
+}
+
+/** plan() for the alarm that rings next. */
+export const planFor = (alarms, now) => plan(tonightAlarm(alarms, now), now);
+
+/** Format "night minutes" (minutes since the evening's midnight, so 01:10 = 1510). */
+export const fmtNight = (m, h24 = true) => fmtMin(wrap(m), h24);
 
 /** Default 12/24 h from the phone's locale (CLAUDE.md open question 4). */
 export function localeUses24h() {

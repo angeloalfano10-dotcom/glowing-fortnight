@@ -64,6 +64,13 @@
 
 /* ---------- White · dark (true black, closest to iPhone) ---------- */
 :root[data-theme="white"][data-scheme="dark"] {
+  --chart: #FFFFFF;
+  --chart-soft: #48484A;
+  --chart-ink: rgba(235, 235, 245, .62);
+  --chart-wash: rgba(255, 255, 255, .1);
+  --card-shadow: none;
+  --tint: rgba(118, 118, 128, .2);
+
   color-scheme: dark;
   --bg: #000000;
   --bg-grouped: #000000;
@@ -79,7 +86,7 @@
   --acc-ink: #000000;
   --acc-text: #FFFFFF;
   --track: rgba(120, 120, 128, .36);
-  --knob: #FFFFFF;
+  --knob: #000000;  /* black knob on the white "on" track, like the device */
   --danger: #FF6B61;
   --eye: #FFFFFF;
   --eye-glow: rgba(255, 255, 255, .32);
@@ -91,6 +98,13 @@
 
 /* ---------- White · light ---------- */
 :root[data-theme="white"][data-scheme="light"] {
+  --chart: #000000;
+  --chart-soft: #D1D1D6;
+  --chart-ink: rgba(60, 60, 67, .64);
+  --chart-wash: rgba(0, 0, 0, .07);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 8px 24px -16px rgba(0, 0, 0, .12);
+  --tint: #F2F2F7;
+
   color-scheme: light;
   --bg: #FFFFFF;
   --bg-grouped: #F2F2F7;
@@ -118,6 +132,13 @@
 
 /* ---------- Warm · dark (offhours palette, Low Amber accent) ---------- */
 :root[data-theme="warm"][data-scheme="dark"] {
+  --chart: #C89C68;
+  --chart-soft: #45423C;
+  --chart-ink: var(--warm-white);
+  --chart-wash: rgba(200, 156, 104, .12);
+  --card-shadow: none;
+  --tint: rgba(200, 156, 104, .1);
+
   color-scheme: dark;
   --bg: #121311;
   --bg-grouped: #121311;
@@ -145,6 +166,13 @@
 
 /* ---------- Warm · light ---------- */
 :root[data-theme="warm"][data-scheme="light"] {
+  --chart: #A9783F;       /* Low Amber deepened for 3:1 on Warm White */
+  --chart-soft: #DED5C8;
+  --chart-ink: var(--offhours-ink);
+  --chart-wash: rgba(169, 120, 63, .1);
+  --card-shadow: 0 1px 2px rgba(32, 33, 31, .04), 0 10px 26px -18px rgba(32, 33, 31, .16);
+  --tint: #F1E6D7;
+
   color-scheme: light;
   --bg: var(--warm-paper);
   --bg-grouped: var(--warm-paper);

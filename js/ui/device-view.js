@@ -207,9 +207,11 @@ export class DeviceView {
     this.refresh();
   }
 
-  /** Switch what the screen shows. */
+  /** Switch what the screen shows. data.hold keeps the clock up (the "Clock" resting face). */
   setMode(m, data) {
     if (m === this.mode && !data && m !== 'clock') return;
+    if (m === 'clock' && this.mode === 'clock' && this._hold && data?.hold) return;
+    this._hold = m === 'clock' && !!data?.hold;
     this._cancel();
     const night = this.phase === 'night';
     const evening = this.phase === 'evening';
@@ -230,7 +232,7 @@ export class DeviceView {
         this.scr.classList.add('show-time');
         this.eyes.setMode('colon');
         this.eyes.pose('colon', { k: 210, c: 23, stagger: 45, ck: 170, cc: 24 });
-        this._later(night ? 6000 : 7000, () => this.rest());
+        if (!this._hold) this._later(night ? 6000 : 7000, () => this.rest());
         break;
       case 'alarm': this._alarm(); break;
       case 'briefing': this.playBriefing(data || this.briefing, { loop: false }); break;
@@ -244,9 +246,14 @@ export class DeviceView {
       default: this.rest();
     }
   }
-  rest() { this.setMode(this.phase === 'night' ? 'sleep' : 'idle'); }
+  rest() {
+    if (this.phase === 'night') this.setMode('sleep');
+    else if (this.source().face === 'clock') this.setMode('clock', { hold: true });
+    else this.setMode('idle');
+  }
   tap() {
     if (this.mode === 'idle' || this.mode === 'sleep') this.setMode('clock');
+    else if (this.mode === 'clock' && this._hold) { this.setMode('idle'); this._later(8000, () => this.rest()); }
     else if (this.mode === 'clock') this.rest();
     else if (this.mode === 'briefing' && this._next) this._next();
   }
