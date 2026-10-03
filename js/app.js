@@ -5,7 +5,7 @@
 import { $ } from './lib/dom.js';
 import { ctx } from './ctx.js';
 import { store } from './lib/store.js';
-import { clock, planFor, tonightAlarm, dayKey, fmtClock, fmtMin, minsOf } from './lib/time.js';
+import { clock, planFor, tonightAlarm, dayKey, fmtClock } from './lib/time.js';
 import { services } from './services/index.js';
 import { buildBriefing } from './services/briefing.js';
 import { StageEyes } from './ui/eyes.js';
@@ -13,11 +13,13 @@ import { measureColon } from './ui/device-view.js';
 import { mountStack, setRoot, push, top } from './ui/stack.js';
 import { mountSheets, closeAllSheets } from './ui/sheet.js';
 import { mountIsland, island } from './ui/island.js';
-import { createShell } from './screens/shell.js';
+import { createHome } from './screens/home.js';
+import { createSleep } from './screens/sleep.js';
+import { createAlarms } from './screens/alarms.js';
+import { createNoctis } from './screens/noctis.js';
 import { createOnboarding } from './screens/onboarding.js';
 import { createUpdate } from './screens/update.js';
 import { openAlarmSheet } from './screens/alarm.js';
-import { openBriefingSheet } from './screens/briefing.js';
 import { openDemo } from './screens/demo.js';
 import { playSplash } from './screens/splash.js';
 
@@ -81,26 +83,27 @@ ctx.deviceSource = () => {
 };
 
 /* ---------- navigation ---------- */
-function shellTo(tab) {
-  if (top()?.kind === 'shell') { top().select(tab); return; }
-  closeAllSheets();
-  setRoot(createShell({ tab }));
-}
+const pushOnce = (kind, make) => { if (top()?.kind !== kind) push(make()); };
 ctx.go = {
-  home: ({ tab = 'today' } = {}) => { store.patch('setup', { done: true }); shellTo(tab); },
-  tab: (tab) => shellTo(tab),
+  home: ({ page } = {}) => { store.patch('setup', { done: true }); closeAllSheets(); setRoot(createHome({ page })); },
+  sleep: (opts) => pushOnce('sleep', () => createSleep(opts)),
+  alarms: () => pushOnce('alarms', createAlarms),
   noctis: () => {
     if (!services.device.status().paired) { island('Pair NOCTIS first', 'info'); return; }
-    shellTo('noctis');
+    pushOnce('noctis', createNoctis);
   },
   update: () => push(createUpdate()),
   onboarding: (start = 'welcome') => { closeAllSheets(); setRoot(createOnboarding({ start })); },
   alarm: (id) => openAlarmSheet(id),
-  briefing: () => openBriefingSheet(),
   demo: () => openDemo(),
   splash: () => start({ replay: true }),
 };
-ctx.ensureHome = () => ctx.go.home({ tab: top()?.kind === 'shell' ? top().current : 'today' });
+/** Back to home (keeping it if it is already the root), for demo jumps. */
+ctx.ensureHome = () => {
+  store.patch('setup', { done: true });
+  closeAllSheets();
+  if (top()?.kind !== 'home') setRoot(createHome());
+};
 
 /* ---------- settings → NOCTIS ---------- */
 let syncT = 0;
@@ -163,16 +166,6 @@ ctx.briefingSent = () => {
   const s = store.state;
   const p = planFor(s.alarms, clock.now());
   return s.briefing.sentAt && s.briefing.forDate === dayKey(p.morning) && s.briefing.wakeMin === p.wakeMin;
-};
-ctx.briefingStatus = () => {
-  const s = store.state;
-  const now = clock.now();
-  const p = planFor(s.alarms, now);
-  const at = (d) => fmtMin(minsOf(d), s.display.clock24);
-  if (!services.device.status().connected) return 'NOCTIS is offline. It sends when it’s back.';
-  if (ctx.briefingSent()) return `On NOCTIS since ${at(new Date(s.briefing.sentAt))}`;
-  if (now < p.eveningAt) return `Sends to NOCTIS at ${at(p.eveningAt)}`;
-  return 'Sending to NOCTIS';
 };
 ctx.sendBriefing = async ({ manual = false } = {}) => {
   if (!ctx.briefing) await ctx.rebuildBriefing();
@@ -257,7 +250,7 @@ async function start({ replay = false } = {}) {
   const sp = await playSplash(app, ctx.stage, { short: !first && !replay });
   if (first && !replay) setRoot(createOnboarding({ start: 'welcome' }), { fade: false });
   else if (replay && top()) { top().leave?.(); top().enter?.(); }
-  else setRoot(createShell({ tab: 'today' }), { fade: false });
+  else setRoot(createHome(), { fade: false });
   sp.finish();
 }
 

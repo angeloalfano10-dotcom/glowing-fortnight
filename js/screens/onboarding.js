@@ -91,7 +91,7 @@ export function createOnboarding({ start = 'welcome' } = {}) {
     refreshChrome() { chrome(currentName, current); },
     finish() {
       store.patch('setup', { done: true });
-      ctx.go.home({ fromOnboarding: true });
+      ctx.go.home();
     },
   };
 
