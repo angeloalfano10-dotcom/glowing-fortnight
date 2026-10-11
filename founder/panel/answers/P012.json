@@ -1,0 +1,13 @@
+{
+  "id": "P012",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "120 euros is a lot for something that does what my phone alarm already does. I snooze my phone anyway, and I don't see a wooden box fixing that.",
+  "objection": "Will the alarm still work if the Wi-Fi is down? It also talks to a phone app and a calendar, so I don't trust it as the one thing that has to wake me up. Then I'd need a phone alarm as backup, and the box is pointless.",
+  "would_change_my_mind": "A clear promise that the alarm works fully offline, plus a price closer to 60 euros, or a trial period with a real money-back return.",
+  "price_too_cheap": 25,
+  "price_cheap": 45,
+  "price_expensive": 80,
+  "price_too_expensive": 110
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P016",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "It looks nice, I'll give it that, but I already have a smart speaker that does alarm and weather, and my phone does the rest. I can't see what I'd gain for 120 euros that I don't already have.",
+  "objection": "I already own an Echo or Nest that does alarm and weather. This is a nicer-looking version of something I have, from a company that doesn't exist yet, and I'd be pre-ordering on renders.",
+  "would_change_my_mind": "Seeing a real unit in a review or in person, and a price nearer 80 euros. It would also need to do something my speaker clearly can't, like a proper calendar briefing that works well without me thinking about it.",
+  "price_too_cheap": 35,
+  "price_cheap": 65,
+  "price_expensive": 110,
+  "price_too_expensive": 160
+}

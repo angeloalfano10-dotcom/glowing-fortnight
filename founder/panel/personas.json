@@ -1,0 +1,222 @@
+[
+ {
+  "id": "P001",
+  "name": "Omar",
+  "age": 25,
+  "segment": "High earner",
+  "income": 139000,
+  "behaviour": "Phone-in-bed scroller",
+  "behaviour_how": "Knows they scroll too long at night and has tried screen-time limits without success.",
+  "objection": "I need my phone near me anyway, for emergencies or the kids",
+  "habit": "your phone charges on the bedside table and is the first thing you look at in the morning"
+ },
+ {
+  "id": "P002",
+  "name": "Raj",
+  "age": 33,
+  "segment": "Mid-career professional",
+  "income": 71000,
+  "behaviour": "Smart-home owner",
+  "behaviour_how": "Already has a smart speaker or display and an ecosystem.",
+  "objection": "I already own an Echo or Nest that does alarm and weather",
+  "habit": "you have thought about leaving the phone in another room but never did"
+ },
+ {
+  "id": "P003",
+  "name": "Emil",
+  "age": 42,
+  "segment": "Mid-career professional",
+  "income": 75000,
+  "behaviour": "Sleep-curious",
+  "behaviour_how": "Reads about sleep, owns a watch or ring, wary of health claims.",
+  "objection": "I need my phone near me anyway, for emergencies or the kids",
+  "habit": "you use your phone alarm and snooze it more than once"
+ },
+ {
+  "id": "P004",
+  "name": "Owen",
+  "age": 29,
+  "segment": "High earner",
+  "income": 155000,
+  "behaviour": "Phone-in-bed scroller",
+  "behaviour_how": "Knows they scroll too long at night and has tried screen-time limits without success.",
+  "objection": "I need my phone near me anyway, for emergencies or the kids",
+  "habit": "you check your phone for about 30 minutes before falling asleep"
+ },
+ {
+  "id": "P005",
+  "name": "Sana",
+  "age": 39,
+  "segment": "Early-career professional",
+  "income": 57000,
+  "behaviour": "Design buyer",
+  "behaviour_how": "Pays more for objects that look good in the home; follows design brands and studios.",
+  "objection": "How accurate can a sleep and snoring estimate from a microphone be",
+  "habit": "you have thought about leaving the phone in another room but never did"
+ },
+ {
+  "id": "P006",
+  "name": "Maya",
+  "age": 37,
+  "segment": "Early-career professional",
+  "income": 43000,
+  "behaviour": "Phone-in-bed scroller",
+  "behaviour_how": "Knows they scroll too long at night and has tried screen-time limits without success.",
+  "objection": "EUR 120 is a lot when my phone already does this for free",
+  "habit": "you have thought about leaving the phone in another room but never did"
+ },
+ {
+  "id": "P007",
+  "name": "Selin",
+  "age": 45,
+  "segment": "High earner",
+  "income": 132000,
+  "behaviour": "Sleep-curious",
+  "behaviour_how": "Reads about sleep, owns a watch or ring, wary of health claims.",
+  "objection": "I already own an Echo or Nest that does alarm and weather",
+  "habit": "you check your phone for about 30 minutes before falling asleep"
+ },
+ {
+  "id": "P008",
+  "name": "Ruby",
+  "age": 31,
+  "segment": "Early-career professional",
+  "income": 44000,
+  "behaviour": "Deal hunter",
+  "behaviour_how": "Waits for discounts and compares prices across Amazon and brands.",
+  "objection": "EUR 120 is a lot when my phone already does this for free",
+  "habit": "you use your phone alarm and snooze it more than once"
+ },
+ {
+  "id": "P009",
+  "name": "Nora",
+  "age": 44,
+  "segment": "Mid-career professional",
+  "income": 62000,
+  "behaviour": "Phone-in-bed scroller",
+  "behaviour_how": "Knows they scroll too long at night and has tried screen-time limits without success.",
+  "objection": "EUR 120 is a lot when my phone already does this for free",
+  "habit": "your phone charges on the bedside table and is the first thing you look at in the morning"
+ },
+ {
+  "id": "P010",
+  "name": "Fatima",
+  "age": 42,
+  "segment": "Early-career professional",
+  "income": 35000,
+  "behaviour": "Gadget sceptic",
+  "behaviour_how": "Feels most smart devices are overpriced and do things the phone already does.",
+  "objection": "Will the alarm still work if the Wi-Fi is down",
+  "habit": "you check your phone for about 30 minutes before falling asleep"
+ },
+ {
+  "id": "P011",
+  "name": "Tariq",
+  "age": 27,
+  "segment": "Mid-career professional",
+  "income": 95000,
+  "behaviour": "Design buyer",
+  "behaviour_how": "Pays more for objects that look good in the home; follows design brands and studios.",
+  "objection": "I need my phone near me anyway, for emergencies or the kids",
+  "habit": "you have thought about leaving the phone in another room but never did"
+ },
+ {
+  "id": "P012",
+  "name": "Felix",
+  "age": 29,
+  "segment": "Early-career professional",
+  "income": 50000,
+  "behaviour": "Gadget sceptic",
+  "behaviour_how": "Feels most smart devices are overpriced and do things the phone already does.",
+  "objection": "Will the alarm still work if the Wi-Fi is down",
+  "habit": "you use your phone alarm and snooze it more than once"
+ },
+ {
+  "id": "P013",
+  "name": "Zoe",
+  "age": 40,
+  "segment": "High earner",
+  "income": 110000,
+  "behaviour": "Smart-home owner",
+  "behaviour_how": "Already has a smart speaker or display and an ecosystem.",
+  "objection": "How accurate can a sleep and snoring estimate from a microphone be",
+  "habit": "you have thought about leaving the phone in another room but never did"
+ },
+ {
+  "id": "P014",
+  "name": "Dev",
+  "age": 39,
+  "segment": "Mid-career professional",
+  "income": 79000,
+  "behaviour": "Gadget sceptic",
+  "behaviour_how": "Feels most smart devices are overpriced and do things the phone already does.",
+  "objection": "Will the alarm still work if the Wi-Fi is down",
+  "habit": "you check your phone for about 30 minutes before falling asleep"
+ },
+ {
+  "id": "P015",
+  "name": "Yusuf",
+  "age": 29,
+  "segment": "Mid-career professional",
+  "income": 64000,
+  "behaviour": "Sleep-curious",
+  "behaviour_how": "Reads about sleep, owns a watch or ring, wary of health claims.",
+  "objection": "Will the alarm still work if the Wi-Fi is down",
+  "habit": "you use your phone alarm and snooze it more than once"
+ },
+ {
+  "id": "P016",
+  "name": "Theo",
+  "age": 40,
+  "segment": "Early-career professional",
+  "income": 55000,
+  "behaviour": "Design buyer",
+  "behaviour_how": "Pays more for objects that look good in the home; follows design brands and studios.",
+  "objection": "I already own an Echo or Nest that does alarm and weather",
+  "habit": "you check your phone for about 30 minutes before falling asleep"
+ },
+ {
+  "id": "P017",
+  "name": "Alma",
+  "age": 31,
+  "segment": "Early-career professional",
+  "income": 59000,
+  "behaviour": "Design buyer",
+  "behaviour_how": "Pays more for objects that look good in the home; follows design brands and studios.",
+  "objection": "I need my phone near me anyway, for emergencies or the kids",
+  "habit": "you use your phone alarm and snooze it more than once"
+ },
+ {
+  "id": "P018",
+  "name": "Freya",
+  "age": 29,
+  "segment": "Mid-career professional",
+  "income": 88000,
+  "behaviour": "Deal hunter",
+  "behaviour_how": "Waits for discounts and compares prices across Amazon and brands.",
+  "objection": "EUR 120 is a lot when my phone already does this for free",
+  "habit": "you use your phone alarm and snooze it more than once"
+ },
+ {
+  "id": "P019",
+  "name": "Harper",
+  "age": 45,
+  "segment": "Early-career professional",
+  "income": 56000,
+  "behaviour": "Smart-home owner",
+  "behaviour_how": "Already has a smart speaker or display and an ecosystem.",
+  "objection": "Does it listen to me all night, what about privacy",
+  "habit": "you use your phone alarm and snooze it more than once"
+ },
+ {
+  "id": "P020",
+  "name": "Emma",
+  "age": 41,
+  "segment": "Mid-career professional",
+  "income": 75000,
+  "behaviour": "Design buyer",
+  "behaviour_how": "Pays more for objects that look good in the home; follows design brands and studios.",
+  "objection": "I already own an Echo or Nest that does alarm and weather",
+  "habit": "you use your phone alarm and snooze it more than once"
+ }
+]

@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "My phone already does the alarm, calendar and weather, and I'm only on it about 30 minutes before sleep. EUR 120 for a second thing that does what the phone does is hard to justify.",
+  "objection": "Will the alarm still work if the Wi-Fi is down? If a briefing that depends on a companion app and Wi-Fi fails and I miss a meeting, I'd have to keep the phone alarm as backup, so what's the point of paying for it.",
+  "would_change_my_mind": "Proof that the alarm works fully offline, plus a price closer to 70 euros and independent reviews from people who have used it for a few months.",
+  "price_too_cheap": 25,
+  "price_cheap": 50,
+  "price_expensive": 85,
+  "price_too_expensive": 120
+}

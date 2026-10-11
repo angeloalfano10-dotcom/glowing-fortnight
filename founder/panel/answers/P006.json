@@ -1,0 +1,13 @@
+{
+  "id": "P006",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "EUR 120 is a lot when my phone already does the alarm and the weather for free. I like how it looks, but I'd be paying a lot to fix a habit I've already failed to fix with willpower.",
+  "objection": "My phone already does all of this for free, and I'm not sure a new object would actually get the phone out of my bedroom. I'd probably still bring it to bed.",
+  "would_change_my_mind": "A price around EUR 70 to 80, or a trial period with free returns so I could find out whether I really leave the phone in another room.",
+  "price_too_cheap": 25,
+  "price_cheap": 55,
+  "price_expensive": 90,
+  "price_too_expensive": 120
+}

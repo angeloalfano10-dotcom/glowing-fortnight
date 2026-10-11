@@ -1,0 +1,34 @@
+{
+  "business": "NOCTIS, a smart bedside companion by offhours (EUR 120)",
+  "target": "Design-aware adults in Europe, 25 to 45, with disposable income, who scroll in bed and use their phone as alarm, and care about sleep and how their home looks",
+  "where": "Europe, online",
+  "age": [25, 45],
+  "segments": [
+    {"name": "Early-career professional", "share": 0.40, "income": [32000, 60000]},
+    {"name": "Mid-career professional", "share": 0.40, "income": [60000, 100000]},
+    {"name": "High earner", "share": 0.20, "income": [100000, 180000]}
+  ],
+  "behaviours": [
+    {"name": "Design buyer", "share": 0.22, "how": "Pays more for objects that look good in the home; follows design brands and studios."},
+    {"name": "Phone-in-bed scroller", "share": 0.22, "how": "Knows they scroll too long at night and has tried screen-time limits without success."},
+    {"name": "Gadget sceptic", "share": 0.16, "how": "Feels most smart devices are overpriced and do things the phone already does."},
+    {"name": "Deal hunter", "share": 0.12, "how": "Waits for discounts and compares prices across Amazon and brands."},
+    {"name": "Sleep-curious", "share": 0.14, "how": "Reads about sleep, owns a watch or ring, wary of health claims."},
+    {"name": "Smart-home owner", "share": 0.14, "how": "Already has a smart speaker or display and an ecosystem."}
+  ],
+  "objections": [
+    "EUR 120 is a lot when my phone already does this for free",
+    "I already own an Echo or Nest that does alarm and weather",
+    "Will the alarm still work if the Wi-Fi is down",
+    "It is a new brand from a student company, will it exist next year",
+    "I need my phone near me anyway, for emergencies or the kids",
+    "Does it listen to me all night, what about privacy",
+    "How accurate can a sleep and snoring estimate from a microphone be"
+  ],
+  "habits": [
+    "you check your phone for about 30 minutes before falling asleep",
+    "your phone charges on the bedside table and is the first thing you look at in the morning",
+    "you use your phone alarm and snooze it more than once",
+    "you have thought about leaving the phone in another room but never did"
+  ]
+}
