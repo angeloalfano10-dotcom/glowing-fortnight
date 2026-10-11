@@ -153,7 +153,7 @@ export function createToday(shell) {
   function renderNight() {
     const m = night.querySelector('.cmain');
     const list = ctx.nights;
-    if (!list) return;
+    if (!list) { m.innerHTML = '<div class="skel-in" aria-hidden="true"><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>'; return; }
     nightEyes?.destroy();
     nightEyes = null;
     const n = list[0];

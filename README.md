@@ -62,6 +62,16 @@ A redesign built on five ideas from the "psychology of good apps" reference, kep
 
 New pieces: `progressBar`, `progressRing` and `tick` in `js/screens/common.js`; hero, primary button, spacing and elevation tokens in `css/tokens.css`.
 
+Applied across the other tabs, from the app-design-trends and mobile-UI references:
+
+- **One hero per screen, cards not nested.** The next alarm is the hero on Alarms, with the same dark card as Tonight. Sleep shows time asleep as an estimate against the 7 h 30 that bed-by plans for.
+- **Fewer choices.** The NOCTIS tab went from five groups to three (Display, Sound, Device).
+- **Gestures with a visible alternative.** Press and hold an alarm for Edit, Duplicate and Delete. Sheets still swipe down.
+- **Empty states with one action.** No alarms gives a full empty state and an "Add an alarm" button. A place search with no result says what to try next.
+- **Something always happening.** Skeleton placeholders while nights load, a progress ring and bars that fill in, ticks that draw themselves, a pressable primary button.
+- **Legibility over glass.** The tab bar glass is now about 90% opaque, so labels stay readable on any content (the trends reference warns about this). Touch targets are 44 px or more.
+- **Character through movement.** The eyes are the app's character: they hop when pairing succeeds and when setup finishes, and sleep in empty states. No mouth, no cartoon expressions.
+
 Left out on purpose: Duolingo-style streaks and scores. They would turn sleep into a performance, which NOCTIS must not do.
 
 ## Demo panel

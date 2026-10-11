@@ -11,7 +11,7 @@ import { makeSegmented, makeSwitch } from '../ui/controls.js';
 import { Eyes } from '../ui/eyes.js';
 import { nightChart, tempChart, weekChart, bedtimeChart, nightName } from '../ui/charts.js';
 import { nightInsights, weekInsights, summarize } from '../services/insights.js';
-import { panel } from './common.js';
+import { panel, progressBar } from './common.js';
 import { stageAway } from './stagehelp.js';
 
 const PATTERN_ICON = { room: 'thermo', bedtime: 'bed', consistency: 'clock', weekend: 'calendar', snoring: 'wave', trend: 'trend', target: 'moon' };
@@ -38,6 +38,7 @@ export function createSleep(shell) {
   const content = el('<div class="sleep-body"></div>');
   P.body.append(segWrap, content);
 
+  const skeleton = () => el('<article class="card skel" aria-hidden="true"><i class="s1"></i><i class="s2"></i><i class="s3"></i></article>');
   const disclaimer = () => el(`<p class="disclaimer">${iconStr('info')}<span>${esc(DISCLAIMER)}</span></p>`);
 
   function render() {
@@ -45,7 +46,7 @@ export function createSleep(shell) {
     eyes = null;
     content.innerHTML = '';
     const list = ctx.nights;
-    if (!list) return;
+    if (!list) { segWrap.hidden = true; content.append(skeleton(), skeleton()); return; }
     if (!list.length) { segWrap.hidden = true; content.append(emptyCard()); return; }
     segWrap.hidden = false;
     seg.set(view);
@@ -80,7 +81,10 @@ export function createSleep(shell) {
         <div class="clabel"><span>Time asleep · estimate</span></div>
         <div class="numeral" data-min="${n.sleepMin}">${esc(sleepDur(n.sleepMin))}</div>
         <div class="t2">Around ${esc(t(n.asleep))} – ${esc(t(n.wake))}</div>
+        <div class="planbar"></div>
+        <div class="caption planbar-t">${esc(sleepDur(n.sleepMin))} estimated, against the ${esc(sleepDur(450))} bed-by plans for.</div>
       </article>`);
+    asleep.querySelector('.planbar').append(progressBar(n.sleepMin / 450, { tall: true }));
     asleep.append(nightChart(n, { clock24 }));
     asleep.append(el(`<ul class="ins">${[ni.usual, ni.asleep, ni.restless].filter(Boolean).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`));
 

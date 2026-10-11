@@ -78,7 +78,7 @@
   --pri-edge: #A1A1A6;
   --pri-ink: #000000;
   --card-edge: rgba(255, 255, 255, .06);
-  --glass: rgba(44, 44, 48, .6);
+  --glass: rgba(44, 44, 48, .88);
   --glass-lens: rgba(255, 255, 255, .13);
   --glass-lift: rgba(255, 255, 255, .08);
   --glass-hi: rgba(255, 255, 255, .26);
@@ -129,7 +129,7 @@
   --pri-edge: #3A3A3C;
   --pri-ink: #FFFFFF;
   --card-edge: rgba(0, 0, 0, .05);
-  --glass: rgba(255, 255, 255, .66);
+  --glass: rgba(255, 255, 255, .9);
   --glass-lens: rgba(118, 118, 128, .14);
   --glass-lift: rgba(255, 255, 255, .5);
   --glass-hi: rgba(255, 255, 255, .95);
@@ -180,7 +180,7 @@
   --pri-edge: #8F6B3F;
   --pri-ink: var(--night-ink);
   --card-edge: rgba(250, 248, 244, .05);
-  --glass: rgba(40, 39, 35, .62);
+  --glass: rgba(40, 39, 35, .9);
   --glass-lens: rgba(250, 248, 244, .12);
   --glass-lift: rgba(250, 248, 244, .07);
   --glass-hi: rgba(255, 244, 226, .24);
@@ -231,7 +231,7 @@
   --pri-edge: #A9783F;
   --pri-ink: var(--night-ink);
   --card-edge: rgba(32, 33, 31, .05);
-  --glass: rgba(250, 248, 244, .66);
+  --glass: rgba(250, 248, 244, .9);
   --glass-lens: rgba(136, 123, 106, .15);
   --glass-lift: rgba(255, 255, 255, .45);
   --glass-hi: rgba(255, 255, 255, .95);

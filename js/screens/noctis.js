@@ -78,10 +78,10 @@ export function createNoctisTab() {
     }),
     group({ head: 'Sound', rows: [row({ ic: 'bell', label: 'Sound', control: soundSw }), volRow, row({ ic: 'wave', label: 'Speak the briefing', desc: 'NOCTIS reads it out after the alarm.', control: speakSw })] }),
     group({
-      head: 'Updates',
-      rows: [row({ ic: 'update', label: 'Automatic updates', desc: 'Overnight, never close to an alarm.', control: autoSw }), updRow],
+      head: 'Device',
+      rows: [wifiRow, finishRow, updRow, row({ ic: 'update', label: 'Automatic updates', desc: 'Overnight, never close to an alarm.', control: autoSw }), row({ ic: 'info', label: 'About NOCTIS', onClick: openAboutSheet })],
+      foot: 'NOCTIS stays on your Wi-Fi and syncs its morning briefing by itself.',
     }),
-    group({ head: 'Connection', rows: [wifiRow, finishRow, row({ ic: 'info', label: 'About NOCTIS', onClick: openAboutSheet })], foot: 'NOCTIS stays on your Wi-Fi and syncs its morning briefing by itself.' }),
     group({ rows: [row({ label: 'Unpair NOCTIS', chevron: false, cls: 'danger', onClick: confirmUnpair })] }),
     el('<p class="disclaimer">NOCTIS is not a medical device and doesn’t diagnose or treat any sleep condition.</p>'),
   );

@@ -486,7 +486,7 @@ article.card.nx-hero { padding: 26px 20px 20px; }
 .me .chev { width: 8px; height: 14px; color: var(--fg3); flex: 0 0 auto; }
 .pstats { display: grid; grid-template-columns: repeat(3, 1fr); padding: 16px 6px 15px; text-align: center; }
 .pstats > div + div { box-shadow: -.5px 0 0 var(--line); }
-.pstats b { display: block; font-size: 30px; font-weight: 300; letter-spacing: -.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.pstats b { white-space: nowrap; display: block; font-size: 30px; font-weight: 300; letter-spacing: -.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .pstats span { display: block; margin-top: 3px; font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--fg2); }
 .row.static { cursor: default; }
 
@@ -578,3 +578,39 @@ button.srow:active { opacity: .6; }
 /* ---------- empty states: a quiet invitation with one clear action ---------- */
 .card.empty { background: var(--tint); box-shadow: none; padding: 28px 24px; }
 .card.empty .t1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+
+/* ---------- Alarms: the next alarm is the hero ---------- */
+.card.hero.alarm-card .clockface, .card.hero.alarm-card .t2 { color: var(--hero-fg); }
+.card.hero.alarm-card .clockface .ampm, .card.hero.alarm-card .ameta { color: var(--hero-fg2); }
+.card.hero.alarm-card .t2 { color: var(--hero-fg2); }
+.card.hero.alarm-card .anext { color: var(--hero-fg); border-top-color: var(--hero-line); }
+.card.hero.alarm-card .anote { color: var(--low-amber); }
+.card.hero.alarm-card .switch { --track: var(--hero-track); }
+.card.empty .pill { margin-top: 18px; }
+
+/* ---------- Sleep: progress against the plan ---------- */
+.planbar { margin-top: 16px; }
+.planbar-t { margin-top: 8px; color: var(--fg2); }
+
+/* ---------- loading: skeletons, so something is always happening ---------- */
+.skel { padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; min-height: 140px; }
+.skel i, .skel-in i { display: block; border-radius: 8px; background: var(--surface); }
+.skel-in { display: flex; flex-direction: column; gap: 12px; padding: 4px 0; }
+.s1 { width: 38%; height: 12px; }
+.s2 { width: 64%; height: 36px; }
+.s3 { width: 86%; height: 14px; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes shimmer { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+  .skel i, .skel-in i { animation: shimmer 1.5s ease-in-out infinite; }
+  .skel i:nth-child(2), .skel-in i:nth-child(2) { animation-delay: .15s; }
+  .skel i:nth-child(3), .skel-in i:nth-child(3) { animation-delay: .3s; }
+}
+
+/* ---------- search with no results ---------- */
+.noresult { text-align: center; padding: 36px 24px; display: flex; flex-direction: column; gap: 6px; }
+
+/* ---------- touch targets: 44 px or more ---------- */
+.day { width: 44px; height: 44px; }
+.chip { position: relative; height: 40px; }
+.chip::after { content: ""; position: absolute; inset: -4px 0; }
+.link { min-height: 44px; }

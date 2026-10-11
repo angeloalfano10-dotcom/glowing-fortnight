@@ -5,11 +5,14 @@ import { el, esc } from '../lib/dom.js';
 import { iconStr } from '../ui/icons.js';
 import { ctx } from '../ctx.js';
 import { clock, nextRing, planFor, fmtMin, fmtParts, daysLabel, relativeDay, DAY_LONG, wrap, bedMinOf } from '../lib/time.js';
-import { makeSwitch, makeSegmented } from '../ui/controls.js';
+import { makeSwitch, makeSegmented, longPress } from '../ui/controls.js';
+import { actionSheet } from '../ui/sheet.js';
 import { island } from '../ui/island.js';
 import { toneName } from '../lib/tones.js';
 import { Eyes } from '../ui/eyes.js';
 import { popIn } from '../ui/motion.js';
+import { haptic } from '../lib/haptics.js';
+import { newAlarm } from '../lib/store.js';
 import { panel, group, row } from './common.js';
 import { openAlarmSheet } from './alarm.js';
 import { stageAway } from './stagehelp.js';
@@ -52,12 +55,16 @@ export function createAlarms(shell) {
     const next = nextRing(s.alarms, now);
     P.setLabel(next ? `Next · ${relativeDay(next.at, now)} ${fmt(next.alarm.h * 60 + next.alarm.m)}` : 'No alarm set');
     list.innerHTML = '';
+    newCard.hidden = false;
     if (!s.alarms.length) {
       const c = el(`<article class="card empty">
           <div class="empty-eyes"><div class="eyes-layer"></div></div>
           <div class="t1">No alarms.</div>
           <div class="t2">NOCTIS will let you sleep. Add one for the mornings that need it.</div>
+          <button class="pill primary" type="button">Add an alarm</button>
         </article>`);
+      c.querySelector('.pill').addEventListener('click', () => { haptic(); openAlarmSheet(); });
+      newCard.hidden = true;
       list.append(c);
       const host = c.querySelector('.empty-eyes');
       eyes = new Eyes(host.firstElementChild, { frame: () => ({ cx: host.clientWidth / 2, cy: host.clientHeight / 2, s: host.clientWidth / 186 }), minArc: 2, glow: false });
@@ -79,7 +86,7 @@ export function createAlarms(shell) {
         if (gap < 0) note = `${ev.title} starts at ${ev.start}, before this alarm.`;
         else if (gap < 45) note = `${ev.title} at ${ev.start}, ${gap} min after waking.`;
       }
-      const c = el(`<article class="card alarm-card${a.on ? '' : ' off'}">
+      const c = el(`<article class="card alarm-card${a.on ? '' : ' off'}${isNext && a.on ? ' hero' : ''}">
           <button class="cmain" type="button" aria-label="${esc(`Edit alarm ${t.time}${t.ampm ? ` ${t.ampm}` : ''}, ${daysLabel(a.days)}`)}">
             <div class="clockface big">${esc(t.time)}${t.ampm ? `<span class="ampm">${t.ampm}</span>` : ''}</div>
             <div class="t2">${esc(daysLabel(a.days))}${isNext ? ` · ${esc(relativeDay(next.at, now) === 'Tomorrow' ? 'tomorrow' : DAY_LONG[next.at.getDay()])}` : ''}</div>
@@ -101,6 +108,16 @@ export function createAlarms(shell) {
       sw.classList.add('card-sw');
       c.append(sw);
       c.querySelector('.cmain').addEventListener('click', () => openAlarmSheet(a.id));
+      // Press and hold for quick actions, without opening the editor.
+      longPress(c.querySelector('.cmain'), () => actionSheet({
+        title: `${t.time}${t.ampm ? ` ${t.ampm}` : ''}`,
+        message: daysLabel(a.days),
+        actions: [
+          { label: 'Edit', onClick: () => openAlarmSheet(a.id) },
+          { label: 'Duplicate', onClick: () => { store.saveAlarm(newAlarm({ ...a, id: undefined })); island('Alarm duplicated', 'alarm'); } },
+          { label: 'Delete alarm', destructive: true, onClick: () => { store.removeAlarm(a.id); island('Alarm deleted', 'belloff'); } },
+        ],
+      }), { ms: 520 });
       list.append(c);
       if (known && !known.has(a.id)) popIn(c, { delay: 120 });
     });

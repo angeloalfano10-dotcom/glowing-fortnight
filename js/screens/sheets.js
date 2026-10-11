@@ -57,7 +57,7 @@ export function openLocationSheet() {
       if (mine !== q) return;
       results.innerHTML = '';
       if (found.length) results.append(group({ rows: found.map((p) => row({ label: p.name, value: p.region || '', chevron: false, onClick: () => choose(p) })) }));
-      else if (input.value.trim()) results.append(el('<div class="caption" style="padding:16px 4px">No places found.</div>'));
+      else if (input.value.trim()) results.append(el('<div class="noresult"><div class="t1">No places found.</div><div class="t2">Check the spelling, or try a larger city nearby.</div></div>'));
     }, 250);
   });
   setTimeout(() => input.focus(), 450);
