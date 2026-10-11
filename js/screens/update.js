@@ -19,7 +19,7 @@ export function createUpdate() {
           <p class="t2" data-s></p>
         </div>
         <div class="upd-foot">
-          <button class="pill solid block" type="button" data-go hidden>Update</button>
+          <button class="pill primary block" type="button" data-go hidden>Update</button>
           <div class="caption" data-c></div>
         </div>
       </div>

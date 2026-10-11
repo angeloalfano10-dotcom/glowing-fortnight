@@ -11,14 +11,16 @@ import { Eyes } from '../ui/eyes.js';
 import { nightChart } from '../ui/charts.js';
 import { nightInsights, weekInsights, roomNow } from '../services/insights.js';
 import { setNumeric, countTo } from '../ui/motion.js';
-import { panel, card } from './common.js';
+import { panel, card, progressBar, progressRing, tick } from './common.js';
+import { openCalendarsSheet, openNameSheet } from './sheets.js';
+import { island } from '../ui/island.js';
 import { stageInto, stageOutOf } from './stagehelp.js';
 
 const ORDER = {
-  morning: ['night', 'tonight', 'device'],
-  day: ['tonight', 'night', 'device'],
-  evening: ['tonight', 'device', 'night'],
-  night: ['tonight', 'device', 'night'],
+  morning: ['night', 'tonight', 'setup', 'device'],
+  day: ['tonight', 'setup', 'night', 'device'],
+  evening: ['tonight', 'setup', 'device', 'night'],
+  night: ['tonight', 'device', 'night', 'setup'],
 };
 const chev = iconStr('chev');
 
@@ -30,15 +32,23 @@ export function createToday(shell) {
   const h24 = () => store.state.display.clock24;
   const fmt = (m) => fmtMin(m, h24());
 
-  /* ---------- Tonight ---------- */
-  const tonight = card('c-tonight');
+  /* ---------- Tonight (the hero) ----------
+     One dark card, the strongest thing on the page. The ring is the goal gradient:
+     it fills as bed-by gets closer, then as the night runs toward the alarm. */
+  const tonight = card('c-tonight hero');
+  const ring = progressRing(0, 148);
+  ring.mid.innerHTML = '<span class="hk" data-r="key"></span><span class="hnum numeral" data-r="big"></span><span class="hk" data-r="ampm"></span>';
   tonight.querySelector('.cmain').innerHTML = `
     <div class="clabel"><span data-r="lab">Tonight</span>${chev}</div>
-    <div class="ckey" data-r="key"></div>
-    <div class="numeral" data-r="big"></div>
-    <div class="t1" data-r="t1" hidden></div>
-    <div class="t2" data-r="sub"></div>
+    <div class="hero-row">
+      <div class="hero-ring"></div>
+      <div class="hero-side">
+        <div class="hero-big" data-r="t1"></div>
+        <div class="hero-sub" data-r="sub"></div>
+      </div>
+    </div>
     <p class="insight" data-r="ins" hidden></p>`;
+  tonight.querySelector('.hero-ring').append(ring);
   tonight.querySelector('.cmain').addEventListener('click', () => shell.select('alarms'));
   const foot = el('<div class="cfoot"><div class="cfoot-t"><span class="cfoot-l">Wind-down reminder</span><span class="cfoot-d" data-r="remind"></span></div></div>');
   const remindSw = makeSwitch({ label: 'Wind-down reminder', checked: store.state.bedtime.remind, onChange: (v) => store.patch('bedtime', { remind: v }) });
@@ -54,22 +64,26 @@ export function createToday(shell) {
     const ins = T('ins');
     const setBig = (min) => {
       const parts = fmtParts(min, h24());
-      setNumeric(big, parts.time, parts.ampm ? `<span class="ampm">${parts.ampm}</span>` : '');
+      setNumeric(big, parts.time);
+      T('ampm').textContent = parts.ampm || '';
     };
     ins.hidden = true;
     foot.hidden = true;
+    tonight.classList.toggle('noalarm', !p.alarmSet);
     if (p.alarmSet) {
       T('lab').textContent = 'Tonight';
-      big.hidden = false;
-      T('t1').hidden = true;
       if (p.phase === 'night' && p.minsToBed < -30) {
         T('key').textContent = 'Alarm';
         setBig(p.wakeMin);
-        T('sub').textContent = `in ${dur(p.minsToWake)}. NOCTIS has it from here.`;
+        T('t1').textContent = `in ${dur(p.minsToWake)}`;
+        T('sub').textContent = 'NOCTIS has it from here.';
+        ring.set(1 - Math.max(0, Math.min(1, p.minsToWake / 450)));
       } else {
         T('key').textContent = 'Bed by';
         setBig(p.bedMin);
-        T('sub').textContent = p.minsToBed > 0 ? `in ${dur(p.minsToBed)} · alarm ${fmt(p.wakeMin)}` : `Now · alarm ${fmt(p.wakeMin)}`;
+        T('t1').textContent = p.minsToBed > 0 ? `in ${dur(p.minsToBed)}` : 'Now';
+        T('sub').textContent = `Alarm ${fmt(p.wakeMin)}`;
+        ring.set(1 - Math.max(0, Math.min(1, p.minsToBed / 180)));
         const tip = ctx.nights?.length ? weekInsights(ctx.nights.slice(0, 7), { clock24: h24() }).find((i) => i.id === 'bedtime') : null;
         if (tip) { ins.textContent = tip.text; ins.hidden = false; }
         foot.hidden = false;
@@ -80,12 +94,56 @@ export function createToday(shell) {
       const next = nextRing(s.alarms, now);
       T('lab').textContent = relativeDay(p.morning, now);
       T('key').textContent = '';
-      big.hidden = true;
-      T('t1').hidden = false;
+      T('ampm').textContent = '';
+      setNumeric(big, '–');
+      ring.set(0);
       T('t1').textContent = 'No alarm.';
       const when = next && relativeDay(next.at, now) === 'Tomorrow' ? 'tomorrow' : next ? `on ${DAY_LONG[next.at.getDay()]}` : '';
       T('sub').textContent = next ? `Next one ${when} at ${fmt(next.alarm.h * 60 + next.alarm.m)}.` : 'Sleep in. Add an alarm any time.';
     }
+  }
+
+  /* ---------- Setup checklist ----------
+     Progress that starts already moving (what onboarding finished counts), with the
+     next step one tap away. It leaves once everything is done. */
+  const setup = el(`<article class="card setup" aria-label="Finish setting up">
+      <div class="setup-head"><div class="clabel"><span>Make mornings yours</span></div><div class="setup-count" data-r="count"></div></div>
+      <div class="setup-bar"></div>
+      <div class="setup-list"></div>
+    </article>`);
+  const setupBar = progressBar(0, { tall: true });
+  setup.querySelector('.setup-bar').append(setupBar);
+  let setupDone = -1;
+  function setupItems() {
+    const s = store.state;
+    const cal = Object.values(services.calendar.accounts()).some(Boolean);
+    return [
+      { label: 'Pair NOCTIS', sub: 'Plug it in and keep your phone close', done: !!s.device.id, go: () => shell.select('noctis') },
+      { label: 'Join Wi-Fi', sub: 'NOCTIS works on 2.4 GHz networks', done: !!s.device.wifi, go: () => shell.select('noctis') },
+      { label: 'Set an alarm', done: s.alarms.some((a) => a.on), go: () => shell.select('alarms') },
+      { label: 'Connect a calendar', sub: 'For your first event each morning', done: cal, go: () => openCalendarsSheet({ onClose: renderSetup }) },
+      { label: 'Add your name', sub: 'For the greeting', done: !!(s.profile?.name || '').trim(), go: () => openNameSheet('profile') },
+    ];
+  }
+  function renderSetup() {
+    const items = setupItems();
+    const n = items.filter((i) => i.done).length;
+    const all = n === items.length;
+    if (all && setupDone >= 0 && setupDone < items.length) island('All set', 'check');
+    setupDone = n;
+    setup.hidden = all || !store.state.setup.done;
+    setup.querySelector('[data-r="count"]').textContent = `${n} of ${items.length}`;
+    setupBar.set(n / items.length);
+    const list = setup.querySelector('.setup-list');
+    list.innerHTML = '';
+    // Only the next two open steps: fewer choices, and the bar shows the rest.
+    items.filter((i) => !i.done).slice(0, 2).forEach((it) => {
+      const r = el(`<button type="button" class="srow"><span class="srow-t"><b>${esc(it.label)}</b>${it.sub ? `<span>${esc(it.sub)}</span>` : ''}</span></button>`);
+      r.prepend(tick(false));
+      r.append(el(iconStr('chev')));
+      r.addEventListener('click', it.go);
+      list.append(r);
+    });
   }
 
   /* ---------- Last night ---------- */
@@ -164,7 +222,7 @@ export function createToday(shell) {
   }
 
   /* ---------- header, order ---------- */
-  const map = { tonight, night, device: dev };
+  const map = { tonight, night, setup, device: dev };
   let lastPhase = '';
   function renderHeader() {
     const now = clock.now();
@@ -182,6 +240,7 @@ export function createToday(shell) {
   function renderAll() {
     renderHeader();
     renderTonight();
+    renderSetup();
     renderNight();
     renderDevice();
   }
@@ -199,7 +258,7 @@ export function createToday(shell) {
       stageInto(thumb, { mode: thumb.mode });
       const on = (type, fn) => { addEventListener(type, fn); subs.push(() => removeEventListener(type, fn)); };
       subs.push(
-        store.on(['alarms', 'bedtime', 'display', 'device', 'privacy', 'profile'], () => { renderAll(); }),
+        store.on(['alarms', 'bedtime', 'display', 'device', 'privacy', 'profile', 'setup'], () => { renderAll(); }),
         services.device.on('mode', () => { syncThumb(); renderDevice(); }),
         services.device.on('status', renderDevice),
         clock.onChange(() => { lastPhase = ''; renderAll(); }),

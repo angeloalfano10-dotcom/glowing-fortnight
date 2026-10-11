@@ -46,7 +46,12 @@
   /* layout */
   --gutter: 20px;
   --r-tile: 28px;
-  --r-group: 16px;
+  --r-group: 20px;
+  --r-card: 28px;
+  --r-btn: 28px;
+  --btn-h: 56px;
+  --edge: 4px;           /* the pressable bottom edge of a primary button */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px;
   --sat: env(safe-area-inset-top, 0px);
   --sab: env(safe-area-inset-bottom, 0px);
   --sal: env(safe-area-inset-left, 0px);
@@ -55,7 +60,7 @@
   /* type scale */
   --fs-numeral: 96px;   /* big light numerals */
   --fs-clock: 44px;     /* bold clock style */
-  --fs-title: 30px;
+  --fs-title: 32px;
   --fs-t1: 20px;
   --fs-body: 17px;
   --fs-label: 15px;     /* quiet small labels */
@@ -64,6 +69,15 @@
 
 /* ---------- White · dark (true black, closest to iPhone) ---------- */
 :root[data-theme="white"][data-scheme="dark"] {
+  --hero-bg: #1C1C1E;
+  --hero-fg: #FFFFFF;
+  --hero-fg2: rgba(235, 235, 245, .62);
+  --hero-track: rgba(255, 255, 255, .14);
+  --hero-line: rgba(255, 255, 255, .1);
+  --pri: #FFFFFF;
+  --pri-edge: #A1A1A6;
+  --pri-ink: #000000;
+  --card-edge: rgba(255, 255, 255, .06);
   --glass: rgba(44, 44, 48, .6);
   --glass-lens: rgba(255, 255, 255, .13);
   --glass-lift: rgba(255, 255, 255, .08);
@@ -106,6 +120,15 @@
 
 /* ---------- White · light ---------- */
 :root[data-theme="white"][data-scheme="light"] {
+  --hero-bg: #000000;
+  --hero-fg: #FFFFFF;
+  --hero-fg2: rgba(235, 235, 245, .62);
+  --hero-track: rgba(255, 255, 255, .16);
+  --hero-line: rgba(255, 255, 255, .12);
+  --pri: #000000;
+  --pri-edge: #3A3A3C;
+  --pri-ink: #FFFFFF;
+  --card-edge: rgba(0, 0, 0, .05);
   --glass: rgba(255, 255, 255, .66);
   --glass-lens: rgba(118, 118, 128, .14);
   --glass-lift: rgba(255, 255, 255, .5);
@@ -148,6 +171,15 @@
 
 /* ---------- Warm · dark (offhours palette, Low Amber accent) ---------- */
 :root[data-theme="warm"][data-scheme="dark"] {
+  --hero-bg: #262723;
+  --hero-fg: var(--warm-white);
+  --hero-fg2: var(--soft-stone);
+  --hero-track: rgba(250, 248, 244, .12);
+  --hero-line: rgba(250, 248, 244, .08);
+  --pri: var(--low-amber);
+  --pri-edge: #8F6B3F;
+  --pri-ink: var(--night-ink);
+  --card-edge: rgba(250, 248, 244, .05);
   --glass: rgba(40, 39, 35, .62);
   --glass-lens: rgba(250, 248, 244, .12);
   --glass-lift: rgba(250, 248, 244, .07);
@@ -190,6 +222,15 @@
 
 /* ---------- Warm · light ---------- */
 :root[data-theme="warm"][data-scheme="light"] {
+  --hero-bg: var(--night-ink);
+  --hero-fg: var(--warm-white);
+  --hero-fg2: var(--soft-stone);
+  --hero-track: rgba(250, 248, 244, .14);
+  --hero-line: rgba(250, 248, 244, .1);
+  --pri: var(--low-amber);
+  --pri-edge: #A9783F;
+  --pri-ink: var(--night-ink);
+  --card-edge: rgba(32, 33, 31, .05);
   --glass: rgba(250, 248, 244, .66);
   --glass-lens: rgba(136, 123, 106, .15);
   --glass-lift: rgba(255, 255, 255, .45);

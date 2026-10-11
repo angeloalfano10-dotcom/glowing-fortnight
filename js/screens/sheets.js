@@ -64,7 +64,7 @@ export function openLocationSheet() {
 }
 
 /* ---------- Calendars ---------- */
-export function openCalendarsSheet() {
+export function openCalendarsSheet({ onClose } = {}) {
   const { services } = ctx;
   const body = el('<div class="sheet-pad"></div>');
   let sheet = null;
@@ -90,7 +90,7 @@ export function openCalendarsSheet() {
     body.append(el('<div class="caption" style="margin:18px 4px 0">NOCTIS uses only the first event of each morning. Titles and times go from this phone to NOCTIS and nowhere else.</div>'));
   };
   render();
-  sheet = doneSheet('Calendars', { content: body, size: 'large', onClose: () => ctx.rebuildBriefing() });
+  sheet = doneSheet('Calendars', { content: body, size: 'large', onClose: () => { ctx.rebuildBriefing(); onClose?.(); } });
   return sheet;
 }
 

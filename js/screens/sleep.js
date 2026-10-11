@@ -189,7 +189,7 @@ export function createSleep(shell) {
         <div class="empty-eyes"><div class="eyes-layer"></div></div>
         <div class="t1">${!sensing ? 'Room sensing is off.' : cleared ? 'Sleep data deleted.' : 'No estimates yet.'}</div>
         <div class="t2">${!sensing ? 'NOCTIS estimates sleep and snoring from sound in the room. Audio is processed on NOCTIS and never uploaded.' : cleared ? 'New estimates start after tonight.' : 'NOCTIS makes its first estimate after a night in the room.'}</div>
-        ${!sensing ? '<button class="pill solid small" type="button">Turn on room sensing</button>' : ''}
+        ${!sensing ? '<button class="pill primary small" type="button">Turn on room sensing</button>' : ''}
       </article>`);
     c.querySelector('.pill')?.addEventListener('click', () => store.patch('privacy', { roomSensing: true }));
     const host = c.querySelector('.empty-eyes');

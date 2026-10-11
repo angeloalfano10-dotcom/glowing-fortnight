@@ -10,7 +10,8 @@ import { longPress } from '../ui/controls.js';
 import { island } from '../ui/island.js';
 import { haptic } from '../lib/haptics.js';
 import { prefersReducedMotion } from '../lib/spring.js';
-import { finishPicker, wifiRows, askWifi, calendarRows, group } from './common.js';
+import { finishPicker, wifiRows, askWifi, calendarRows, group, progressBar, tick } from './common.js';
+import { clock, planFor, fmtMin, DAY_LONG } from '../lib/time.js';
 import { alarmEditor } from './alarm.js';
 import { newAlarm } from '../lib/store.js';
 import { stageTo, stageInto, stageOutOf } from './stagehelp.js';
@@ -26,12 +27,16 @@ export function createOnboarding({ start = 'welcome' } = {}) {
         <button class="logo wordmark" type="button" aria-label="offhours">offhours</button>
         <span class="ob-spacer"></span>
       </header>
-      <div class="segs ob-segs" aria-hidden="true">${PROGRESS.map(() => '<i></i>').join('')}</div>
+      <div class="ob-prog"><div class="ob-bar"></div><div class="ob-meta"><span data-step></span><span data-left></span></div></div>
       <div class="ob-stage"></div>
     </section>`);
   const stageEl = root.querySelector('.ob-stage');
   const backBtn = root.querySelector('.back');
-  const segs = [...root.querySelectorAll('.ob-segs i')];
+  const bar = progressBar(0, { tall: true });
+  root.querySelector('.ob-bar').append(bar);
+  const progEl = root.querySelector('.ob-prog');
+  const stepTxt = root.querySelector('[data-step]');
+  const leftTxt = root.querySelector('[data-left]');
   longPress(root.querySelector('.logo'), () => ctx.go.demo());
   backBtn.addEventListener('click', () => goBack());
 
@@ -41,8 +46,13 @@ export function createOnboarding({ start = 'welcome' } = {}) {
 
   function chrome(name, step) {
     const pi = PROGRESS.indexOf(name);
-    segs.forEach((s, i) => s.classList.toggle('on', i <= pi));
-    root.querySelector('.ob-segs').style.opacity = pi >= 0 ? '1' : '0';
+    // Endowed progress: the bar starts already moving, and each step is about 25 s.
+    const N = PROGRESS.length;
+    const left = Math.max(0, N - pi - 1);
+    bar.set(pi >= 0 ? 0.1 + 0.9 * ((pi + 1) / N) : 0);
+    stepTxt.textContent = pi >= 0 ? `Step ${pi + 1} of ${N}` : '';
+    leftTxt.textContent = pi < 0 ? '' : left === 0 ? 'Last step' : left * 25 < 60 ? 'Under a minute left' : `About ${Math.round((left * 25) / 60)} min left`;
+    progEl.style.opacity = pi >= 0 ? '1' : '0';
     const canBack = STEPS.indexOf(name) > 0 && name !== 'ready' && !step.busy;
     backBtn.style.visibility = canBack ? 'visible' : 'hidden';
   }
@@ -119,7 +129,7 @@ const FACTORY = {
         <h1 class="title">Own your off hours.</h1>
         <p class="t2">Let’s set up NOCTIS. It takes about two minutes.</p>
       </div>
-      <div class="ob-foot"><button class="pill solid block" type="button">Begin</button></div>`, 'center');
+      <div class="ob-foot"><button class="pill primary block" type="button">Begin</button></div>`, 'center');
     n.querySelector('.pill').addEventListener('click', () => { haptic(); api.next(); });
     return {
       el: n,
@@ -135,7 +145,7 @@ const FACTORY = {
         <h1 class="title" data-t>Plug in NOCTIS.</h1>
         <p class="t2" data-s>Keep your phone close by.</p>
       </div>
-      <div class="ob-foot"><button class="pill solid block" type="button" data-go hidden>Pair</button></div>`, 'center');
+      <div class="ob-foot"><button class="pill primary block" type="button" data-go hidden>Pair</button></div>`, 'center');
     const T = n.querySelector('[data-t]');
     const S = n.querySelector('[data-s]');
     const go = n.querySelector('[data-go]');
@@ -175,10 +185,14 @@ const FACTORY = {
       go.hidden = true;
       step.busy = true;
       api.refreshChrome();
-      set('Pairing.', 'One moment.');
-      stage.setMode('awake');
-      stage.hold({ lidT: 0.22, gy: -5, gx: 5 });
-      await ctx.services.device.pair(found.id, (s) => { if (alive && s === 'securing') S.textContent = 'Almost there.'; });
+      // Pairing is quick, but a secure handshake should feel like one: show each stage.
+      const t0 = Date.now();
+      set('Pairing.', 'Connecting to NOCTIS.');
+      const work = ctx.services.device.pair(found.id, (s) => { if (alive && s === 'securing') S.textContent = 'Securing the connection.'; });
+      await wait(1100);
+      if (alive) S.textContent = 'Securing the connection.';
+      await work;
+      if (alive && Date.now() - t0 < 2600) { S.textContent = 'Checking it can reach you.'; await wait(2600 - (Date.now() - t0)); }
       if (!alive) return;
       stage.release();
       stage.setMode('idle');
@@ -276,7 +290,7 @@ const FACTORY = {
         <h1 class="title">Which finish is yours?</h1>
       </div>
       <div class="ob-finish"></div>
-      <div class="ob-foot"><button class="pill solid block" type="button">Continue</button></div>`, 'center finish-step');
+      <div class="ob-foot"><button class="pill primary block" type="button">Continue</button></div>`, 'center finish-step');
     const picker = finishPicker({
       value: s.device.finish,
       size: 228,
@@ -306,7 +320,7 @@ const FACTORY = {
         <input class="field" name="n" maxlength="24" value="${esc(s.device.name)}" aria-label="Name" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done">
         <div class="chips">${['Bedroom', 'Bedside', 'Guest room'].map((c) => `<button class="chip" type="button">${c}</button>`).join('')}</div>
       </form>
-      <div class="ob-foot"><button class="pill solid block" type="button">Continue</button></div>`, 'top');
+      <div class="ob-foot"><button class="pill primary block" type="button">Continue</button></div>`, 'top');
     const input = n.querySelector('input');
     const done = () => {
       const v = input.value.trim() || 'Bedroom';
@@ -337,7 +351,7 @@ const FACTORY = {
         <p class="t2">NOCTIS reads only your first event each morning.</p>
       </div>
       <div class="ob-list"></div>
-      <div class="ob-foot"><button class="pill solid block" type="button" data-go>Not now</button></div>`, 'top');
+      <div class="ob-foot"><button class="pill primary block" type="button" data-go>Not now</button></div>`, 'top');
     const list = n.querySelector('.ob-list');
     const go = n.querySelector('[data-go]');
     const render = () => {
@@ -367,7 +381,7 @@ const FACTORY = {
         <h1 class="title">When do you wake?</h1>
       </div>
       <div class="ob-alarm"></div>
-      <div class="ob-foot"><button class="pill solid block" type="button">Continue</button></div>`, 'top');
+      <div class="ob-foot"><button class="pill primary block" type="button">Continue</button></div>`, 'top');
     const ed = alarmEditor({ alarm: first, clock24: s.display.clock24, full: false, onChange: (a) => { draft = a; } });
     n.querySelector('.ob-alarm').append(ed.el);
     n.querySelector('.pill').addEventListener('click', () => {
@@ -382,23 +396,40 @@ const FACTORY = {
   },
 
   ready(api) {
+    const st = ctx.store.state;
+    const h24 = st.display.clock24;
+    const plan = planFor(st.alarms, clock.now());
+    const next = st.alarms.find((a) => a.on);
+    const cal = Object.values(ctx.services.calendar.accounts()).some(Boolean);
+    const tomorrow = next ? fmtMin(next.h * 60 + next.m, h24) : null;
+    const items = [
+      ['NOCTIS paired', `${st.device.name}${st.device.wifi ? ` · ${st.device.wifi}` : ''}`],
+      ['Alarm set', next ? `${tomorrow}${plan.alarmSet ? ` · bed by ${fmtMin(plan.bedMin, h24)}` : ''}` : 'Add one any time'],
+      cal && ['Calendar connected', 'First event in your briefing'],
+    ].filter(Boolean);
     const n = stepEl(`
       <div class="ob-eyes"><span class="anchor" style="width:200px;height:110px"></span></div>
       <div class="ob-copy">
         <h1 class="title">NOCTIS is ready.</h1>
         <p class="t2">Leave your phone in another room tonight.</p>
       </div>
-      <div class="ob-foot"><button class="pill solid block" type="button">Done</button></div>`, 'center');
+      <ul class="ready-list" aria-label="What is set">${items.map(([a, b]) => `<li><span class="rk"></span><span class="rt"><b>${esc(a)}</b><span>${esc(b)}</span></span></li>`).join('')}</ul>
+      <div class="ob-foot"><button class="pill primary block" type="button">Go to Today</button></div>`, 'center ready');
+    const ticks = items.map((_, i) => { const t = tick(false); n.querySelectorAll('.rk')[i].append(t); return t; });
     n.querySelector('.pill').addEventListener('click', () => { haptic(); api.finish(); });
-    let t = 0;
+    let timers = [];
     return {
       el: n,
       anchor: n.querySelector('.anchor'),
       enter() {
         ctx.stage.rest('day');
-        t = setTimeout(() => ctx.stage.run('hop'), 650);
+        // The peak of the whole setup: the eyes hop, then each thing you set ticks in.
+        timers.push(setTimeout(() => { ctx.stage.run('hop'); haptic(); }, 500));
+        n.querySelectorAll('.ready-list li').forEach((li, i) => {
+          timers.push(setTimeout(() => { li.classList.add('in'); ticks[i].set(true); if (i === items.length - 1) haptic(); }, 1000 + i * 420));
+        });
       },
-      leave() { clearTimeout(t); },
+      leave() { timers.forEach(clearTimeout); timers = []; },
     };
   },
 };

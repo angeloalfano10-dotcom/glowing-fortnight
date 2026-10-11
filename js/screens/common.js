@@ -208,7 +208,7 @@ export function connectCalendar(id) {
         <h2 class="title">${esc(p.name)}</h2>
         <p class="t2">offhours reads event titles and start times to build your morning briefing. It never changes your calendar.</p>
         <div class="caption">${isApple ? 'In the app, iOS asks for calendar access here.' : 'In the app, Google sign-in opens here.'} This prototype simulates it.</div>
-        <button class="pill solid block" type="button" data-allow>Allow</button>
+        <button class="pill primary block" type="button" data-allow>Allow</button>
         <button class="pill quiet block" type="button" data-cancel>Not now</button>
       </div>`);
     let ok = false;
@@ -246,3 +246,40 @@ export function calendarRows(onChange) {
   });
 }
 
+
+/* ---------- progress (goal gradient) ---------- */
+
+/** A thin progress bar. Returns an element with .set(p) (0 to 1). */
+export function progressBar(p = 0, { tall = false, onHero = false } = {}) {
+  const b = el(`<div class="pbar ${tall ? 'tall' : ''} ${onHero ? 'on-hero' : ''}" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div>`);
+  b.set = (v) => {
+    const k = Math.max(0, Math.min(1, v));
+    b.style.setProperty('--p', String(k));
+    b.setAttribute('aria-valuenow', String(Math.round(k * 100)));
+  };
+  b.set(p);
+  return b;
+}
+
+/** A progress ring with a slot in the middle. Returns an element with .set(p) and .mid. */
+export function progressRing(p = 0, size = 148) {
+  const r = 52;
+  const c = 2 * Math.PI * r;
+  const n = el(`<div class="pring" style="width:${size}px;height:${size}px">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="trk" cx="60" cy="60" r="${r}"/><circle class="arc" cx="60" cy="60" r="${r}" stroke-dasharray="${c}" stroke-dashoffset="${c}"/></svg>
+      <div class="mid"></div>
+    </div>`);
+  const arc = n.querySelector('.arc');
+  n.mid = n.querySelector('.mid');
+  n.set = (v) => { arc.style.strokeDashoffset = String(c * (1 - Math.max(0.02, Math.min(1, v)))); };
+  // start empty, then fill on the next frame so it draws in
+  requestAnimationFrame(() => requestAnimationFrame(() => n.set(p)));
+  return n;
+}
+
+/** A round tick that draws itself when `done`. */
+export function tick(done = false) {
+  const t = el(`<span class="tick ${done ? 'done' : ''}" aria-hidden="true">${iconStr('check')}</span>`);
+  t.set = (v) => t.classList.toggle('done', !!v);
+  return t;
+}

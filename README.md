@@ -50,6 +50,20 @@ On a computer, the main link opens **`showcase.html`** by itself. It shows the a
 - **Resting face:** Eyes (default) or Clock, the same option as in the app. With Clock, a tap shows the eyes for a few seconds.
 - Manrope loads from this repo (Google Fonts only as a fallback), the file declares UTF-8, and `?embed=1` / `?theme=warm` are there for the showcase.
 
+## Design pass: what makes it feel premium
+
+A redesign built on five ideas from the "psychology of good apps" reference, kept inside the offhours rules (calm, no scores, every sleep figure says "estimate"):
+
+- **Goal gradient.** Onboarding has a real progress bar with "Step 2 of 6" and "About 2 min left", and it starts already filled a little (endowed progress). On Today, the Tonight hero is a ring that fills as bed-by gets closer, then as the night runs to the alarm. A "Make mornings yours" card shows `3 of 5` and only the next two open steps.
+- **Peak and end.** The last onboarding screen is the peak: the eyes hop, then each thing you set ticks in one by one (paired, alarm, calendar) with a haptic. Finishing the checklist on Today ends with an "All set" island.
+- **Labor illusion.** Pairing takes at least a few seconds and says what it is doing: connecting, securing the connection, checking it can reach you.
+- **Von Restorff.** One thing per screen is different. Tonight is the only dark card. The only amber, pressable button (`.pill.primary`, with a bottom edge that compresses) is the main action. Everything else is quiet.
+- **Choice overload.** Fewer, grouped choices: two checklist steps at a time, empty states with one action.
+
+New pieces: `progressBar`, `progressRing` and `tick` in `js/screens/common.js`; hero, primary button, spacing and elevation tokens in `css/tokens.css`.
+
+Left out on purpose: Duolingo-style streaks and scores. They would turn sleep into a performance, which NOCTIS must not do.
+
 ## Demo panel
 
 **Press and hold the "offhours" wordmark** (top left on Today, top centre in setup) to open the Demo panel:
