@@ -8,6 +8,8 @@
 
 **Where the board and panel agree:** the pain is real, the experience is distinctive, but the phone and smart displays do the job for free or cheaply and nobody has shown that people will leave the phone in another room. Board: 2 fund-if (4/10, 6/10), 1 pass (3/10). Panel v1 and v2: 0 of 20 buy. Disagreement: Monopoly says pass (no moat, copyable); Product says fund if the alarm is flawless and cost is proven.
 
+**Real cost update:** the actual 5-unit prototype order cost EUR 63.96 a unit, not EUR 40. At that cost each device leaves EUR 12.71 (13%), break-even is 106 a month and the margin at plan is -17%. This is a prototype order that excludes the timber body, so production could be lower with volume or higher with the enclosure. See `cfo-prototype-cost.md`.
+
 **Biggest risk:** unit cost and proof of demand. If the real unit cost is above about EUR 55 at EUR 120, the margin disappears.
 
 **What to start with:** about EUR 18,000 of startup spend plus working capital, but do not spend it before the test: refundable deposits from strangers (start 16 Nov 2026, close 31 Dec).

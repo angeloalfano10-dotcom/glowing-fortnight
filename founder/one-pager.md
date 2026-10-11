@@ -11,6 +11,7 @@
 | Break-even | 37 devices a month |
 | Year 1 operating profit | EUR -2,559 (372 devices, assumption) |
 | Startup spend | EUR 18,000 plus about EUR 12,000 working capital |
+| Real 5-unit prototype cost | EUR 63.96 a unit (target EUR 40); contribution EUR 12.71 at that cost |
 | Verdict | **Not yet** |
 
 **Evidence.** Competitors (Loftie, Hatch, Echo, Nest) show demand for the category and a gap: no ads, no subscription, a considered object. Board: 2 fund-if, 1 pass (average 4.3 of 10). Simulated panel: 0 of 20 buy at EUR 120 before and after the improved offer; the acceptable range rose to about EUR 40-120. No real customers have been tested yet.
