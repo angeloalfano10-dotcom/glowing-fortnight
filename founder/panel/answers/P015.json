@@ -3,11 +3,11 @@
   "buys": false,
   "purchases_first_month": 0,
   "reason_code": "trust",
-  "reason": "My phone alarm works and I already own a watch for sleep stuff, so this has to be rock solid to replace it. I'd be nervous betting my morning on a new small-batch gadget, and 120 is a lot for a pre-order of something I can't try.",
-  "objection": "Will the alarm still go off if the Wi-Fi is down or the companion app breaks? If it fails once I'm late for work, and I'd have the phone in another room.",
-  "would_change_my_mind": "A clear statement that the alarm runs fully offline on the device, plus a real review or a trial period with returns, and a price nearer 90.",
-  "price_too_cheap": 40,
-  "price_cheap": 70,
-  "price_expensive": 100,
-  "price_too_expensive": 140
+  "reason": "The offline alarm and the physical button answer my first worry, and the refund is fair, but I would be paying EUR 120 up front for something that does not exist as a shipped product yet. My phone alarm already works for free and I would still be tempted to bring the phone to bed.",
+  "objection": "It is a pre-order from a brand-new company, so I am paying now for a device nobody has reviewed. I do not know if the sleep and snoring estimate is any good, or if the alarm is reliable enough that I will not oversleep on a work morning.",
+  "would_change_my_mind": "Independent reviews from people who have used it for a few weeks, or a shipped unit I could see working, ideally at around EUR 90 to 100.",
+  "price_too_cheap": 35,
+  "price_cheap": 60,
+  "price_expensive": 110,
+  "price_too_expensive": 160
 }

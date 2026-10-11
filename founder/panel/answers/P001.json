@@ -3,11 +3,11 @@
   "buys": false,
   "purchases_first_month": 0,
   "reason_code": "habit",
-  "reason": "I know I scroll too long at night, but I'd still keep my phone on the bedside table for emergencies, so this would just be a second gadget next to it. Screen-time limits haven't stuck for me and I don't believe a nicer alarm clock changes that.",
-  "objection": "I need my phone near me anyway, so it doesn't replace anything and I'd just end up scrolling on the phone as well.",
-  "would_change_my_mind": "Proof that real people actually leave the phone in another room with it, plus a reliable way to still get emergency calls through to the bedside.",
+  "reason": "I already know I scroll too long, but my phone sleeps next to me and I look at it first thing. I doubt a nice wooden clock would change that, and I would just bring the phone to bed anyway.",
+  "objection": "I need my phone near me anyway, for emergencies. Favourites letting calls through is something, but I would not trust it enough to leave the phone in another room, and if it stays beside me this is a 120 euro alarm clock.",
+  "would_change_my_mind": "Seeing it work in a friend's home for a couple of weeks, plus proof that a call from my family really rings through to the other room every time.",
   "price_too_cheap": 35,
-  "price_cheap": 65,
+  "price_cheap": 70,
   "price_expensive": 130,
-  "price_too_expensive": 180
+  "price_too_expensive": 190
 }

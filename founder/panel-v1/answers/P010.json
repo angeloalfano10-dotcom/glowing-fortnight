@@ -1,0 +1,13 @@
+{
+  "id": "P010",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "120 euros is a lot for something my phone already does for free, and I only look at my phone for half an hour before sleep, so it isn't a big problem for me. I'd rather spend that on something I use every day.",
+  "objection": "Will the alarm still work if the Wi-Fi is down? If it fails once and I miss work, that's it. I also don't want to pay 120 euros for a second alarm clock that I still have to set up through my phone.",
+  "would_change_my_mind": "A price around 50 to 60 euros, plus a clear statement that the alarm works with no Wi-Fi.",
+  "price_too_cheap": 25,
+  "price_cheap": 45,
+  "price_expensive": 75,
+  "price_too_expensive": 100
+}

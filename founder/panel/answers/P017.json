@@ -3,11 +3,11 @@
   "buys": false,
   "purchases_first_month": 0,
   "reason_code": "need",
-  "reason": "It's a pretty object, but I need my phone next to me anyway for emergencies and the kids, so it wouldn't replace anything. I'd end up with both on the nightstand.",
-  "objection": "I can't put my phone in another room, so this is just a second alarm clock for 120 euro that I'd still have to snooze through.",
-  "would_change_my_mind": "If it could reliably let urgent calls from specific people reach me, or if it worked well as a standalone object I'd happily keep next to the phone, at a much lower price.",
+  "reason": "It looks nice and the button and offline alarm are sensible, but I would still keep my phone next to me, so I would be paying 120 euros for a second alarm clock. I would not pre-order something that does not exist yet from a company I have never heard of.",
+  "objection": "I need my phone near me anyway, for emergencies or the kids. Relying on a favourites setting to ring through from another room feels risky, and I would be paying 120 euros for a pre-order of a device nobody has reviewed yet.",
+  "would_change_my_mind": "Seeing it finished and reviewed by real owners, and a way to test that urgent calls reliably wake me with the phone in another room. A price nearer 80 would help.",
   "price_too_cheap": 35,
-  "price_cheap": 55,
-  "price_expensive": 90,
-  "price_too_expensive": 130
+  "price_cheap": 70,
+  "price_expensive": 110,
+  "price_too_expensive": 160
 }

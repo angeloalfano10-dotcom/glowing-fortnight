@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "It looks lovely, but I have never managed to leave my phone in another room, and my phone alarm already works and costs nothing. I would be paying 120 euros for a habit change I have not made yet.",
+  "objection": "How accurate can a sleep and snoring estimate from a microphone be? And I would still want my phone next to me, so this becomes one more object on the bedside table.",
+  "would_change_my_mind": "A reviewer or friend I trust showing it really got them to leave their phone outside the bedroom, or a lower price with a real return window.",
+  "price_too_cheap": 40,
+  "price_cheap": 70,
+  "price_expensive": 110,
+  "price_too_expensive": 150
+}

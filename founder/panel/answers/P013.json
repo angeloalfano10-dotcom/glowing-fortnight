@@ -3,11 +3,11 @@
   "buys": false,
   "purchases_first_month": 0,
   "reason_code": "need",
-  "reason": "I already have a smart display and speaker that do alarm, weather and calendar, and I've never actually moved my phone out of the bedroom. Another box on the nightstand for EUR 120 doesn't fix the habit, it just duplicates what I own.",
-  "objection": "How accurate can a sleep and snoring estimate from a microphone and room sensing really be? If that's the one thing it does that my current setup doesn't, I'd want proof, and from a first small-batch product on a waitlist I can't get any.",
-  "would_change_my_mind": "Independent reviews or a trial period showing the estimates are consistent, plus it working with my existing smart-home setup, at around EUR 90 or less.",
+  "reason": "I already have a smart display and an ecosystem that does alarm, weather and calendar, so this is a second device doing a job I mostly have covered. I have thought about leaving my phone in another room for years and never done it, and EUR 120 on a pre-order of something that does not exist yet is not going to change that.",
+  "objection": "How accurate can a sleep and snoring estimate from a microphone be? And why would I add another bedside gadget when my current setup already wakes me up and tells me my day?",
+  "would_change_my_mind": "Seeing it work with my existing smart home setup, plus independent reviews or real data showing the estimates are meaningful, and a finished product I could return after the 60 days without hassle.",
   "price_too_cheap": 35,
-  "price_cheap": 70,
+  "price_cheap": 65,
   "price_expensive": 110,
-  "price_too_expensive": 150
+  "price_too_expensive": 160
 }

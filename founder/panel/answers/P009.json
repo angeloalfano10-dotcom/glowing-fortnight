@@ -3,11 +3,11 @@
   "buys": false,
   "purchases_first_month": 0,
   "reason_code": "price",
-  "reason": "EUR 120 is a lot for something my phone already does for free, and I would still need the phone for everything else. It looks nice, but I would not pay that for an alarm and a weather readout.",
-  "objection": "My phone already does the alarm, weather and calendar for free. I doubt I would stop reaching for it in bed just because there is another object on the table, and I would be paying EUR 120 to find out.",
-  "would_change_my_mind": "A price around EUR 70 to 80, or a trial period with free returns so I could see whether it actually keeps me off my phone at night.",
-  "price_too_cheap": 25,
-  "price_cheap": 55,
-  "price_expensive": 90,
-  "price_too_expensive": 115
+  "reason": "EUR 120 is a lot when my phone already does the alarm and the weather for free. I like the idea of getting the phone out of the bedroom, but I would not pay that on a pre-order for something I cannot hold yet.",
+  "objection": "I know I scroll too much, but I am not sure a EUR 120 clock is what fixes it. I would probably keep the phone next to me anyway 'just in case' and then I have paid for a second alarm clock. It is also a brand-new company and I would be paying before anyone I know has used one.",
+  "would_change_my_mind": "A price nearer EUR 70 to 80, or reviews from real owners showing they actually left the phone in another room after a few weeks.",
+  "price_too_cheap": 35,
+  "price_cheap": 65,
+  "price_expensive": 100,
+  "price_too_expensive": 140
 }

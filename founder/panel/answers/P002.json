@@ -3,11 +3,11 @@
   "buys": false,
   "purchases_first_month": 0,
   "reason_code": "need",
-  "reason": "I already have a smart display that does alarm, weather and calendar, and it cost me less. I've never actually moved my phone out of the bedroom, so I doubt a EUR 120 object would be what changes that.",
-  "objection": "It does what my Echo or Nest already does, for more money, and it's one more device on the nightstand. The sleep and snoring estimate is the only new thing, and I don't trust a number from room sensing enough to pay for it.",
-  "would_change_my_mind": "A price near EUR 60 to 70, or proof that it works with my existing smart-home setup instead of sitting beside it.",
-  "price_too_cheap": 35,
-  "price_cheap": 55,
-  "price_expensive": 90,
-  "price_too_expensive": 120
+  "reason": "I already have an Echo Show that does alarm, weather and calendar for a lot less than 120 euros. The phone-in-another-room idea is nice, but I've never actually done it, and a pre-order for a new brand isn't going to change that.",
+  "objection": "It does what my Echo or Nest already does, and the thing I'd really be paying for is the discipline to leave my phone outside, which a gadget won't give me. Also, 120 euros up front for a first batch from a student company I've never heard of.",
+  "would_change_my_mind": "Seeing it working in someone's home or a solid independent review, plus a price nearer 80 euros. A clear reason it beats my existing display, like it working without my smart-home ecosystem and no cloud account.",
+  "price_too_cheap": 40,
+  "price_cheap": 70,
+  "price_expensive": 110,
+  "price_too_expensive": 150
 }

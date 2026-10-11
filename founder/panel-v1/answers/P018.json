@@ -1,0 +1,13 @@
+{
+  "id": "P018",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "It looks nice, but EUR 120 is a lot for something that does what my phone already does for free. I'd put it on a wishlist and wait for a sale rather than pre-order from a small batch.",
+  "objection": "My phone already does the alarm, weather and calendar. I'd be paying EUR 120 for a nicer object, and I'd still snooze it the same way.",
+  "would_change_my_mind": "A price under EUR 70, or a discount code at launch, plus reviews from real owners showing it actually gets people out of bed.",
+  "price_too_cheap": 25,
+  "price_cheap": 50,
+  "price_expensive": 80,
+  "price_too_expensive": 110
+}

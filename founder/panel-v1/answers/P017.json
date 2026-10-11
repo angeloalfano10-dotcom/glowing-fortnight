@@ -1,0 +1,13 @@
+{
+  "id": "P017",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "It's a pretty object, but I need my phone next to me anyway for emergencies and the kids, so it wouldn't replace anything. I'd end up with both on the nightstand.",
+  "objection": "I can't put my phone in another room, so this is just a second alarm clock for 120 euro that I'd still have to snooze through.",
+  "would_change_my_mind": "If it could reliably let urgent calls from specific people reach me, or if it worked well as a standalone object I'd happily keep next to the phone, at a much lower price.",
+  "price_too_cheap": 35,
+  "price_cheap": 55,
+  "price_expensive": 90,
+  "price_too_expensive": 130
+}

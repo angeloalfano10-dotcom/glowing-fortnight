@@ -1,0 +1,13 @@
+{
+  "id": "P004",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I need my phone next to me anyway, for emergencies or the kids, so moving it to another room isn't going to happen. I'd end up with a nice object plus the phone still on the nightstand.",
+  "objection": "The phone stays within reach regardless, so this doesn't stop my scrolling, it just adds a second thing at the bedside. And EUR 120 for an alarm clock with a briefing is a lot for something unproven from a tiny batch maker.",
+  "would_change_my_mind": "If it could reliably let a call from family or the kids' school ring through while the phone sits in another room, and I could see it working for a few weeks first, I'd reconsider.",
+  "price_too_cheap": 30,
+  "price_cheap": 60,
+  "price_expensive": 100,
+  "price_too_expensive": 150
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I already have a smart speaker and display, and I'm not putting another always-listening microphone next to my bed. My phone alarm works fine, even if I snooze it too much, and 120 euro for a better alarm clock is a lot.",
+  "objection": "It has a microphone beside my bed all night and all I have is the company's word that audio stays on the device. It's also a new brand selling small batches, so I don't know if it will still be supported in two years.",
+  "would_change_my_mind": "A physical mic-off switch or independent proof that audio never leaves the device, plus a price around 79 euro and a trial period with free returns.",
+  "price_too_cheap": 35,
+  "price_cheap": 59,
+  "price_expensive": 99,
+  "price_too_expensive": 130
+}

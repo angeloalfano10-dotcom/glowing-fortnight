@@ -3,11 +3,11 @@
   "buys": false,
   "purchases_first_month": 0,
   "reason_code": "need",
-  "reason": "I already have a smart speaker that does alarm and weather, and my phone is the alarm I trust. I don't feel a gap that 120 euros fills, and I'd rather not pay for a second bedside gadget.",
-  "objection": "An Echo or Nest already does alarm, weather and questions, so this is a nicer-looking version of something I own. The sleep and snoring estimate from a microphone is the one new thing, and I don't trust it enough to pay for it. I'd also still want my phone nearby, so it might not keep the phone out of the room.",
-  "would_change_my_mind": "Seeing it work for a few weeks in a friend's home, with independent reviews showing the sleep and snoring estimate is useful, and a price closer to 80 euros.",
-  "price_too_cheap": 35,
-  "price_cheap": 65,
-  "price_expensive": 100,
-  "price_too_expensive": 140
+  "reason": "I already have an Echo that does alarm and weather, and a smart alarm is not my problem. My problem is scrolling before sleep, and a nice wooden box will not stop me taking my phone to bed.",
+  "objection": "It costs 120 euros to do what my Echo and my phone already do. Pre-ordering from a brand I have never heard of, for a batch that does not exist yet, makes that worse. The sleep and snoring estimate is the part I would trust least.",
+  "would_change_my_mind": "Seeing the finished product in a real review from someone independent, and a clear, honest account of how the sleep estimate is made. A lower price, around 80 to 90 euros, would also help.",
+  "price_too_cheap": 40,
+  "price_cheap": 70,
+  "price_expensive": 110,
+  "price_too_expensive": 160
 }

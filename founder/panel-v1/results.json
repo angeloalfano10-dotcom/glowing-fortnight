@@ -1,0 +1,151 @@
+{
+ "business": "NOCTIS, a smart bedside companion by offhours (EUR 120)",
+ "seed": 7,
+ "dealt": 20,
+ "answered": 20,
+ "skipped": [],
+ "buys": 0,
+ "passes": 20,
+ "buy_rate": 0.0,
+ "by_segment": [
+  [
+   "High earner",
+   4,
+   0.0
+  ],
+  [
+   "Mid-career professional",
+   8,
+   0.0
+  ],
+  [
+   "Early-career professional",
+   8,
+   0.0
+  ]
+ ],
+ "by_behaviour": [
+  [
+   "Phone-in-bed scroller",
+   4,
+   0.0
+  ],
+  [
+   "Smart-home owner",
+   3,
+   0.0
+  ],
+  [
+   "Sleep-curious",
+   3,
+   0.0
+  ],
+  [
+   "Design buyer",
+   5,
+   0.0
+  ],
+  [
+   "Deal hunter",
+   2,
+   0.0
+  ],
+  [
+   "Gadget sceptic",
+   3,
+   0.0
+  ]
+ ],
+ "by_income": [
+  [
+   "$79,000 and up",
+   7,
+   0.0
+  ],
+  [
+   "$57,000 to $79,000",
+   7,
+   0.0
+  ],
+  [
+   "under $57,000",
+   6,
+   0.0
+  ]
+ ],
+ "why_not": [
+  [
+   "need",
+   10,
+   [
+    "I already have a smart display that does alarm, weather and calendar, and it cost me less. I've never actually moved my phone out of the bedroom, so I doubt a EUR 120 object would be what changes that.",
+    "I keep my phone within reach because of the kids and emergencies, so something that replaces it at the bedside solves a problem I don't have. I already have an alarm that works, even if I snooze it too much."
+   ],
+   [
+    "P002",
+    "P003"
+   ]
+  ],
+  [
+   "price",
+   6,
+   [
+    "EUR 120 is a lot when my phone already does the alarm and the weather for free. I like how it looks, but I'd be paying a lot to fix a habit I've already failed to fix with willpower.",
+    "EUR 120 is a lot when my phone already does the alarm and the weather for free. I'd rather wait for a sale or buy a 25 euro sunrise lamp on Amazon."
+   ],
+   [
+    "P006",
+    "P008"
+   ]
+  ],
+  [
+   "habit",
+   2,
+   [
+    "I know I scroll too long at night, but I'd still keep my phone on the bedside table for emergencies, so this would just be a second gadget next to it. Screen-time limits haven't stuck for me and I don't believe a nicer alarm clock changes that.",
+    "It looks lovely, but I have never managed to leave my phone in another room, and my phone alarm already works and costs nothing. I would be paying 120 euros for a habit change I have not made yet."
+   ],
+   [
+    "P001",
+    "P005"
+   ]
+  ],
+  [
+   "trust",
+   2,
+   [
+    "My phone alarm works and I already own a watch for sleep stuff, so this has to be rock solid to replace it. I'd be nervous betting my morning on a new small-batch gadget, and 120 is a lot for a pre-order of something I can't try.",
+    "I already have a smart speaker and display, and I'm not putting another always-listening microphone next to my bed. My phone alarm works fine, even if I snooze it too much, and 120 euro for a better alarm clock is a lot."
+   ],
+   [
+    "P015",
+    "P019"
+   ]
+  ]
+ ],
+ "why_yes": [],
+ "flip": [
+  "Proof that real people actually leave the phone in another room with it, plus a reliable way to still get emergency calls through to the bedside.",
+  "A price near EUR 60 to 70, or proof that it works with my existing smart-home setup instead of sitting beside it.",
+  "If it could reliably let urgent calls from the kids or family through without the phone being in the room, and cost around 70 euros.",
+  "If it could reliably let a call from family or the kids' school ring through while the phone sits in another room, and I could see it working for a few weeks first, I'd reconsider.",
+  "A reviewer or friend I trust showing it really got them to leave their phone outside the bedroom, or a lower price with a real return window.",
+  "A price around EUR 70 to 80, or a trial period with free returns so I could find out whether I really leave the phone in another room.",
+  "Seeing it work for a few weeks in a friend's home, with independent reviews showing the sleep and snoring estimate is useful, and a price closer to 80 euros.",
+  "A price around 60 euros or a proper launch discount, plus some independent reviews showing it actually gets me out of bed.",
+  "A price around EUR 70 to 80, or a trial period with free returns so I could see whether it actually keeps me off my phone at night.",
+  "A price around 50 to 60 euros, plus a clear statement that the alarm works with no Wi-Fi.",
+  "If it let urgent calls from a short list of people (family, school) come through, so I could really leave the phone in another room, and it was around EUR 80.",
+  "A clear promise that the alarm works fully offline, plus a price closer to 60 euros, or a trial period with a real money-back return.",
+  "Independent reviews or a trial period showing the estimates are consistent, plus it working with my existing smart-home setup, at around EUR 90 or less.",
+  "Proof that the alarm works fully offline, plus a price closer to 70 euros and independent reviews from people who have used it for a few months.",
+  "A clear statement that the alarm runs fully offline on the device, plus a real review or a trial period with returns, and a price nearer 90.",
+  "Seeing a real unit in a review or in person, and a price nearer 80 euros. It would also need to do something my speaker clearly can't, like a proper calendar briefing that works well without me thinking about it.",
+  "If it could reliably let urgent calls from specific people reach me, or if it worked well as a standalone object I'd happily keep next to the phone, at a much lower price.",
+  "A price under EUR 70, or a discount code at launch, plus reviews from real owners showing it actually gets people out of bed.",
+  "A physical mic-off switch or independent proof that audio never leaves the device, plus a price around 79 euro and a trial period with free returns.",
+  "Seeing and hearing it in person, a real review from someone I trust, and a price closer to EUR 90 with a clear promise that it keeps working if the company stops."
+ ],
+ "purchases_first_month_per_buyer": null,
+ "price_answers": 20
+}

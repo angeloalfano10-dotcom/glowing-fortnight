@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I keep my phone within reach because of the kids and emergencies, so something that replaces it at the bedside solves a problem I don't have. I already have an alarm that works, even if I snooze it too much.",
+  "objection": "The phone stays next to me anyway, so this would just be a second thing on the nightstand for 120 euros. I'm also wary of sleep and snoring estimates from a room sensor, since I already get better data from my watch.",
+  "would_change_my_mind": "If it could reliably let urgent calls from the kids or family through without the phone being in the room, and cost around 70 euros.",
+  "price_too_cheap": 30,
+  "price_cheap": 55,
+  "price_expensive": 100,
+  "price_too_expensive": 150
+}

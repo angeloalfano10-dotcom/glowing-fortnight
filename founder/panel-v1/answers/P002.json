@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I already have a smart display that does alarm, weather and calendar, and it cost me less. I've never actually moved my phone out of the bedroom, so I doubt a EUR 120 object would be what changes that.",
+  "objection": "It does what my Echo or Nest already does, for more money, and it's one more device on the nightstand. The sleep and snoring estimate is the only new thing, and I don't trust a number from room sensing enough to pay for it.",
+  "would_change_my_mind": "A price near EUR 60 to 70, or proof that it works with my existing smart-home setup instead of sitting beside it.",
+  "price_too_cheap": 35,
+  "price_cheap": 55,
+  "price_expensive": 90,
+  "price_too_expensive": 120
+}
