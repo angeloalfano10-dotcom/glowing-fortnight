@@ -1,0 +1,305 @@
+/* offhours brand layer (v2): night ink to sunrise.
+   Loaded last. It restyles the existing components with the new identity:
+   navy ground, one blue-to-orange gradient used sparingly, a lowkey sunset sky. */
+
+/* ---------- the sky: a quiet, time-aware glow behind every screen ---------- */
+:root {
+  --sky-a: radial-gradient(110% 46% at 88% -6%, rgba(139, 160, 255, .2), transparent 62%);
+  --sky-b: radial-gradient(130% 44% at 50% 114%, rgba(255, 152, 87, .12), transparent 70%);
+  --sky: var(--sky-a), var(--sky-b);
+}
+:root[data-phase="morning"] { --sky: radial-gradient(110% 44% at 12% -6%, rgba(139, 160, 255, .16), transparent 62%), radial-gradient(140% 50% at 30% 116%, rgba(255, 214, 166, .24), rgba(255, 152, 87, .1) 46%, transparent 72%); }
+:root[data-phase="day"] { --sky: radial-gradient(110% 40% at 80% -8%, rgba(139, 160, 255, .2), transparent 62%), radial-gradient(130% 36% at 50% 112%, rgba(214, 197, 214, .12), transparent 70%); }
+:root[data-phase="evening"] { --sky: radial-gradient(110% 40% at 90% -6%, rgba(139, 160, 255, .17), transparent 60%), radial-gradient(150% 56% at 50% 118%, rgba(255, 152, 87, .34), rgba(255, 190, 130, .12) 44%, transparent 72%); }
+:root[data-phase="night"] { --sky: radial-gradient(110% 40% at 85% -8%, rgba(139, 160, 255, .15), transparent 62%), radial-gradient(130% 36% at 50% 114%, rgba(255, 152, 87, .09), transparent 70%); }
+:root[data-scheme="light"] { --sky: radial-gradient(110% 40% at 90% -6%, rgba(139, 160, 255, .22), transparent 62%), radial-gradient(140% 46% at 50% 116%, rgba(255, 152, 87, .2), rgba(255, 214, 166, .1) 46%, transparent 72%); }
+:root[data-scheme="light"][data-phase="night"] { --sky: radial-gradient(110% 40% at 90% -6%, rgba(139, 160, 255, .26), transparent 62%), radial-gradient(140% 40% at 50% 116%, rgba(214, 197, 214, .3), transparent 72%); }
+
+.screen { background: var(--sky), var(--bg); }
+.screen.grouped { background: var(--sky), var(--bg-grouped); }
+.panel { background: transparent; }
+.sheet { background: linear-gradient(180deg, rgba(139, 160, 255, .06), transparent 38%), var(--bg-grouped); border-radius: 28px 28px 0 0; box-shadow: 0 -1px 0 var(--glass-edge), 0 -30px 60px -30px rgba(0, 0, 0, .5); }
+:root[data-scheme="dark"] .sheet { background: linear-gradient(180deg, rgba(139, 160, 255, .08), transparent 38%), #0E1532; }
+.splash { background: var(--sky), var(--splash); }
+
+/* a whisper of grain, from the brand texture */
+.app::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 44;
+  pointer-events: none;
+  opacity: .05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+}
+:root[data-scheme="light"] .app::after { opacity: .035; mix-blend-mode: multiply; }
+
+/* ---------- brand mark ---------- */
+.moon {
+  display: inline-block;
+  width: 1.05em;
+  height: 1.1em;
+  flex: 0 0 auto;
+  background: var(--grad-text);
+  -webkit-mask: url(../assets/brand/moon.svg) center / contain no-repeat;
+  mask: url(../assets/brand/moon.svg) center / contain no-repeat;
+}
+.wordmark {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  letter-spacing: -.035em;
+  font-weight: 700;
+}
+.brandmark { display: inline-flex; align-items: center; gap: 9px; font-size: 21px; line-height: 1; }
+.brandmark .wordmark { font-size: 1em; }
+.brandmark .moon { width: 22px; height: 23px; }
+.logo.brandmark { padding: 10px 10px 10px 0; }
+.ob-head .logo.brandmark { font-size: 19px; padding: 10px 12px; }
+
+/* ---------- type: calmer, one idea per line ---------- */
+.pbig { font-size: 34px; font-weight: 700; letter-spacing: -.035em; }
+.plabel, .clabel, .sublabel { color: var(--fg2); letter-spacing: .13em; }
+.ptitle { padding-top: 20px; padding-bottom: 20px; }
+.ptop { padding-top: 12px; }
+
+/* ---------- cards ---------- */
+.card { border-radius: var(--r-card); }
+:root[data-scheme="dark"] .card:not(.hero) { background: linear-gradient(180deg, rgba(139, 160, 255, .05), transparent 60%), var(--row); }
+.card.hero { box-shadow: 0 30px 50px -28px rgba(10, 16, 60, .8), 0 0 0 1px rgba(255, 226, 200, .1); }
+:root[data-scheme="light"] .card.hero { box-shadow: 0 30px 50px -26px rgba(40, 40, 120, .55); }
+
+/* the Tonight hero: a sky you can read at a glance */
+.card.c-tonight { isolation: isolate; }
+.card.c-tonight > .cmain { position: relative; z-index: 2; padding: 22px 22px 18px; }
+.card.c-tonight .hero-main { margin-top: 14px; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; max-width: 82%; }
+.card.c-tonight .hk { font-size: 12px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--hero-fg2); flex: 1 0 100%; min-height: 15px; }
+.card.c-tonight .hnum { font-size: 84px; font-weight: 200; letter-spacing: -.045em; margin: 4px 0 0; color: var(--hero-fg); line-height: 1; }
+.card.c-tonight .hnum .ampm { font-size: 24px; font-weight: 600; margin-left: 6px; color: var(--hero-fg2); }
+.card.c-tonight .ampm-k { flex: 0 0 auto; font-size: 22px; letter-spacing: 0; text-transform: none; color: var(--hero-fg2); }
+.card.c-tonight .ampm-k:empty { display: none; }
+.card.c-tonight .hero-big { flex: 1 0 100%; margin-top: 10px; font-size: 24px; font-weight: 700; letter-spacing: -.03em; }
+.card.c-tonight .hero-sub { flex: 1 0 100%; margin-top: 4px; }
+.card.c-tonight .hero-sub:empty { display: none; }
+.card.c-tonight .insight { border-top-color: var(--hero-line); }
+.card.c-tonight.noalarm .hnum, .card.c-tonight.noalarm .hk { display: none; }
+.card.c-tonight.noalarm .hero-main { margin-top: 36px; }
+
+.sky-scene { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; --p: 0; }
+.sky-scene .sun {
+  position: absolute;
+  right: 26px;
+  top: calc(18% + var(--p) * 50%);
+  opacity: clamp(0, calc(1 - (var(--p) - .5) * 3), 1);
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, #FFF3DC 0%, #FFD6A6 46%, #FF9857 100%);
+  box-shadow: 0 0 40px 10px rgba(255, 170, 110, .32), 0 0 110px 34px rgba(255, 152, 87, .18);
+  transition: top 1.4s var(--ease-out), opacity 1.2s ease;
+}
+.sky-scene .crescent {
+  position: absolute;
+  right: 36px;
+  top: 16%;
+  width: 78px;
+  height: 82px;
+  background: var(--grad);
+  -webkit-mask: url(../assets/brand/moon.svg) center / contain no-repeat;
+  mask: url(../assets/brand/moon.svg) center / contain no-repeat;
+  filter: drop-shadow(0 0 18px rgba(139, 160, 255, .5));
+  opacity: 0;
+  transform: translateY(24px) scale(.9);
+  transition: opacity 1s ease, transform 1.4s var(--ease-out);
+}
+.sky-scene .stars {
+  position: absolute;
+  inset: 0;
+  opacity: calc(var(--p) * .9);
+  transition: opacity 1.2s ease;
+  background:
+    radial-gradient(1.3px 1.3px at 18% 22%, #fff, transparent),
+    radial-gradient(1px 1px at 46% 14%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 66% 30%, #fff, transparent),
+    radial-gradient(1px 1px at 82% 12%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 34% 44%, rgba(255, 255, 255, .8), transparent),
+    radial-gradient(1px 1px at 92% 46%, rgba(255, 255, 255, .8), transparent);
+}
+.sky-scene .horizon { position: absolute; left: 0; right: 0; bottom: 0; height: 38%; background: linear-gradient(0deg, rgba(255, 152, 87, calc(.2 + var(--p) * .0)), transparent); opacity: .9; }
+.sky-scene.is-night .sun { opacity: 0; top: 120%; }
+.sky-scene.is-night .crescent { opacity: 1; transform: none; }
+.sky-scene.is-night .stars { opacity: .9; }
+.sky-scene.is-night .horizon { background: linear-gradient(0deg, rgba(255, 152, 87, calc(.12 + var(--p) * .5)), transparent); }
+
+.card.c-tonight .cfoot { position: relative; z-index: 2; border-top-color: var(--hero-line); }
+.wake-step {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 2px 22px 18px;
+  padding: 6px;
+  max-width: 260px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, .1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), 0 0 0 1px rgba(255, 255, 255, .07);
+}
+.card.c-tonight:not(.noalarm) .wake-step ~ .cfoot { border-top: 1px solid var(--hero-line); }
+.ws-b { width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .12); color: #fff; display: grid; place-items: center; transition: transform .25s var(--ease-pop), background-color .2s; }
+.ws-b:active { transform: scale(.88); background: rgba(255, 255, 255, .22); }
+.ws-b svg { width: 18px; height: 18px; }
+.ws-t { display: flex; align-items: baseline; gap: 8px; color: #fff; font-variant-numeric: tabular-nums; }
+.ws-t .ws-l { font-size: 12px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--hero-fg2); }
+.ws-t b { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+.hero-cta { position: relative; z-index: 2; padding: 4px 22px 22px; }
+
+/* ---------- primary action: the one glowing thing ---------- */
+.pill.primary {
+  background: var(--pri);
+  color: var(--pri-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55), 0 14px 30px -12px rgba(255, 152, 87, .7), 0 2px 0 rgba(255, 255, 255, .06);
+  transform: none;
+  transition: transform .25s var(--ease-pop), filter .2s, opacity .25s;
+}
+.pill.primary:active { transform: scale(.965); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 0 6px 16px -10px rgba(255, 152, 87, .7); filter: saturate(1.1) brightness(.97); }
+.pill.primary.small { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55), 0 8px 18px -10px rgba(255, 152, 87, .7); }
+.pill.primary.small:active { transform: scale(.96); box-shadow: none; }
+.pill.solid { background: var(--fg); color: var(--bg); }
+.pill.ghost { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+
+/* ---------- switch, segments, chips, days: sunset accents ---------- */
+.switch[aria-checked="true"] { background: linear-gradient(100deg, #8BA0FF, #FFD6A6 60%, #FF9857); box-shadow: 0 6px 14px -6px rgba(255, 152, 87, .55); }
+.switch[aria-checked="true"]::after { background: #fff; }
+.card.hero .switch[aria-checked="true"] { background: linear-gradient(100deg, #8BA0FF, #FFD6A6 60%, #FF9857); }
+:root[data-scheme="dark"] .seg-thumb, :root[data-theme="warm"][data-scheme="dark"] .seg-thumb { background: rgba(214, 197, 214, .22); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12); }
+.day[aria-pressed="true"], .chip[aria-pressed="true"] { background: var(--grad-diag); color: #0A1026; box-shadow: 0 6px 14px -8px rgba(255, 152, 87, .6); }
+.circ.on { background: var(--grad-diag); color: #0A1026; }
+.slider-fill { background: var(--grad); }
+.slider-ic.a { color: #0A1026; }
+.wheel .it.sel { color: var(--fg); }
+.picker-band { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.picker-colon i { background: var(--c-peach); }
+
+/* progress */
+.pbar > i { background: var(--grad); }
+.pbar > i::after { background: rgba(255, 255, 255, .5); }
+.tick.done { background: var(--grad-diag); color: #0A1026; }
+.tick:not(.done) { box-shadow: inset 0 0 0 2px var(--fg3); }
+.segs i.on { background: var(--grad); }
+
+/* ---------- tab bar: a floating dusk-glass capsule with a glowing lens ---------- */
+.tabbar { border-radius: 36px; }
+.tab[aria-selected="true"] { color: var(--fg); }
+.tab[aria-selected="true"] svg { color: var(--c-peach); filter: drop-shadow(0 0 8px rgba(255, 152, 87, .5)); }
+:root[data-scheme="light"] .tab[aria-selected="true"] svg { color: #E5701F; filter: none; }
+.tablens { background: linear-gradient(160deg, rgba(139, 160, 255, .22), rgba(255, 152, 87, .2)); box-shadow: inset 0 1px 0 var(--glass-hi), 0 0 0 1px rgba(255, 214, 166, .12); }
+:root[data-scheme="light"] .tablens { background: linear-gradient(160deg, rgba(139, 160, 255, .22), rgba(255, 152, 87, .22)); }
+
+/* the island */
+.island { background: #060A1C; box-shadow: 0 8px 24px -10px rgba(0, 0, 0, .6), 0 0 0 1px rgba(255, 214, 166, .1); }
+.island .ii { background: var(--grad-diag); color: #0A1026; }
+:root[data-theme="white"] .island .ii { background: var(--grad-diag); color: #0A1026; }
+
+/* ---------- charts: sunset colours ---------- */
+.nbars i { background: linear-gradient(180deg, #B7B6F5, #8BA0FF); }
+:root[data-scheme="light"] .nbars i { background: linear-gradient(180deg, #A887C4, #5A72E6); }
+.nbars i.r { background: var(--chart-soft); }
+.nsnore i { background: var(--c-orange); }
+.vtemp .line { stroke: url(#tempgrad); stroke: var(--c-peach); }
+.vtemp .area { fill: var(--chart-wash); }
+.wcol.on i { background: linear-gradient(180deg, #FFD6A6, #FF9857); }
+.wcol i { background: var(--chart-soft); }
+.bdot { background: var(--c-peach); }
+.vdot { background: var(--c-peach); }
+:root[data-scheme="light"] .vtemp .line { stroke: #E5701F; }
+:root[data-scheme="light"] .bdot, :root[data-scheme="light"] .vdot { background: #E5701F; }
+.ins li::before { background: var(--c-orange); }
+
+/* accents: restrained. Text accents use the readable peach/orange. */
+.accent, .link, .textbtn.strong, .setup-count { color: var(--acc-text) !important; }
+.dstatus .dot, .nx-status .dot, .rv .dot { background: var(--c-orange); box-shadow: 0 0 10px rgba(255, 152, 87, .7); }
+.dstatus.off .dot, .nx-status.off .dot { box-shadow: none; }
+.pring .arc { stroke: var(--c-orange); }
+.card.hero.alarm-card .anote { color: var(--c-peach); }
+.avatar { background: var(--grad-diag); color: #0A1026; }
+.me.noname .avatar { background: var(--surface); color: var(--fg2); }
+
+/* alarms hero reuses the Tonight sky */
+.card.hero.alarm-card { isolation: isolate; }
+
+/* focus */
+:focus-visible { outline: 2px solid var(--c-peach); }
+:root[data-scheme="light"] :focus-visible { outline-color: #E5701F; }
+
+/* ---------- splash ---------- */
+.splash { gap: 0; }
+.splash-moon {
+  width: 104px;
+  height: 108px;
+  background: var(--grad);
+  -webkit-mask: url(../assets/brand/moon.svg) center / contain no-repeat;
+  mask: url(../assets/brand/moon.svg) center / contain no-repeat;
+  filter: drop-shadow(0 0 34px rgba(139, 160, 255, .45)) drop-shadow(0 0 60px rgba(255, 152, 87, .3));
+  opacity: 0;
+  transform: translateY(46px) scale(.86);
+  transition: opacity 1s ease, transform 1.6s var(--ease-out);
+}
+.splash.moon-on .splash-moon { opacity: 1; transform: none; }
+.splash-word {
+  margin-top: 26px;
+  font-size: 34px;
+  opacity: 0;
+  letter-spacing: .02em;
+  transform: translateY(8px);
+  transition: opacity .9s ease, letter-spacing 1.6s var(--ease), transform 1s var(--ease);
+}
+.splash.word-on .splash-word { opacity: 1; letter-spacing: -.035em; transform: none; }
+.splash-line { margin-top: 14px; font-size: 15px; font-weight: 500; color: rgba(255, 238, 226, .62); opacity: 0; transition: opacity 1s ease .3s; }
+.splash.word-on .splash-line { opacity: 1; }
+.splash-anchor { position: absolute; left: -9999px; }
+
+/* ---------- onboarding ---------- */
+.ob-step.center .ob-eyes { padding-bottom: 36px; }
+.ob-hero-moon { width: 84px; height: 88px; margin: 0 auto 28px; background: var(--grad); -webkit-mask: url(../assets/brand/moon.svg) center / contain no-repeat; mask: url(../assets/brand/moon.svg) center / contain no-repeat; filter: drop-shadow(0 0 28px rgba(139, 160, 255, .4)); }
+.ready-list { background: var(--row); }
+.about-head .wordmark { font-size: 32px; }
+.desk-note .wordmark { font-size: 26px; }
+
+/* sleep, alarms: pattern cards pick up a warm tint */
+.pattern { background: var(--tint); }
+.card.empty { background: var(--tint); }
+
+/* ---------- light scheme specifics ---------- */
+:root[data-scheme="light"] .card:not(.hero) { box-shadow: var(--card-shadow), 0 0 0 1px var(--card-edge); }
+:root[data-scheme="light"] .pill.primary { color: #0A1026; }
+:root[data-scheme="light"] .pill.ghost { box-shadow: inset 0 0 0 1px var(--line); }
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sky-scene .sun, .sky-scene .crescent, .splash-moon { transition: opacity .3s; transform: none; }
+}
+
+/* NOCTIS tab: the device sits in its own little sunset */
+article.card.nx-hero { background: radial-gradient(72% 58% at 50% 40%, rgba(255, 152, 87, .26), rgba(139, 160, 255, .08) 55%, transparent 74%), var(--row); }
+:root[data-scheme="light"] article.card.nx-hero { background: radial-gradient(72% 58% at 50% 40%, rgba(255, 152, 87, .3), rgba(139, 160, 255, .12) 55%, transparent 74%), var(--row); }
+
+.grad { background: var(--grad-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+/* setup always happens at dusk */
+:root[data-scheme="dark"] .screen.onboarding {
+  background:
+    radial-gradient(130% 52% at 50% 112%, rgba(255, 152, 87, .42), rgba(255, 190, 130, .14) 46%, transparent 74%),
+    radial-gradient(110% 42% at 85% -6%, rgba(139, 160, 255, .22), transparent 62%),
+    var(--bg);
+}
+:root[data-scheme="light"] .screen.onboarding {
+  background:
+    radial-gradient(130% 52% at 50% 112%, rgba(255, 152, 87, .34), rgba(255, 214, 166, .14) 46%, transparent 74%),
+    radial-gradient(110% 42% at 85% -6%, rgba(139, 160, 255, .22), transparent 62%),
+    var(--bg);
+}
+.ob-step.center .ob-copy .title { font-size: 36px; letter-spacing: -.04em; line-height: 1.08; }

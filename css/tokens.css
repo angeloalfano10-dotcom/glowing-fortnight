@@ -23,15 +23,25 @@
 }
 
 :root {
-  /* brand palette (working values) */
-  --night-ink: #171816;
-  --offhours-ink: #20211F;
-  --warm-paper: #F2EEE7;
-  --linen: #E6DED2;
-  --soft-stone: #BEB3A4;
-  --quiet-taupe: #887B6A;
-  --low-amber: #C89C68;
-  --warm-white: #FAF8F4;
+  /* offhours brand identity (v2): night ink to sunrise */
+  --ink: #0A1026;
+  --c-blue: #8BA0FF;
+  --c-lav: #D6C5D6;
+  --c-peach: #FFD6A6;
+  --c-orange: #FF9857;
+  --grad: linear-gradient(90deg, #8BA0FF 0%, #D6C5D6 40%, #FFD6A6 70%, #FF9857 100%);
+  --grad-diag: linear-gradient(135deg, #8BA0FF 0%, #D6C5D6 38%, #FFD6A6 68%, #FF9857 100%);
+  --grad-up: linear-gradient(0deg, #FF9857 0%, #FFD6A6 34%, #D6C5D6 68%, #8BA0FF 100%);
+
+  /* legacy names still used by the device render */
+  --night-ink: #0A1026;
+  --offhours-ink: #121A3A;
+  --warm-paper: #F5EEE7;
+  --linen: #E9DFD8;
+  --soft-stone: #B9B4CC;
+  --quiet-taupe: #8A86A6;
+  --low-amber: #FF9857;
+  --warm-white: #FBF6F1;
 
   --font: 'Manrope', -apple-system, 'Helvetica Neue', Arial, sans-serif;
 
@@ -46,11 +56,11 @@
   /* layout */
   --gutter: 20px;
   --r-tile: 28px;
-  --r-group: 20px;
-  --r-card: 28px;
+  --r-group: 22px;
+  --r-card: 30px;
   --r-btn: 28px;
   --btn-h: 56px;
-  --edge: 4px;           /* the pressable bottom edge of a primary button */
+  --edge: 0px;
   --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px;
   --sat: env(safe-area-inset-top, 0px);
   --sab: env(safe-area-inset-bottom, 0px);
@@ -58,215 +68,105 @@
   --sar: env(safe-area-inset-right, 0px);
 
   /* type scale */
-  --fs-numeral: 96px;   /* big light numerals */
-  --fs-clock: 44px;     /* bold clock style */
+  --fs-numeral: 96px;
+  --fs-clock: 44px;
   --fs-title: 32px;
   --fs-t1: 20px;
   --fs-body: 17px;
-  --fs-label: 15px;     /* quiet small labels */
+  --fs-label: 15px;
   --fs-caption: 13px;
-}
 
-/* ---------- White · dark (true black, closest to iPhone) ---------- */
-:root[data-theme="white"][data-scheme="dark"] {
-  --hero-bg: #1C1C1E;
+  --hero-bg:
+    radial-gradient(120% 80% at 50% 128%, rgba(255, 152, 87, .62) 0%, rgba(255, 190, 130, .26) 34%, rgba(214, 197, 214, .08) 52%, transparent 66%),
+    radial-gradient(90% 70% at 0% 0%, rgba(139, 160, 255, .34), transparent 60%),
+    linear-gradient(180deg, #131B45 0%, #1B2155 56%, #2C2A63 100%);
   --hero-fg: #FFFFFF;
-  --hero-fg2: rgba(235, 235, 245, .62);
-  --hero-track: rgba(255, 255, 255, .14);
-  --hero-line: rgba(255, 255, 255, .1);
-  --pri: #FFFFFF;
-  --pri-edge: #A1A1A6;
-  --pri-ink: #000000;
-  --card-edge: rgba(255, 255, 255, .06);
-  --glass: rgba(44, 44, 48, .88);
-  --glass-lens: rgba(255, 255, 255, .13);
-  --glass-lift: rgba(255, 255, 255, .08);
-  --glass-hi: rgba(255, 255, 255, .26);
-  --glass-lo: rgba(255, 255, 255, .06);
-  --glass-edge: rgba(255, 255, 255, .09);
-  --glass-rim: rgba(255, 255, 255, .55);
-  --glass-shadow: 0 18px 40px -14px rgba(0, 0, 0, .75);
-  --chart: #FFFFFF;
-  --chart-soft: #48484A;
-  --chart-ink: rgba(235, 235, 245, .62);
-  --chart-wash: rgba(255, 255, 255, .1);
-  --card-shadow: none;
-  --tint: rgba(118, 118, 128, .2);
-
-  color-scheme: dark;
-  --bg: #000000;
-  --bg-grouped: #000000;
-  --row: #1C1C1E;
-  --surface: rgba(118, 118, 128, .24);
-  --surface-press: rgba(118, 118, 128, .4);
-  --surface-solid: #1C1C1E;
-  --fg: #FFFFFF;
-  --fg2: rgba(235, 235, 245, .62);
-  --fg3: rgba(235, 235, 245, .32);
-  --line: rgba(84, 84, 88, .6);
-  --acc: #FFFFFF;
-  --acc-ink: #000000;
-  --acc-text: #FFFFFF;
-  --track: rgba(120, 120, 128, .36);
-  --knob: #000000;  /* black knob on the white "on" track, like the device */
-  --danger: #FF6B61;
-  --eye: #FFFFFF;
-  --eye-glow: rgba(255, 255, 255, .32);
-  --scrim: rgba(0, 0, 0, .5);
-  --behind: #000;
-  --splash: #000000;
-  --splash-eye: #FFFFFF;
-}
-
-/* ---------- White · light ---------- */
-:root[data-theme="white"][data-scheme="light"] {
-  --hero-bg: #000000;
-  --hero-fg: #FFFFFF;
-  --hero-fg2: rgba(235, 235, 245, .62);
+  --hero-fg2: rgba(255, 238, 226, .74);
   --hero-track: rgba(255, 255, 255, .16);
-  --hero-line: rgba(255, 255, 255, .12);
-  --pri: #000000;
-  --pri-edge: #3A3A3C;
-  --pri-ink: #FFFFFF;
-  --card-edge: rgba(0, 0, 0, .05);
-  --glass: rgba(255, 255, 255, .9);
-  --glass-lens: rgba(118, 118, 128, .14);
-  --glass-lift: rgba(255, 255, 255, .5);
+  --hero-line: rgba(255, 255, 255, .14);
+  --pri: linear-gradient(100deg, #8BA0FF 0%, #D6C5D6 38%, #FFD6A6 72%, #FF9857 100%);
+  --pri-edge: transparent;
+  --pri-ink: #0A1026;
+  --acc: #FF9857;
+  --acc-ink: #0A1026;
+  --knob: #FFFFFF;
+  --eye: #F7F1EC;
+  --eye-glow: rgba(255, 214, 166, .32);
+  --splash: #0A1026;
+  --splash-eye: #F7F1EC;
+}
+
+/* ---------- Dusk (dark): the default, a calm evening sky ---------- */
+:root[data-scheme="dark"] {
+  color-scheme: dark;
+  --bg: #0A1026;
+  --bg-grouped: #0A1026;
+  --row: #131B3E;
+  --surface: rgba(214, 197, 214, .09);
+  --surface-press: rgba(214, 197, 214, .17);
+  --surface-solid: #1A2350;
+  --fg: #F7F1EC;
+  --fg2: rgba(231, 224, 240, .68);
+  --fg3: rgba(231, 224, 240, .36);
+  --line: rgba(214, 197, 214, .11);
+  --acc-text: #FFB78A;
+  --track: rgba(214, 197, 214, .18);
+  --danger: #FF8E7E;
+  --scrim: rgba(4, 7, 20, .62);
+  --behind: #050918;
+  --card-edge: rgba(214, 197, 214, .08);
+  --card-shadow: 0 18px 36px -24px rgba(0, 0, 0, .7);
+  --glass: rgba(19, 27, 62, .8);
+  --glass-lens: rgba(255, 255, 255, .1);
+  --glass-lift: rgba(255, 255, 255, .08);
+  --glass-hi: rgba(255, 244, 236, .22);
+  --glass-lo: rgba(255, 244, 236, .05);
+  --glass-edge: rgba(214, 197, 214, .1);
+  --glass-rim: rgba(255, 226, 200, .5);
+  --glass-shadow: 0 18px 40px -14px rgba(2, 4, 16, .8);
+  --chart: #8BA0FF;
+  --chart-soft: rgba(214, 197, 214, .2);
+  --chart-ink: #D6C5D6;
+  --chart-wash: rgba(139, 160, 255, .16);
+  --tint: rgba(139, 160, 255, .09);
+  --grad-text: linear-gradient(90deg, #8BA0FF 0%, #D6C5D6 40%, #FFD6A6 70%, #FF9857 100%);
+}
+
+/* ---------- Dawn (light): warm paper, navy ink ---------- */
+:root[data-scheme="light"] {
+  color-scheme: light;
+  --bg: #F6EFE8;
+  --bg-grouped: #F6EFE8;
+  --row: #FFFCF9;
+  --surface: rgba(10, 16, 38, .06);
+  --surface-press: rgba(10, 16, 38, .11);
+  --surface-solid: #EDE4DC;
+  --fg: #0A1026;
+  --fg2: rgba(10, 16, 38, .66);
+  --fg3: rgba(10, 16, 38, .34);
+  --line: rgba(10, 16, 38, .09);
+  --acc-text: #B4500E;
+  --track: rgba(10, 16, 38, .12);
+  --danger: #C23A2B;
+  --scrim: rgba(10, 16, 38, .32);
+  --behind: #0A1026;
+  --card-edge: rgba(10, 16, 38, .05);
+  --card-shadow: 0 1px 2px rgba(60, 40, 90, .05), 0 16px 30px -20px rgba(60, 50, 110, .28);
+  --glass: rgba(255, 252, 249, .84);
+  --glass-lens: rgba(10, 16, 38, .07);
+  --glass-lift: rgba(255, 255, 255, .6);
   --glass-hi: rgba(255, 255, 255, .95);
   --glass-lo: rgba(255, 255, 255, .45);
-  --glass-edge: rgba(0, 0, 0, .07);
+  --glass-edge: rgba(10, 16, 38, .08);
   --glass-rim: rgba(255, 255, 255, 1);
-  --glass-shadow: 0 14px 34px -16px rgba(0, 0, 0, .3);
-  --chart: #000000;
-  --chart-soft: #D1D1D6;
-  --chart-ink: rgba(60, 60, 67, .64);
-  --chart-wash: rgba(0, 0, 0, .07);
-  --card-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 8px 24px -16px rgba(0, 0, 0, .12);
-  --tint: #F2F2F7;
-
-  color-scheme: light;
-  --bg: #FFFFFF;
-  --bg-grouped: #F2F2F7;
-  --row: #FFFFFF;
-  --surface: rgba(118, 118, 128, .12);
-  --surface-press: rgba(118, 118, 128, .22);
-  --surface-solid: #F2F2F7;
-  --fg: #000000;
-  --fg2: rgba(60, 60, 67, .64);
-  --fg3: rgba(60, 60, 67, .3);
-  --line: rgba(60, 60, 67, .2);
-  --acc: #000000;
-  --acc-ink: #FFFFFF;
-  --acc-text: #000000;
-  --track: rgba(120, 120, 128, .18);
-  --knob: #FFFFFF;
-  --danger: #D23B30;
-  --eye: #000000;
+  --glass-shadow: 0 14px 34px -16px rgba(40, 30, 90, .32);
+  --chart: #5A72E6;
+  --chart-soft: rgba(10, 16, 38, .12);
+  --chart-ink: #0A1026;
+  --chart-wash: rgba(90, 114, 230, .12);
+  --tint: rgba(255, 152, 87, .1);
+  --eye: #0A1026;
   --eye-glow: transparent;
-  --scrim: rgba(0, 0, 0, .28);
-  --behind: #000;
-  --splash: #000000;
-  --splash-eye: #FFFFFF;
-}
-
-/* ---------- Warm · dark (offhours palette, Low Amber accent) ---------- */
-:root[data-theme="warm"][data-scheme="dark"] {
-  --hero-bg: #262723;
-  --hero-fg: var(--warm-white);
-  --hero-fg2: var(--soft-stone);
-  --hero-track: rgba(250, 248, 244, .12);
-  --hero-line: rgba(250, 248, 244, .08);
-  --pri: var(--low-amber);
-  --pri-edge: #8F6B3F;
-  --pri-ink: var(--night-ink);
-  --card-edge: rgba(250, 248, 244, .05);
-  --glass: rgba(40, 39, 35, .9);
-  --glass-lens: rgba(250, 248, 244, .12);
-  --glass-lift: rgba(250, 248, 244, .07);
-  --glass-hi: rgba(255, 244, 226, .24);
-  --glass-lo: rgba(255, 244, 226, .05);
-  --glass-edge: rgba(250, 248, 244, .08);
-  --glass-rim: rgba(255, 238, 212, .5);
-  --glass-shadow: 0 18px 40px -14px rgba(0, 0, 0, .75);
-  --chart: #C89C68;
-  --chart-soft: #45423C;
-  --chart-ink: var(--warm-white);
-  --chart-wash: rgba(200, 156, 104, .12);
-  --card-shadow: none;
-  --tint: rgba(200, 156, 104, .1);
-
-  color-scheme: dark;
-  --bg: #121311;
-  --bg-grouped: #121311;
-  --row: #1E1F1C;
-  --surface: rgba(190, 179, 164, .12);
-  --surface-press: rgba(190, 179, 164, .2);
-  --surface-solid: #20211F;
-  --fg: var(--warm-white);
-  --fg2: var(--soft-stone);
-  --fg3: #6F665A;
-  --line: #2E2F2C;
-  --acc: var(--low-amber);
-  --acc-ink: var(--night-ink);
-  --acc-text: var(--low-amber);
-  --track: rgba(190, 179, 164, .2);
-  --knob: var(--night-ink);
-  --danger: #E08A7A;
-  --eye: var(--warm-paper);
-  --eye-glow: rgba(250, 248, 244, .28);
-  --scrim: rgba(0, 0, 0, .55);
-  --behind: #0A0A09;
-  --splash: #121311;
-  --splash-eye: var(--warm-paper);
-}
-
-/* ---------- Warm · light ---------- */
-:root[data-theme="warm"][data-scheme="light"] {
-  --hero-bg: var(--night-ink);
-  --hero-fg: var(--warm-white);
-  --hero-fg2: var(--soft-stone);
-  --hero-track: rgba(250, 248, 244, .14);
-  --hero-line: rgba(250, 248, 244, .1);
-  --pri: var(--low-amber);
-  --pri-edge: #A9783F;
-  --pri-ink: var(--night-ink);
-  --card-edge: rgba(32, 33, 31, .05);
-  --glass: rgba(250, 248, 244, .9);
-  --glass-lens: rgba(136, 123, 106, .15);
-  --glass-lift: rgba(255, 255, 255, .45);
-  --glass-hi: rgba(255, 255, 255, .95);
-  --glass-lo: rgba(255, 255, 255, .4);
-  --glass-edge: rgba(32, 33, 31, .08);
-  --glass-rim: rgba(255, 255, 255, 1);
-  --glass-shadow: 0 14px 34px -16px rgba(32, 33, 31, .32);
-  --chart: #A9783F;       /* Low Amber deepened for 3:1 on Warm White */
-  --chart-soft: #DED5C8;
-  --chart-ink: var(--offhours-ink);
-  --chart-wash: rgba(169, 120, 63, .1);
-  --card-shadow: 0 1px 2px rgba(32, 33, 31, .04), 0 10px 26px -18px rgba(32, 33, 31, .16);
-  --tint: #F1E6D7;
-
-  color-scheme: light;
-  --bg: var(--warm-paper);
-  --bg-grouped: var(--warm-paper);
-  --row: var(--warm-white);
-  --surface: var(--linen);
-  --surface-press: #DCD2C4;
-  --surface-solid: var(--linen);
-  --fg: var(--offhours-ink);
-  --fg2: #756959;          /* Quiet Taupe, deepened slightly for 4.5:1 on paper */
-  --fg3: var(--soft-stone);
-  --line: #E2D9CC;
-  --acc: var(--low-amber);
-  --acc-ink: var(--warm-white);
-  --acc-text: #8A6A43;
-  --track: #DDD3C5;
-  --knob: var(--warm-white);
-  --danger: #B04A3C;
-  --eye: var(--offhours-ink);
-  --eye-glow: transparent;
-  --scrim: rgba(32, 33, 31, .24);
-  --behind: #0A0A09;
-  --splash: #121311;
-  --splash-eye: var(--warm-paper);
+  --splash: #0A1026;
+  --grad-text: linear-gradient(90deg, #5A72E6 0%, #A887C4 42%, #F29548 100%);
 }

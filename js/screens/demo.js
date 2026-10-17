@@ -33,7 +33,7 @@ export function openDemo() {
 
   /* screens */
   sec('Screens', chips([
-    ['splash', 'Splash'], ['welcome', 'Welcome'], ['pair', 'Pair'], ['wifi', 'Wi-Fi'], ['finish', 'Finish'],
+    ['splash', 'Splash'], ['welcome', 'Welcome'], ['account', 'Sign in'], ['pair', 'Pair'], ['wifi', 'Wi-Fi'], ['finish', 'Finish'],
     ['name', 'Name'], ['calendars', 'Calendars'], ['alarm-ob', 'Wake time'], ['ready', 'Ready'],
     ['today', 'Today'], ['sleep', 'Sleep'], ['week', 'Sleep · week'], ['alarms', 'Alarms'], ['noctis', 'NOCTIS'],
     ['profile', 'Profile'], ['alarm', 'Alarm editor'], ['update', 'Update'],

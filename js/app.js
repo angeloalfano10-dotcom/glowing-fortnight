@@ -5,7 +5,7 @@
 import { $ } from './lib/dom.js';
 import { ctx } from './ctx.js';
 import { store } from './lib/store.js';
-import { clock, tonightAlarm, fmtClock } from './lib/time.js';
+import { clock, tonightAlarm, fmtClock, planFor } from './lib/time.js';
 import { services } from './services/index.js';
 import { buildBriefing } from './services/briefing.js';
 import { StageEyes } from './ui/eyes.js';
@@ -19,6 +19,7 @@ import { createUpdate } from './screens/update.js';
 import { openAlarmSheet } from './screens/alarm.js';
 import { openDemo } from './screens/demo.js';
 import { playSplash } from './screens/splash.js';
+import { startLink } from './link.js';
 
 const html = document.documentElement;
 const app = $('#app');
@@ -63,11 +64,22 @@ function applyLook() {
   html.dataset.theme = d.theme;
   html.dataset.scheme = scheme;
   const bg = getComputedStyle(html).getPropertyValue('--bg').trim();
-  document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute('content', bg || '#121311'));
+  document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute('content', bg || '#0A1026'));
 }
 applyLook();
 store.on('display', applyLook);
 darkQ.addEventListener?.('change', applyLook);
+
+/* ---------- the sky follows the day: morning, day, evening, night ---------- */
+function applyPhase() {
+  const now = clock.now();
+  const p = planFor(store.state.alarms, now).phase;
+  html.dataset.phase = p;
+}
+applyPhase();
+store.on(['alarms'], applyPhase);
+clock.onChange(applyPhase);
+setInterval(applyPhase, 60e3);
 
 /* ---------- mounts ---------- */
 mountStack(stack, app);
@@ -254,9 +266,11 @@ async function start({ replay = false } = {}) {
 })();
 
 /* ---------- offline support ---------- */
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || params.get('sw') === '1')) {
   addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
+
+startLink();
 
 // Handy when testing from the browser console.
 window.offhours = ctx;

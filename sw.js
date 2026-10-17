@@ -2,12 +2,14 @@
 // the cache and refreshed in the background, so a new deploy shows on the next
 // open. Weather requests go straight to the network.
 
-const VERSION = 'offhours-v9';
+const VERSION = 'offhours-v11';
 const SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './css/base.css',
+  './css/brand.css',
+  './css/flows.css',
   './css/components.css',
   './css/device.css',
   './css/frame.css',
@@ -23,6 +25,7 @@ const SHELL = [
   './js/lib/time.js',
   './js/lib/tones.js',
   './js/screens/alarm.js',
+  './js/screens/account.js',
   './js/screens/alarms.js',
   './js/screens/common.js',
   './js/screens/demo.js',
@@ -57,6 +60,7 @@ const SHELL = [
   './assets/fonts/manrope-latin-wght-normal.woff2',
   './assets/fonts/manrope-latin-ext-wght-normal.woff2',
   './assets/icons/favicon.svg',
+  './assets/brand/moon.svg',
   './assets/icons/apple-touch-icon.png',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',

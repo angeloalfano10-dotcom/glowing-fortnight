@@ -4,31 +4,36 @@
 import { el, esc } from '../lib/dom.js';
 import { iconStr } from '../ui/icons.js';
 import { ctx } from '../ctx.js';
-import { clock, planFor, nextRing, fmtMin, fmtParts, dur, sleepDur, longDate, relativeDay, DAY_LONG, wrap } from '../lib/time.js';
+import { haptic } from '../lib/haptics.js';
+import { clock, planFor, tonightAlarm, nextRing, fmtMin, fmtParts, dur, sleepDur, longDate, relativeDay, DAY_LONG, wrap } from '../lib/time.js';
 import { makeSwitch, longPress } from '../ui/controls.js';
 import { DeviceView } from '../ui/device-view.js';
 import { Eyes } from '../ui/eyes.js';
 import { nightChart } from '../ui/charts.js';
 import { nightInsights, weekInsights, roomNow } from '../services/insights.js';
 import { setNumeric, countTo } from '../ui/motion.js';
-import { panel, card, progressBar, progressRing, tick } from './common.js';
+import { panel, card, progressBar, skyScene, brandMarkHTML, tick } from './common.js';
 import { openCalendarsSheet, openNameSheet } from './sheets.js';
 import { island } from '../ui/island.js';
 import { stageInto, stageOutOf } from './stagehelp.js';
 
 const ORDER = {
-  morning: ['night', 'tonight', 'setup', 'device'],
-  day: ['tonight', 'setup', 'night', 'device'],
-  evening: ['tonight', 'setup', 'device', 'night'],
-  night: ['tonight', 'device', 'night', 'setup'],
+  morning: ['night', 'brief', 'tonight', 'setup', 'device'],
+  day: ['tonight', 'brief', 'setup', 'night', 'device'],
+  evening: ['tonight', 'brief', 'setup', 'device', 'night'],
+  night: ['tonight', 'brief', 'device', 'night', 'setup'],
 };
 const chev = iconStr('chev');
 
 export function createToday(shell) {
   const { store, services } = ctx;
-  const logo = el('<button class="logo wordmark" type="button" aria-label="offhours. Press and hold for the demo panel.">offhours</button>');
+  const logo = el(`<button class="logo brandmark" type="button" aria-label="offhours. Press and hold for the demo panel.">${brandMarkHTML()}</button>`);
   longPress(logo, () => ctx.go.demo());
-  const P = panel({ cls: 'today', top: logo });
+  const avatar = el('<button class="avatar-btn" type="button" aria-label="Open your profile"></button>');
+  avatar.addEventListener('click', () => { haptic(); shell.select('profile'); });
+  const topRow = el('<div class="today-top"></div>');
+  topRow.append(logo, avatar);
+  const P = panel({ cls: 'today', top: topRow });
   const h24 = () => store.state.display.clock24;
   const fmt = (m) => fmtMin(m, h24());
 
@@ -36,20 +41,35 @@ export function createToday(shell) {
      One dark card, the strongest thing on the page. The ring is the goal gradient:
      it fills as bed-by gets closer, then as the night runs toward the alarm. */
   const tonight = card('c-tonight hero');
-  const ring = progressRing(0, 148);
-  ring.mid.innerHTML = '<span class="hk" data-r="key"></span><span class="hnum numeral" data-r="big"></span><span class="hk" data-r="ampm"></span>';
+  const sky = skyScene();
+  tonight.prepend(sky);
   tonight.querySelector('.cmain').innerHTML = `
     <div class="clabel"><span data-r="lab">Tonight</span>${chev}</div>
-    <div class="hero-row">
-      <div class="hero-ring"></div>
-      <div class="hero-side">
-        <div class="hero-big" data-r="t1"></div>
-        <div class="hero-sub" data-r="sub"></div>
-      </div>
+    <div class="hero-main">
+      <div class="hk" data-r="key"></div>
+      <div class="hnum numeral" data-r="big"></div><span class="hk ampm-k" data-r="ampm"></span>
+      <div class="hero-big" data-r="t1"></div>
+      <div class="hero-sub" data-r="sub"></div>
     </div>
     <p class="insight" data-r="ins" hidden></p>`;
-  tonight.querySelector('.hero-ring').append(ring);
   tonight.querySelector('.cmain').addEventListener('click', () => shell.select('alarms'));
+  // Wake stepper: change tomorrow's alarm without leaving Today (less interaction cost).
+  const wake = el(`<div class="wake-step" data-r="wakebox">
+      <button class="ws-b" type="button" data-d="-15" aria-label="Wake 15 minutes earlier">${iconStr('minus')}</button>
+      <div class="ws-t"><span class="ws-l">Wake</span><b data-r="wake"></b></div>
+      <button class="ws-b" type="button" data-d="15" aria-label="Wake 15 minutes later">${iconStr('plus')}</button>
+    </div>`);
+  wake.querySelectorAll('.ws-b').forEach((b) => b.addEventListener('click', () => {
+    const t = tonightAlarm(store.state.alarms, clock.now()).source;
+    if (!t) return;
+    const m = wrap(t.h * 60 + t.m + Number(b.dataset.d));
+    haptic();
+    store.set('alarms', store.state.alarms.map((x) => (x.id === t.id ? { ...x, h: Math.floor(m / 60), m: m % 60 } : x)));
+  }));
+  tonight.append(wake);
+  const addAlarm = el('<div class="hero-cta"><button class="pill primary block" type="button">Add an alarm</button></div>');
+  addAlarm.querySelector('button').addEventListener('click', () => { haptic(); ctx.go.alarm(); });
+  tonight.append(addAlarm);
   const foot = el('<div class="cfoot"><div class="cfoot-t"><span class="cfoot-l">Wind-down reminder</span><span class="cfoot-d" data-r="remind"></span></div></div>');
   const remindSw = makeSwitch({ label: 'Wind-down reminder', checked: store.state.bedtime.remind, onChange: (v) => store.patch('bedtime', { remind: v }) });
   foot.append(remindSw);
@@ -69,6 +89,8 @@ export function createToday(shell) {
     };
     ins.hidden = true;
     foot.hidden = true;
+    wake.hidden = !p.alarmSet;
+    addAlarm.hidden = p.alarmSet;
     tonight.classList.toggle('noalarm', !p.alarmSet);
     if (p.alarmSet) {
       T('lab').textContent = 'Tonight';
@@ -77,13 +99,15 @@ export function createToday(shell) {
         setBig(p.wakeMin);
         T('t1').textContent = `in ${dur(p.minsToWake)}`;
         T('sub').textContent = 'NOCTIS has it from here.';
-        ring.set(1 - Math.max(0, Math.min(1, p.minsToWake / 450)));
+        sky.set(1 - Math.max(0, Math.min(1, p.minsToWake / 450)), true);
+        T('wake').textContent = fmt(p.wakeMin);
       } else {
         T('key').textContent = 'Bed by';
         setBig(p.bedMin);
         T('t1').textContent = p.minsToBed > 0 ? `in ${dur(p.minsToBed)}` : 'Now';
-        T('sub').textContent = `Alarm ${fmt(p.wakeMin)}`;
-        ring.set(1 - Math.max(0, Math.min(1, p.minsToBed / 180)));
+        T('sub').textContent = '';
+        sky.set(1 - Math.max(0, Math.min(1, p.minsToBed / 180)), false);
+        T('wake').textContent = fmt(p.wakeMin);
         const tip = ctx.nights?.length ? weekInsights(ctx.nights.slice(0, 7), { clock24: h24() }).find((i) => i.id === 'bedtime') : null;
         if (tip) { ins.textContent = tip.text; ins.hidden = false; }
         foot.hidden = false;
@@ -96,7 +120,7 @@ export function createToday(shell) {
       T('key').textContent = '';
       T('ampm').textContent = '';
       setNumeric(big, '–');
-      ring.set(0);
+      sky.set(0, false);
       T('t1').textContent = 'No alarm.';
       const when = next && relativeDay(next.at, now) === 'Tomorrow' ? 'tomorrow' : next ? `on ${DAY_LONG[next.at.getDay()]}` : '';
       T('sub').textContent = next ? `Next one ${when} at ${fmt(next.alarm.h * 60 + next.alarm.m)}.` : 'Sleep in. Add an alarm any time.';
@@ -144,6 +168,43 @@ export function createToday(shell) {
       r.addEventListener('click', it.go);
       list.append(r);
     });
+  }
+
+  /* ---------- Tomorrow morning ----------
+     What NOCTIS will say: the weather at wake time, and how long between waking and
+     the first event. It is the reason to connect a calendar, so it shows the payoff. */
+  const brief = card('c-brief');
+  brief.querySelector('.cmain').addEventListener('click', () => {
+    const connected = Object.values(services.calendar.accounts()).some(Boolean);
+    if (connected) shell.select('alarms'); else openCalendarsSheet({ onClose: renderBrief });
+  });
+  function renderBrief() {
+    const m = brief.querySelector('.cmain');
+    const p = planFor(store.state.alarms, clock.now());
+    brief.hidden = !p.alarmSet;
+    const b = ctx.briefing;
+    if (!b) { m.innerHTML = '<div class="skel-in" aria-hidden="true"><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>'; return; }
+    const ev = b.event;
+    const w = b.weather;
+    const calOn = Object.values(services.calendar.accounts()).some(Boolean);
+    let mid;
+    if (ev && !ev.beforeAlarm) {
+      const span = Math.max(1, ev.inMin);
+      mid = `<div class="mb-track" aria-label="${esc(dur(span))} between waking and ${esc(ev.title)}">
+          <div class="mb-node"><b>${esc(b.wakeAt)}</b><span>Wake</span></div>
+          <div class="mb-line"><i></i><em>${esc(dur(span))}</em></div>
+          <div class="mb-node r"><b>${esc(ev.start)}</b><span>${esc(ev.title)}</span></div>
+        </div>`;
+    } else if (ev) {
+      mid = `<p class="mb-note">${esc(ev.title)} starts at ${esc(ev.start)}, before your alarm.</p>`;
+    } else if (calOn) {
+      mid = '<p class="mb-note">Nothing booked before noon. A slow start.</p>';
+    } else {
+      mid = '<p class="mb-note">Connect a calendar and NOCTIS will tell you what is first.</p>';
+    }
+    m.innerHTML = `<div class="clabel"><span>Tomorrow morning</span>${chev}</div>
+      <div class="mb-wx"><span class="mb-sun">${iconStr('sun')}</span><b>${esc(String(w.temp))}°</b><span>${esc(w.text)}${w.place ? ` · ${esc(w.place)}` : ''}</span></div>
+      ${mid}`;
   }
 
   /* ---------- Last night ---------- */
@@ -222,7 +283,7 @@ export function createToday(shell) {
   }
 
   /* ---------- header, order ---------- */
-  const map = { tonight, night, setup, device: dev };
+  const map = { tonight, brief, night, setup, device: dev };
   let lastPhase = '';
   function renderHeader() {
     const now = clock.now();
@@ -232,6 +293,9 @@ export function createToday(shell) {
     const name = (store.state.profile?.name || '').trim();
     P.setTitle(`${greet}${name ? `, ${name}` : ''}.`, greet);
     P.setLabel(longDate(now));
+    const nm = (store.state.profile?.name || '').trim() || (services.account.current()?.name || '');
+    avatar.innerHTML = nm ? esc(nm[0].toUpperCase()) : iconStr('person');
+    avatar.classList.toggle('noname', !nm);
     if (p.phase !== lastPhase) {
       lastPhase = p.phase;
       ORDER[p.phase].forEach((k) => P.body.append(map[k]));
@@ -241,6 +305,7 @@ export function createToday(shell) {
     renderHeader();
     renderTonight();
     renderSetup();
+    renderBrief();
     renderNight();
     renderDevice();
   }
@@ -264,6 +329,7 @@ export function createToday(shell) {
         clock.onChange(() => { lastPhase = ''; renderAll(); }),
       );
       on('offhours:nights', () => { renderNight(); renderTonight(); renderDevice(); });
+      on('offhours:briefing', renderBrief);
       on('offhours:room', renderDevice);
       const iv = setInterval(() => { if (active) { renderHeader(); renderTonight(); } }, 20000);
       subs.push(() => clearInterval(iv));

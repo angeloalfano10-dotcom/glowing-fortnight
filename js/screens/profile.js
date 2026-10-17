@@ -1,6 +1,7 @@
 // Profile: you, not the device. Your name for the greeting, what NOCTIS is
 // connected to, how the app looks, and your privacy and data.
-// There is no account: everything stays on this phone and your NOCTIS.
+// Sign-in is optional and passwordless; everything works without it and stays on
+// this phone and your NOCTIS.
 
 import { el, esc } from '../lib/dom.js';
 import { iconStr } from '../ui/icons.js';
@@ -8,23 +9,28 @@ import { ctx } from '../ctx.js';
 import { makeSwitch, makeSegmented } from '../ui/controls.js';
 import { actionSheet } from '../ui/sheet.js';
 import { island } from '../ui/island.js';
+import { haptic } from '../lib/haptics.js';
 import { setNumeric } from '../ui/motion.js';
 import { panel, group, row } from './common.js';
 import { openLocationSheet, openCalendarsSheet, openNameSheet, openAboutSheet } from './sheets.js';
 import { stageAway } from './stagehelp.js';
+import { openSignInSheet, accountLine } from './account.js';
 
 export function createProfile() {
   const { store, services } = ctx;
   const s = store.state;
-  const P = panel({ cls: 'profile', label: 'No account needed', title: 'Profile' });
+  const P = panel({ cls: 'profile', label: '', title: 'Profile' });
 
   /* ---- you ---- */
-  const me = el(`<button class="card me" type="button" aria-label="Your name">
-      <span class="avatar" aria-hidden="true"></span>
-      <span class="me-t"><span class="me-name"></span><span class="me-sub">Everything stays on this phone and your NOCTIS.</span></span>
-      ${iconStr('chev')}
-    </button>`);
-  me.addEventListener('click', () => openNameSheet('profile'));
+  const me = el(`<article class="card acct">
+      <button class="me" type="button" aria-label="Your name">
+        <span class="avatar" aria-hidden="true"></span>
+        <span class="me-t"><span class="me-name"></span><span class="me-sub"></span><span class="me-via"></span></span>
+        ${iconStr('chev')}
+      </button>
+      <div class="acct-foot"></div>
+    </article>`);
+  me.querySelector('.me').addEventListener('click', () => openNameSheet('profile'));
   const stats = el(`<div class="card pstats">
       <div><b data-s="nights">–</b><span>Nights</span></div>
       <div><b data-s="alarms">–</b><span>Alarms on</span></div>
@@ -61,7 +67,7 @@ export function createProfile() {
     group({
       head: 'Appearance',
       rows: [
-        row({ ic: 'theme', label: 'Theme', desc: 'The app and NOCTIS share it', control: themeSeg }),
+        row({ ic: 'theme', label: 'NOCTIS screen', control: themeSeg }),
         row({ ic: 'sun', label: 'Light or dark', control: appearSeg }),
       ],
     }),
@@ -85,6 +91,18 @@ export function createProfile() {
     el('<p class="disclaimer">No analytics, no tracking. NOCTIS is not a medical device.</p>'),
   );
 
+  function confirmSignOut() {
+    actionSheet({
+      title: 'Sign out?',
+      message: 'Your alarms and settings stay on this phone and on NOCTIS. You can sign in again any time.',
+      actions: [{
+        label: 'Sign out',
+        destructive: true,
+        onClick: async () => { await services.account.signOut(); island('Signed out', 'signout'); render(); },
+      }],
+    });
+  }
+
   function confirmDelete() {
     actionSheet({
       title: 'Delete your sleep data?',
@@ -107,9 +125,21 @@ export function createProfile() {
   function render() {
     const st = store.state;
     const name = st.profile.name.trim();
+    const acct = services.account.current();
+    const line = accountLine(acct);
     me.querySelector('.avatar').innerHTML = name ? esc(name[0].toUpperCase()) : iconStr('person');
     me.querySelector('.me-name').textContent = name || 'Add your name';
+    me.querySelector('.me-sub').textContent = acct ? line.primary : 'Add a name for your greeting.';
+    me.querySelector('.me-via').textContent = acct ? line.sub : '';
     me.classList.toggle('noname', !name);
+    me.classList.toggle('signed', !!acct);
+    P.setLabel(acct ? 'Your account' : 'Everything stays on this phone');
+    const foot = me.querySelector('.acct-foot');
+    foot.innerHTML = acct
+      ? `<button class="link" type="button" data-out>${iconStr('signout')}<span>Sign out</span></button>`
+      : `<div class="acct-pitch"><b>Keep your setup.</b><span>Sign in and your alarms follow you to a new phone. No password.</span></div><button class="pill primary small" type="button" data-in>Sign in</button>`;
+    foot.querySelector('[data-out]')?.addEventListener('click', confirmSignOut);
+    foot.querySelector('[data-in]')?.addEventListener('click', () => { haptic(); openSignInSheet({ onDone: render }); });
     const acc = services.calendar.accounts();
     const names = services.calendar.providers().filter((p) => acc[p.id]).map((p) => p.name.split(' ')[0]);
     calRow.setValue(names.length ? names.join(', ') : 'None');

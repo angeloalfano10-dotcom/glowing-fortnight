@@ -4,120 +4,88 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>offhours · NOCTIS</title>
-  <meta name="description" content="The offhours app and NOCTIS, side by side.">
+  <meta name="description" content="The offhours app and NOCTIS, side by side and linked.">
   <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#121311">
+  <meta name="theme-color" content="#0A1026">
   <meta name="referrer" content="no-referrer">
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
   <style>
-    /* The app on a phone and NOCTIS on the bedside table, side by side.
-       Both are their own prototypes in iframes; they run separately on sample data. */
-    @font-face {
-      font-family: 'Manrope';
-      font-style: normal;
-      font-display: swap;
-      font-weight: 200 800;
-      src: url(assets/fonts/manrope-latin-wght-normal.woff2) format('woff2');
-    }
-    :root {
-      color-scheme: dark;
-      --night: #121311;
-      --ink: #20211F;
-      --white: #FAF8F4;
-      --stone: #BEB3A4;
-      --taupe: #887B6A;
-      --amber: #C89C68;
-      --line: #2E2F2C;
-    }
+    /* The app on a phone and NOCTIS on the bedside table, side by side, linked.
+       They are their own prototypes in iframes; this page relays messages between
+       them so an alarm set in one shows up in the other. */
+    @font-face { font-family: 'Manrope'; font-style: normal; font-display: swap; font-weight: 200 800; src: url(assets/fonts/manrope-latin-wght-normal.woff2) format('woff2'); }
+    :root { color-scheme: dark; --ink: #0A1026; --white: #F7F1EC; --mute: rgba(231, 224, 240, .62); --blue: #8BA0FF; --lav: #D6C5D6; --peach: #FFD6A6; --orange: #FF9857; --grad: linear-gradient(90deg, #8BA0FF 0%, #D6C5D6 40%, #FFD6A6 70%, #FF9857 100%); }
     * { box-sizing: border-box; }
     html, body { margin: 0; height: 100%; }
     body {
-      background: radial-gradient(1200px 800px at 50% 40%, #22211D 0%, var(--night) 72%) fixed, var(--night);
+      background:
+        radial-gradient(1200px 520px at 50% 118%, rgba(255, 152, 87, .34), rgba(255, 190, 130, .1) 50%, transparent 74%),
+        radial-gradient(900px 480px at 82% -8%, rgba(139, 160, 255, .22), transparent 62%),
+        var(--ink) fixed;
       color: var(--white);
       font-family: 'Manrope', -apple-system, 'Helvetica Neue', Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
+      display: flex; flex-direction: column; min-height: 100%;
     }
-    header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 22px 32px 0;
-    }
-    .word { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
-    .line { font-size: 13px; font-weight: 600; color: var(--stone); letter-spacing: .22em; text-transform: uppercase; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 32px 0; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; }
+    .moon { width: 24px; height: 25px; background: var(--grad); -webkit-mask: url(assets/brand/moon.svg) center / contain no-repeat; mask: url(assets/brand/moon.svg) center / contain no-repeat; }
+    .word { font-size: 24px; font-weight: 700; letter-spacing: -.035em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .line { font-size: 12.5px; font-weight: 600; color: var(--mute); letter-spacing: .22em; text-transform: uppercase; }
     main { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; padding: 16px; }
     .holder { position: relative; }
-    .stage {
-      position: absolute;
-      left: 0;
-      top: 0;
-      transform-origin: 0 0;
-      display: flex;
-      align-items: center;
-      gap: 104px;
-    }
-    .stage.stacked { flex-direction: column; gap: 56px; }
+    .stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; display: flex; align-items: center; gap: 0; }
+    .stage.stacked { flex-direction: column; }
     figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 30px; }
     figcaption { text-align: center; }
     figcaption b { display: block; font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
-    figcaption span { display: block; margin-top: 4px; font-size: 14px; font-weight: 500; color: var(--taupe); }
+    figcaption span { display: block; margin-top: 4px; font-size: 14px; font-weight: 500; color: var(--mute); }
     .links { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
-    .links button {
-      height: 34px;
-      padding: 0 14px;
-      border: 0;
-      border-radius: 17px;
-      background: rgba(190, 179, 164, .1);
-      box-shadow: inset 0 1px 0 rgba(255, 240, 218, .1);
-      color: var(--stone);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform .3s cubic-bezier(.3, 1.4, .5, 1), color .2s;
-    }
-    .links button:hover { color: var(--white); }
+    .links button { height: 34px; padding: 0 14px; border: 0; border-radius: 17px; background: rgba(214, 197, 214, .1); box-shadow: inset 0 1px 0 rgba(255, 240, 230, .12); color: var(--lav); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: transform .3s cubic-bezier(.3, 1.4, .5, 1), color .2s; }
+    .links button:hover { color: #fff; }
     .links button:active { transform: scale(.94); }
-    button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+    button:focus-visible { outline: 2px solid var(--peach); outline-offset: 2px; }
+
+    /* the link between the two */
+    .bridge { position: relative; width: 190px; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; }
+    .stage.stacked .bridge { width: auto; height: 190px; align-self: auto; }
+    .wire { position: relative; width: 150px; height: 2px; border-radius: 2px; background: repeating-linear-gradient(90deg, rgba(214, 197, 214, .35) 0 6px, transparent 6px 12px); }
+    .stage.stacked .wire { width: 2px; height: 60px; background: repeating-linear-gradient(180deg, rgba(214, 197, 214, .35) 0 6px, transparent 6px 12px); }
+    .wire i { position: absolute; top: -3px; left: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--grad); box-shadow: 0 0 14px 3px rgba(255, 170, 110, .7); opacity: 0; }
+    .stage.stacked .wire i { top: 0; left: -3px; }
+    .wire.to-os i { animation: fly-r .9s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .wire.to-app i { animation: fly-l .9s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .stage.stacked .wire.to-os i { animation-name: fly-d; }
+    .stage.stacked .wire.to-app i { animation-name: fly-u; }
+    @keyframes fly-r { 0% { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: calc(100% - 8px); opacity: 0; } }
+    @keyframes fly-l { 0% { left: calc(100% - 8px); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: 0; opacity: 0; } }
+    @keyframes fly-d { 0% { top: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { top: calc(100% - 8px); opacity: 0; } }
+    @keyframes fly-u { 0% { top: calc(100% - 8px); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { top: 0; opacity: 0; } }
+    .pill { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 13px; border-radius: 15px; background: rgba(19, 27, 62, .8); box-shadow: inset 0 0 0 1px rgba(214, 197, 214, .14); font-size: 12px; font-weight: 700; letter-spacing: .02em; color: var(--lav); white-space: nowrap; }
+    .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 10px rgba(255, 152, 87, .9); }
+    .pill.off .dot { background: #666; box-shadow: none; }
+    .event { min-height: 38px; max-width: 170px; font-size: 13px; font-weight: 600; line-height: 1.35; color: var(--white); opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .5s cubic-bezier(.2, .9, .2, 1); }
+    .event.on { opacity: 1; transform: none; }
+    .event small { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-bottom: 2px; }
+    .try { max-width: 170px; font-size: 12px; font-weight: 500; line-height: 1.45; color: var(--mute); }
 
     /* the phone: an iPhone-sized bezel around the app */
-    .phone {
-      position: relative;
-      width: 390px;
-      height: 844px;
-      margin: 13px;
-      border-radius: 58px;
-      clip-path: inset(0 round 58px);
-      background: #000;
-    }
+    .phone { position: relative; width: 390px; height: 844px; margin: 13px; border-radius: 58px; clip-path: inset(0 round 58px); background: #000; }
     .phone-wrap { position: relative; filter: drop-shadow(0 50px 70px rgba(0, 0, 0, .55)); }
-    .phone-wrap::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 70px;
-      background: #0A0A09;
-      box-shadow: inset 0 0 0 1.5px #3A3934;
-    }
+    .phone-wrap::before { content: ""; position: absolute; inset: 0; border-radius: 70px; background: #05081A; box-shadow: inset 0 0 0 1.5px #3A3D5C; }
     .phone iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
     .noctis iframe { width: 600px; height: 930px; border: 0; display: block; background: transparent; }
 
-    footer { padding: 0 32px 22px; text-align: center; font-size: 12.5px; color: var(--taupe); }
-    footer a { color: var(--stone); margin-left: 10px; text-underline-offset: 3px; }
-    footer a:hover { color: var(--white); }
-    @media (max-width: 700px) {
-      header { padding: 16px 18px 0; }
-      .line { display: none; }
-    }
+    footer { padding: 0 32px 22px; text-align: center; font-size: 12.5px; color: var(--mute); }
+    footer a { color: var(--lav); margin-left: 10px; text-underline-offset: 3px; }
+    footer a:hover { color: #fff; }
+    @media (max-width: 700px) { header { padding: 16px 18px 0; } .line { display: none; } }
+    @media (prefers-reduced-motion: reduce) { .wire i { animation: none !important; } }
   </style>
 </head>
 <body>
   <header>
-    <div class="word">offhours</div>
+    <div class="brand"><i class="moon" aria-hidden="true"></i><div class="word">offhours</div></div>
     <div class="line">Less phone at night. A smarter morning.</div>
   </header>
 
@@ -140,6 +108,13 @@
           </figcaption>
         </figure>
 
+        <div class="bridge" aria-live="polite">
+          <span class="pill" id="linkState"><i class="dot"></i><span>Connected</span></span>
+          <div class="wire" id="wire"><i></i></div>
+          <div class="event" id="event"><small></small><span></span></div>
+          <div class="try">Set an alarm in the app, or on NOCTIS. The other one follows.</div>
+        </div>
+
         <figure class="noctis">
           <iframe id="os" title="NOCTIS" src="noctis-os-prototype.html?embed=1&amp;theme=warm" allow="autoplay"></iframe>
         </figure>
@@ -147,15 +122,16 @@
     </div>
   </main>
 
-  <footer>Two prototypes side by side. They run separately on sample data. NOCTIS is not a medical device. <a href="./?frame=1">Open the app on its own</a></footer>
+  <footer>The app and NOCTIS are linked: alarms, screen and brightness sync both ways. Sample data throughout. NOCTIS is not a medical device. <a href="./?frame=1">Open the app on its own</a></footer>
 
   <script>
     (() => {
       const stage = document.getElementById('stage');
       const holder = document.getElementById('holder');
       const app = document.getElementById('app');
+      const os = document.getElementById('os');
       function fit() {
-        const side = innerWidth >= 900 && innerWidth >= innerHeight * 0.9;
+        const side = innerWidth >= 1000 && innerWidth >= innerHeight * 0.9;
         stage.classList.toggle('stacked', !side);
         stage.style.transform = 'none';
         const W = stage.offsetWidth;
@@ -169,7 +145,6 @@
       addEventListener('resize', fit);
       fit();
       // NOCTIS: let the frame be as tall as the device and its controls.
-      const os = document.getElementById('os');
       const sizeOs = () => {
         try {
           const h = os.contentDocument.querySelector('.stage').scrollHeight;
@@ -177,6 +152,58 @@
         } catch (e) { /* not reachable: keep the default height */ }
       };
       os.addEventListener('load', () => { sizeOs(); setTimeout(sizeOs, 600); });
+
+      /* ---- the link: relay messages between the two frames ---- */
+      const wire = document.getElementById('wire');
+      const ev = document.getElementById('event');
+      const state = document.getElementById('linkState');
+      let evT = 0;
+      let cfg = null;
+      let osAlarm = '';
+      let fromDevice = '';
+      const pad = (n) => String(n).padStart(2, '0');
+      const fmt = (a) => (a && a.on ? `${pad(a.h)}:${pad(a.m)}` : 'off');
+      const MODES = { alarm: 'Alarm ringing', briefing: 'Morning briefing', voice: 'Listening', sleep: 'Asleep', boot: 'Starting' };
+      function show(dir, title, text) {
+        wire.classList.remove('to-os', 'to-app');
+        void wire.offsetWidth;
+        wire.classList.add(dir);
+        ev.querySelector('small').textContent = title;
+        ev.querySelector('span').textContent = text;
+        ev.classList.add('on');
+        clearTimeout(evT);
+        evT = setTimeout(() => ev.classList.remove('on'), 5200);
+      }
+      addEventListener('message', (e) => {
+        const d = e.data;
+        if (!d || !d.source) return;
+        const fromApp = e.source === app.contentWindow;
+        const fromOs = e.source === os.contentWindow;
+        if (!fromApp && !fromOs) return;
+        const other = fromApp ? os : app;
+        if (other.contentWindow) other.contentWindow.postMessage(d, '*');
+        if (d.type === 'config' && fromApp) {
+          state.classList.toggle('off', d.online === false);
+          state.lastChild.textContent = d.online === false ? 'NOCTIS offline' : 'Connected';
+          if (cfg) {
+            let what = '';
+            if (fmt(cfg.alarm) !== fmt(d.alarm)) what = fmt(d.alarm) === fromDevice ? '' : `Alarm ${fmt(d.alarm)}`;
+            else if (cfg.theme !== d.theme) what = `Screen ${d.theme}`;
+            else if (cfg.face !== d.face) what = `Resting face ${d.face}`;
+            else if (Math.abs(cfg.brightness - d.brightness) > 0.01) what = `Brightness ${Math.round(d.brightness * 100)}%`;
+            if (what) show('to-os', 'Phone to NOCTIS', what);
+          }
+          cfg = d;
+        } else if (d.type === 'alarm' && fromOs) {
+          const s = fmt(d);
+          // Only announce changes that started on NOCTIS, not the echo of the phone's own.
+          if (osAlarm && s !== osAlarm && (!cfg || s !== fmt(cfg.alarm))) { fromDevice = s; show('to-app', 'NOCTIS to phone', `Alarm ${s}`); }
+          osAlarm = s;
+        } else if (d.type === 'mode' && fromOs && MODES[d.mode]) {
+          show('to-app', 'NOCTIS to phone', MODES[d.mode]);
+        }
+      });
+
       document.getElementById('skip').addEventListener('click', () => { app.src = './?embed=1&setup=skip'; });
       document.getElementById('restart').addEventListener('click', () => { app.src = `./?embed=1&r=${Date.now()}`; });
     })();

@@ -27,7 +27,9 @@ export function alarmEditor({ alarm, clock24, full = true, onChange }) {
   a.m = (Math.round(a.m / 5) * 5) % 60;
   const root = el(`<div class="alarm-ed">
       <div class="picker"><div class="picker-band"></div></div>
-      <div class="bedline t2">${iconStr('bed')}<span>Bed by <b data-bed></b></span></div>
+      <div class="bedline t2">${iconStr('bed')}<span>Bed by <b data-bed></b></span><span class="bed-dot" aria-hidden="true">·</span><span data-inbed></span></div>
+      <div class="chips presets" role="group" aria-label="Quick times">${[[6, 0], [6, 30], [7, 0], [7, 30], [8, 0]].map(([h, m]) => `<button class="chip" type="button" data-pre="${h * 60 + m}">${esc(fmtParts(h * 60 + m, clock24).time)}</button>`).join('')}</div>
+      ${full ? `<div class="sunbar" aria-hidden="true"><div class="sb-track"><i class="sb-fill"></i><b class="sb-dot"></b></div><div class="sb-l"><span data-sb-l></span><span data-sb-a></span></div></div>` : ''}
       <div class="ed-sec">
         <div class="label">Repeat</div>
         <div class="days" role="group" aria-label="Repeat on">
@@ -58,9 +60,16 @@ export function alarmEditor({ alarm, clock24, full = true, onChange }) {
   const sync = () => {
     const bed = fmtParts(bedMinOf(a.h * 60 + a.m), clock24);
     root.querySelector('[data-bed]').textContent = bed.ampm ? `${bed.time} ${bed.ampm}` : bed.time;
+    root.querySelector('[data-inbed]').textContent = '7 h 30 asleep, estimated';
+    root.querySelectorAll('[data-pre]').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.pre) === a.h * 60 + a.m)));
     if (full) {
       root.querySelector('[data-sec="light"]').hidden = !a.wake.light;
       root.querySelector('[data-sec="sound"]').hidden = !a.wake.sound;
+      const sb = root.querySelector('.sunbar');
+      sb.hidden = !a.wake.light;
+      sb.style.setProperty('--lead', String(a.lead / 30));
+      sb.querySelector('[data-sb-l]').textContent = `Light ${fmtMin(wrap(a.h * 60 + a.m - a.lead), clock24)}`;
+      sb.querySelector('[data-sb-a]').textContent = `Alarm ${fmtMin(a.h * 60 + a.m, clock24)}`;
       root.querySelector('[data-leadnote]').textContent = `The screen begins to glow at ${fmtMin(wrap(a.h * 60 + a.m - a.lead), clock24)}.`;
     }
     onChange?.(JSON.parse(JSON.stringify(a)));
@@ -78,6 +87,18 @@ export function alarmEditor({ alarm, clock24, full = true, onChange }) {
   const wm = createWheel({ values: MINUTES, index: a.m / 5, label: 'Minutes', onChange: (i) => { a.m = i * 5; sync(); } });
   picker.append(wh.el, el('<div class="picker-colon" aria-hidden="true"><i></i><i></i></div>'), wm.el);
   if (wap) picker.append(wap.el);
+
+  const setTime = (h, m) => {
+    a.h = h; a.m = m;
+    if (clock24) wh.set(h, true); else { wh.set((h % 12 || 12) - 1, true); wap.set(h >= 12 ? 1 : 0, true); }
+    wm.set(m / 5, true);
+    sync();
+  };
+  root.querySelectorAll('[data-pre]').forEach((b) => b.addEventListener('click', () => {
+    const v = Number(b.dataset.pre);
+    haptic();
+    setTime(Math.floor(v / 60), v % 60);
+  }));
 
   root.querySelectorAll('.day').forEach((b) => b.addEventListener('click', () => {
     const d = Number(b.dataset.d);

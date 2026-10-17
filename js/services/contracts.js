@@ -123,6 +123,12 @@
  * @property {string} calendar
  * @property {'apple'|'google'} provider
  *
+ * A real CalendarService maps straight onto Google Calendar's API (the same one Composio
+ * exposes as GOOGLECALENDAR_LIST_CALENDARS and GOOGLECALENDAR_EVENTS_LIST_ALL_CALENDARS):
+ * accounts().calendars is the calendar list, firstEvent() is the first timed, non-all-day
+ * event in tomorrow's window, queried with an RFC 3339 time_min / time_max in the user's
+ * time zone. Calendar OAuth never runs on the ESP32.
+ *
  * @typedef {Object} CalendarService
  * @property {() => CalendarProvider[]} providers
  * @property {() => Record<string, CalendarAccount|null>} accounts
@@ -130,6 +136,20 @@
  * @property {(id:string) => Promise<void>} disconnect
  * @property {(id:string, calId:string, on:boolean) => void} setCalendar
  * @property {(date:Date) => Promise<CalendarEvent|null>} firstEvent   First timed event that day.
+ *
+ * @typedef {Object} Account
+ * @property {'apple'|'google'|'email'} provider
+ * @property {string|null} email       Null when Apple hides it.
+ * @property {boolean} hideEmail
+ * @property {string} name             May be empty; the profile name wins.
+ *
+ * @typedef {Object} AccountService    Passwordless. Native: Sign in with Apple, Google, emailed code.
+ * @property {() => {id:string,label:string}[]} providers
+ * @property {() => Account|null} current
+ * @property {(provider:'apple'|'google') => Promise<Account>} signIn
+ * @property {(email:string) => Promise<{sent:boolean}>} requestCode   Rejects with code 'invalid-email'.
+ * @property {(email:string, code:string) => Promise<Account>} verifyCode   Rejects with code 'wrong-code'.
+ * @property {() => Promise<void>} signOut
  *
  * @typedef {Object} Place
  * @property {string} name

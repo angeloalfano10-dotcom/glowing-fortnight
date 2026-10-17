@@ -28,9 +28,30 @@ The app uses relative paths throughout, so it works from a sub-folder like `/<re
 
 After a redeploy, the first open still shows the cached version and the next open shows the new one. When you ship a release, bump `VERSION` in `sw.js`.
 
+## Brand v2: night ink to sunrise
+
+The app wears the new offhours identity: Night Ink `#0A1026`, one gradient (blue `#8BA0FF` → lavender `#D6C5D6` → peach `#FFD6A6` → orange `#FF9857`) used sparingly, Manrope, and the crescent moon. The look is a lowkey sunset that follows the day.
+
+- **Tokens:** `css/tokens.css` (Dusk dark, Dawn light) and `css/brand.css` (loaded last: sky, gradient, hero, tab bar, charts).
+- **The sky:** `html[data-phase]` is `morning`, `day`, `evening` or `night`, from the next alarm. Every screen has a faint matching glow behind it, plus a whisper of grain.
+- **Tonight hero:** the sun sinks as bed-by gets closer, then a moon holds the sky while the dawn glow builds toward the alarm. A **Wake stepper** (±15 min) changes the alarm without leaving Today, and Bed by updates live.
+- **Gradient is for the one thing:** the primary button, switches on, progress, the tab lens, the sleep bars. Everything else stays quiet.
+- **Theme row:** now only chooses what NOCTIS's own screen looks like (White or Warm). The app always uses Dusk or Dawn.
+- **Icons:** `node tools/make-icons.cjs` draws the moon icon and launch screens with no dependencies.
+
+## Round 2: every flow
+
+Reference screens came from Refero (stacked full-width sign-in buttons, a glowing wheel band for wake time, a trust card before the calendar permission, one primary action at the bottom). `css/flows.css` holds the styles.
+
+- **Sign-in** (`js/screens/account.js`, `js/services/account.mock.js`): optional, passwordless. Apple, Google, or an emailed six-digit code, as a setup step ("Save your setup", with Skip for now) and as a sheet from Profile. It is simulated, says so quietly, and any six digits work except 000000. The account service is a fourth swappable interface.
+- **Calendar connect:** a trust card first (shows exactly what is read: title and start time, never notes, guests or links), then honest connecting steps, then a result with the calendars it found and the first event NOCTIS will tell you about tomorrow. Setup uses provider cards. The contract matches Google Calendar's API (the same calls Composio exposes), so the real service drops in.
+- **Today:** a Tomorrow morning card (weather at wake time and a wake-to-first-event timeline), an avatar that opens Profile, and the wake stepper.
+- **Alarm editor:** quick times, a live "7 h 30 asleep, estimated" line, a glowing wheel band and a sunrise bar that shows when the light starts. The Alarms tab says "Rings in 11 h 15 min".
+- **Profile:** an account card (avatar ring, email, sign out) or a Sign in card.
+
 ## The app and NOCTIS side by side
 
-On a computer, the main link opens **`showcase.html`** by itself. It shows the app on an iPhone next to NOCTIS on the bedside table. They are the two prototypes in frames and run separately on sample data; they don't talk to each other yet.
+On a computer, the main link opens **`showcase.html`** by itself. It shows the app on an iPhone next to NOCTIS on the bedside table. They are linked: `showcase.html` relays messages between the two frames (`js/link.js` in the app, a small block at the end of `noctis-os-prototype.html`). Set the alarm in the app (or the Wake stepper) and NOCTIS follows; set it on NOCTIS (picker or "Wake me at 6:30") and the app follows. Screen theme, resting face and brightness go app → NOCTIS, and what NOCTIS is showing (alarm ringing, briefing, asleep) goes back to the app's live device mirror. Last writer wins, so there is no echo. On a real phone this becomes the Bluetooth / Wi-Fi channel.
 
 - Under the phone: **Skip setup** pairs the simulated NOCTIS with sample settings and goes straight to the tabs. **Restart** reloads the app.
 - Under NOCTIS: theme, resting face (Eyes or Clock), jump to a time of day (including Wind-down and Wake-up), and Ask NOCTIS questions. On the device itself: tap, swipe, swipe up, press and hold.

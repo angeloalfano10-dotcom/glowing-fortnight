@@ -10,13 +10,15 @@ import { longPress } from '../ui/controls.js';
 import { island } from '../ui/island.js';
 import { haptic } from '../lib/haptics.js';
 import { prefersReducedMotion } from '../lib/spring.js';
-import { finishPicker, wifiRows, askWifi, calendarRows, group, progressBar, tick } from './common.js';
+import { finishPicker, wifiRows, askWifi, providerCards, progressBar, tick } from './common.js';
 import { clock, planFor, fmtMin, DAY_LONG } from '../lib/time.js';
 import { alarmEditor } from './alarm.js';
 import { newAlarm } from '../lib/store.js';
 import { stageTo, stageInto, stageOutOf } from './stagehelp.js';
+import { authButtons } from './account.js';
+import { openCalendarsSheet } from './sheets.js';
 
-export const STEPS = ['welcome', 'pair', 'wifi', 'finish', 'name', 'calendars', 'alarm', 'ready'];
+export const STEPS = ['welcome', 'account', 'pair', 'wifi', 'finish', 'name', 'calendars', 'alarm', 'ready'];
 const PROGRESS = ['pair', 'wifi', 'finish', 'name', 'calendars', 'alarm'];
 
 export function createOnboarding({ start = 'welcome' } = {}) {
@@ -24,7 +26,7 @@ export function createOnboarding({ start = 'welcome' } = {}) {
   const root = el(`<section class="screen onboarding">
       <header class="ob-head">
         <button class="iconbtn back" type="button" aria-label="Back">${iconStr('back')}</button>
-        <button class="logo wordmark" type="button" aria-label="offhours">offhours</button>
+        <button class="logo brandmark" type="button" aria-label="offhours"><i class="moon" aria-hidden="true"></i><span class="wordmark">offhours</span></button>
         <span class="ob-spacer"></span>
       </header>
       <div class="ob-prog"><div class="ob-bar"></div><div class="ob-meta"><span data-step></span><span data-left></span></div></div>
@@ -124,17 +126,49 @@ const stepEl = (inner, cls = '') => el(`<div class="${cls}">${inner}</div>`);
 const FACTORY = {
   welcome(api) {
     const n = stepEl(`
+      <div class="horizon-art" aria-hidden="true">
+        <svg viewBox="0 0 390 300" preserveAspectRatio="xMidYMax slice">
+          <defs><radialGradient id="hsun" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#FFF1D8"/><stop offset=".5" stop-color="#FFD6A6"/><stop offset="1" stop-color="#FF9857"/></radialGradient></defs>
+          <circle class="h-sun" cx="272" cy="166" r="46" fill="url(#hsun)"/>
+          <path class="h-r1" d="M0 190c60-30 110-20 170 0s120 16 220-18v128H0z"/>
+          <path class="h-r2" d="M0 224c70-26 120-18 190 4s130 8 200-14v86H0z"/>
+          <path class="h-r3" d="M0 256c80-20 150-8 220 6s110 2 170-10v48H0z"/>
+        </svg>
+      </div>
       <div class="ob-eyes"><span class="anchor" style="width:200px;height:110px"></span></div>
       <div class="ob-copy">
-        <h1 class="title">Own your off hours.</h1>
+        <h1 class="title">Own your <span class="grad">off hours.</span></h1>
         <p class="t2">Let’s set up NOCTIS. It takes about two minutes.</p>
       </div>
-      <div class="ob-foot"><button class="pill primary block" type="button">Begin</button></div>`, 'center');
+      <div class="ob-foot"><button class="pill primary block" type="button">Begin</button><p class="caption ob-legal">Sleep and snoring are always estimates. NOCTIS is not a medical device.</p></div>`, 'center welcome');
     n.querySelector('.pill').addEventListener('click', () => { haptic(); api.next(); });
     return {
       el: n,
       anchor: n.querySelector('.anchor'),
       enter() { ctx.stage.usePool(null); ctx.stage.rest('day'); },
+    };
+  },
+
+  account(api) {
+    const n = stepEl(`
+      <div class="ob-eyes small"><span class="anchor" style="width:96px;height:56px"></span></div>
+      <div class="ob-copy left">
+        <h1 class="title">Save your setup.</h1>
+        <p class="t2">Sign in and your alarms and settings follow you to a new phone. No password, ever.</p>
+      </div>
+      <div class="ob-auth"></div>
+      <div class="ob-foot">
+        <button class="pill quiet block" type="button" data-skip>Skip for now</button>
+        <p class="caption ob-legal">By continuing you agree to the Terms and Privacy Policy. Prototype: sign-in is simulated and stores only a label on this phone.</p>
+      </div>`, 'top account');
+    const go = () => api.next();
+    n.querySelector('.ob-auth').append(authButtons({ onDone: go }));
+    n.querySelector('[data-skip]').addEventListener('click', () => { haptic(); go(); });
+    return {
+      el: n,
+      anchor: n.querySelector('.anchor'),
+      enter() { ctx.stage.rest('day'); ctx.stage.usePool('calm', [2000, 5000]); },
+      leave() { ctx.stage.usePool(null); },
     };
   },
 
@@ -356,7 +390,7 @@ const FACTORY = {
     const go = n.querySelector('[data-go]');
     const render = () => {
       list.innerHTML = '';
-      list.append(group({ rows: calendarRows((id, what) => { if (what === 'connected') { ctx.stage.run('hop'); render(); } }) }));
+      list.append(providerCards((id, what) => { if (what === 'connected') { ctx.stage.run('hop'); render(); } else if (what === 'open') openCalendarsSheet({ onClose: render }); }));
       const any = Object.values(ctx.services.calendar.accounts()).some(Boolean);
       go.textContent = any ? 'Continue' : 'Not now';
       go.classList.toggle('solid', any);

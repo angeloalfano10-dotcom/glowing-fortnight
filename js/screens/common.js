@@ -8,6 +8,8 @@ import { DeviceView, FINISHES, FINISH_ORDER, swatchBg } from '../ui/device-view.
 import { openSheet, sheetHead, textButton } from '../ui/sheet.js';
 import { island } from '../ui/island.js';
 import { haptic } from '../lib/haptics.js';
+import { clock, planFor, fmtMin } from '../lib/time.js';
+import { makeSwitch } from '../ui/controls.js';
 import { ctx } from '../ctx.js';
 
 /** A grouped list section. rows: HTMLElement[] */
@@ -198,31 +200,99 @@ export function askWifi(network, { error = '' } = {}) {
   });
 }
 
-/* ---------- calendar consent (demo stand-in for EventKit / Google OAuth) ---------- */
+/* ---------- connect a calendar ----------
+   Why (what it reads, what it never does) → connecting, in honest steps → what you got:
+   the calendars it found, and the first event NOCTIS will tell you about tomorrow.
+   A native app replaces the simulated permission with EventKit or Google OAuth. */
 export function connectCalendar(id) {
-  const p = ctx.services.calendar.providers().find((x) => x.id === id);
+  const svc = ctx.services.calendar;
+  const p = svc.providers().find((x) => x.id === id);
+  const isApple = id === 'apple';
+  const glyph = isApple ? 'apple' : 'google';
   return new Promise((resolve) => {
-    const isApple = id === 'apple';
-    const body = el(`<div class="sheet-pad consent">
-        <div class="consent-ic">${iconStr('calendar')}</div>
-        <h2 class="title">${esc(p.name)}</h2>
-        <p class="t2">offhours reads event titles and start times to build your morning briefing. It never changes your calendar.</p>
-        <div class="caption">${isApple ? 'In the app, iOS asks for calendar access here.' : 'In the app, Google sign-in opens here.'} This prototype simulates it.</div>
-        <button class="pill primary block" type="button" data-allow>Allow</button>
-        <button class="pill quiet block" type="button" data-cancel>Not now</button>
-      </div>`);
+    const body = el('<div class="sheet-pad cal-flow"></div>');
     let ok = false;
-    const sheet = openSheet({ content: body, size: 'auto', label: p.name, onClose: () => resolve(ok) });
-    body.querySelector('[data-cancel]').addEventListener('click', () => sheet.close());
-    const allow = body.querySelector('[data-allow]');
-    allow.addEventListener('click', async () => {
-      allow.disabled = true;
-      allow.textContent = 'Connecting';
-      await ctx.services.calendar.connect(id);
+    let sheet = null;
+    const close = () => sheet.close();
+    sheet = openSheet({ content: body, size: 'auto', label: p.name, onClose: () => resolve(ok) });
+
+    const why = () => {
+      body.innerHTML = `
+        <div class="cal-ic ${id}">${iconStr(glyph)}</div>
+        <h2 class="title">Let NOCTIS see tomorrow.</h2>
+        <p class="t2">Connect ${esc(p.name)} so your briefing can tell you what comes first.</p>
+        <div class="cal-sample" aria-label="Example of what NOCTIS reads">
+          <div class="cs-k">What NOCTIS reads</div>
+          <div class="cs-ev"><i class="cs-bar"></i><div class="cs-t"><b>Standup</b><span>9:00 AM</span></div></div>
+          <div class="cs-no">Notes · guests · locations · links</div>
+        </div>
+        <ul class="cal-pts">
+          <li><span class="pt-ic">${iconStr('check')}</span><span><b>Reads one thing</b>The title and start time of your first event each morning.</span></li>
+          <li><span class="pt-ic">${iconStr('check')}</span><span><b>Changes nothing</b>NOCTIS can’t add, edit or share your events.</span></li>
+          <li><span class="pt-ic">${iconStr('check')}</span><span><b>Stays close</b>It goes from this phone to NOCTIS, and nowhere else.</span></li>
+        </ul>
+        <button class="pill primary block" type="button" data-allow>Allow access</button>
+        <button class="pill quiet block" type="button" data-cancel>Not now</button>
+        <p class="caption">${isApple ? 'On iPhone, iOS asks for calendar access here.' : 'Google sign-in opens here.'} This prototype simulates it and collects no credentials.</p>`;
+      body.querySelector('[data-cancel]').addEventListener('click', close);
+      body.querySelector('[data-allow]').addEventListener('click', () => { haptic(); working(); });
+    };
+
+    const working = async () => {
+      body.innerHTML = `
+        <div class="cal-ic ${id} pulse">${iconStr(glyph)}</div>
+        <h2 class="title" data-t>Connecting</h2>
+        <p class="t2" data-s>Asking ${esc(p.name)}</p>
+        <div class="cal-bar"></div>`;
+      const bar = progressBar(0.08);
+      body.querySelector('.cal-bar').append(bar);
+      const T = body.querySelector('[data-t]');
+      const S = body.querySelector('[data-s]');
+      const work = svc.connect(id);
+      const steps = [['Connecting', `Asking ${p.name}`, 0.3], ['Finding your calendars', 'Home, work, family', 0.62], ['Looking at tomorrow', 'Just the first event', 0.9]];
+      for (const [t, s, k] of steps) {
+        T.textContent = t; S.textContent = s; bar.set(k);
+        await new Promise((r) => setTimeout(r, 750));
+      }
+      let acc;
+      try { acc = await work; } catch { acc = null; }
+      bar.set(1);
+      if (!acc) { island('Couldn’t connect. Try again', 'info'); why(); return; }
       ok = true;
+      done(acc);
+    };
+
+    const done = async (acc) => {
+      const now = clock.now();
+      const morning = planFor(ctx.store.state.alarms, now).morning;
+      const h24 = ctx.store.state.display.clock24;
+      body.innerHTML = `
+        <div class="cal-ok" aria-hidden="true"></div>
+        <h2 class="title">Connected.</h2>
+        <p class="t2">${esc(p.name)} · ${esc(acc.account)}</p>
+        <div class="cal-prev" aria-live="polite"><span class="cp-k">First up tomorrow</span><span class="cp-v">Looking</span></div>
+        <div class="group cal-list"></div>
+        <button class="pill primary block" type="button" data-done>Done</button>`;
+      body.querySelector('.cal-ok').append(tick(false));
+      requestAnimationFrame(() => body.querySelector('.tick').classList.add('done'));
       island(`${p.name} connected`, 'calendar');
-      sheet.close();
-    });
+      haptic();
+      const prev = body.querySelector('.cal-prev');
+      const refresh = async () => {
+        const ev = await svc.firstEvent(morning);
+        prev.querySelector('.cp-v').innerHTML = ev ? `<b>${esc(ev.title)}</b> at ${esc(fmtMin(ev.startMin, h24))}` : 'Nothing booked yet';
+        ctx.rebuildBriefing?.();
+      };
+      refresh();
+      const list = body.querySelector('.cal-list');
+      acc.calendars.forEach((cal) => list.append(row({
+        label: cal.name,
+        control: makeSwitch({ checked: cal.on, label: cal.name, onChange: (v) => { svc.setCalendar(id, cal.id, v); refresh(); } }),
+      })));
+      body.querySelector('[data-done]').addEventListener('click', close);
+    };
+
+    why();
   });
 }
 
@@ -282,4 +352,51 @@ export function tick(done = false) {
   const t = el(`<span class="tick ${done ? 'done' : ''}" aria-hidden="true">${iconStr('check')}</span>`);
   t.set = (v) => t.classList.toggle('done', !!v);
   return t;
+}
+
+/* ---------- brand: the moon and the wordmark ---------- */
+
+/** The offhours mark: gradient crescent plus the lowercase wordmark. */
+export function brandMarkHTML() {
+  return '<i class="moon" aria-hidden="true"></i><span class="wordmark">offhours</span>';
+}
+
+/**
+ * The sky behind the Tonight card. The sun sinks as bed-by gets closer (goal gradient),
+ * then a moon holds the sky while the dawn glow builds toward the alarm.
+ * Returns an element with .set(progress 0..1, night:boolean).
+ */
+export function skyScene() {
+  const n = el(`<div class="sky-scene" aria-hidden="true">
+      <i class="stars"></i><i class="sun"></i><i class="crescent"></i><i class="horizon"></i>
+    </div>`);
+  n.set = (p, night = false) => {
+    n.style.setProperty('--p', String(Math.max(0, Math.min(1, p))));
+    n.classList.toggle('is-night', !!night);
+  };
+  return n;
+}
+
+/** Big, friendly provider cards for setup: one tap to connect, a tick when it is. */
+export function providerCards(onChange) {
+  const svc = ctx.services.calendar;
+  const acc = svc.accounts();
+  const wrap = el('<div class="prov-list"></div>');
+  svc.providers().forEach((p) => {
+    const a = acc[p.id];
+    const n = a ? a.calendars.filter((x) => x.on).length : 0;
+    const b = el(`<button class="prov ${a ? 'on' : ''}" type="button">
+        <span class="prov-ic ${p.id}">${iconStr(p.id === 'apple' ? 'apple' : 'google')}</span>
+        <span class="prov-t"><b>${esc(p.name)}</b><span>${a ? `${esc(a.account)} · ${n} calendar${n === 1 ? '' : 's'}` : (p.id === 'apple' ? 'Events on this iPhone' : 'Your Google account')}</span></span>
+        <span class="prov-s">${a ? '' : 'Connect'}</span>
+      </button>`);
+    if (a) b.querySelector('.prov-s').append(tick(true));
+    b.addEventListener('click', async () => {
+      haptic();
+      if (ctx.services.calendar.accounts()[p.id]) { onChange?.(p.id, 'open'); return; }
+      if (await connectCalendar(p.id)) onChange?.(p.id, 'connected');
+    });
+    wrap.append(b);
+  });
+  return wrap;
 }

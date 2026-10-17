@@ -4,7 +4,7 @@
 import { el, esc } from '../lib/dom.js';
 import { iconStr } from '../ui/icons.js';
 import { ctx } from '../ctx.js';
-import { clock, nextRing, planFor, fmtMin, fmtParts, daysLabel, relativeDay, DAY_LONG, wrap, bedMinOf } from '../lib/time.js';
+import { clock, nextRing, planFor, fmtMin, fmtParts, daysLabel, relativeDay, DAY_LONG, wrap, bedMinOf, dur } from '../lib/time.js';
 import { makeSwitch, makeSegmented, longPress } from '../ui/controls.js';
 import { actionSheet } from '../ui/sheet.js';
 import { island } from '../ui/island.js';
@@ -53,7 +53,7 @@ export function createAlarms(shell) {
     const s = store.state;
     const now = clock.now();
     const next = nextRing(s.alarms, now);
-    P.setLabel(next ? `Next · ${relativeDay(next.at, now)} ${fmt(next.alarm.h * 60 + next.alarm.m)}` : 'No alarm set');
+    P.setLabel(next ? `Rings in ${dur(Math.max(1, Math.round((next.at - now) / 60000)))}` : 'No alarm set');
     list.innerHTML = '';
     newCard.hidden = false;
     if (!s.alarms.length) {

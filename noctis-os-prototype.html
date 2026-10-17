@@ -881,5 +881,29 @@ renderControls();updateTexts(now());
 setInterval(tick,250);
 requestAnimationFrame(frame);
 boot();
+/* ---------- link to the companion app (showcase.html relays these) ---------- */
+if(EMBED&&window.parent!==window){
+  // Last-writer-wins: each alarm change carries the time it was made.
+  const post=m=>{try{parent.postMessage(Object.assign({source:'noctis'},m),'*')}catch(e){}};
+  const sigA=()=>S.alarm.h+':'+S.alarm.m+':'+S.alarm.on;
+  let alarmT=0,lastA='',appliedSig='',lastM='';
+  const sendAlarm=()=>post({type:'alarm',h:S.alarm.h,m:S.alarm.m,on:S.alarm.on,at:alarmT});
+  const report=force=>{const a=sigA();
+    if(a!==lastA){if(a!==appliedSig)alarmT=Date.now();lastA=a;sendAlarm()}else if(force)sendAlarm();
+    if(force||S.mode!==lastM){lastM=S.mode;post({type:'mode',mode:S.mode})}};
+  setInterval(()=>report(false),300);
+  addEventListener('message',e=>{const d=e.data;if(!d||d.source!=='offhours')return;
+    if(d.type==='ready'){report(true);return}
+    if(d.type!=='config')return;
+    const al=d.alarm;
+    if(al&&(al.at>alarmT||(alarmT===0&&al.at===0))&&(al.h!==S.alarm.h||al.m!==S.alarm.m||al.on!==S.alarm.on)){
+      S.alarm={h:al.h,m:al.m,on:al.on};S.fired='';alarmT=al.at;appliedSig=sigA();lastA=appliedSig;renderControls();
+      island(al.on?'Alarm set from your phone · '+fmtA():'Alarm off from your phone',IC.alarm)}
+    if(d.theme&&d.theme!==S.theme&&(d.theme==='warm'||d.theme==='white'))applyTheme(d.theme);
+    if(d.face&&d.face!==S.face){const b=document.querySelector('[data-face="'+d.face+'"]');if(b)b.click()}
+    if(typeof d.brightness==='number'&&Math.abs(d.brightness-S.bright)>.01){S.bright=clamp(d.brightness,.05,1);renderControls();updateDim()}
+  });
+  post({type:'ready'});
+}
 })();
 </script>

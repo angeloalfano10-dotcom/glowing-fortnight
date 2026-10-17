@@ -281,6 +281,12 @@ export function createMockDevice() {
       const next = { clock: [7500, 'rest'], alarm: [14000, 'briefing'], briefing: [17500, 'rest'], voice: [9000, 'rest'], boot: [4200, 'rest'] }[m];
       if (next) overrideT = setTimeout(() => api.simulate(next[1]), next[0]);
     },
+    /** Follow another device's screen exactly (showcase link). */
+    mirror(m) {
+      clearTimeout(overrideT);
+      override = m;
+      emit('mode');
+    },
     setOnline(v) {
       online = v;
       emit('status');

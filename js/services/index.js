@@ -6,10 +6,12 @@ import { storage } from './storage.local.js';
 import { createMockDevice } from './device.mock.js';
 import { createMockCalendar } from './calendar.mock.js';
 import { createWeather } from './weather.openmeteo.js';
+import { createMockAccount } from './account.mock.js';
 
 export const services = {
   storage,
   device: createMockDevice(),
   calendar: createMockCalendar(),
   weather: createWeather(),
+  account: createMockAccount(),
 };
