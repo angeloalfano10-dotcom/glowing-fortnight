@@ -2,11 +2,12 @@
 // the cache and refreshed in the background, so a new deploy shows on the next
 // open. Weather requests go straight to the network.
 
-const VERSION = 'offhours-v11';
+const VERSION = 'offhours-v12';
 const SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
+  './js/first-run.js',
   './css/base.css',
   './css/brand.css',
   './css/flows.css',
